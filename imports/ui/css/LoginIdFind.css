@@ -1,0 +1,88 @@
+/* LoginIdFind.css */
+
+/* 전체 페이지 스타일 */
+.login-idfind-container {
+  font-family: Arial, sans-serif;
+  background-color: #f4f7fc;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.login-idfind-header {
+  margin-bottom: 30px;
+  /* 텍스트와 폼 사이에 공간을 추가 */
+  text-align: center;
+}
+
+.login-idfind-title {
+  font-size: 28px;
+  color: #333;
+  margin: 0;
+}
+
+/* 폼 스타일 */
+.login-idfind-form {
+  max-width: 400px;
+  width: 100%;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.login-idfind-form-group {
+  margin-bottom: 15px;
+}
+
+.login-idfind-label {
+  font-size: 16px;
+  color: #555;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.login-idfind-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.login-idfind-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  color: white;
+  font-size: 18px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-idfind-button:hover {
+  background-color: #45a049;
+}
+
+.login-idfind-button:active {
+  background-color: #3e8e41;
+}
+
+/* 모바일 화면에 적합하게 반응형 디자인 */
+@media (max-width: 600px) {
+  .login-idfind-form {
+    padding: 15px;
+    width: 90%;
+  }
+
+  .login-idfind-title {
+    font-size: 22px;
+  }
+}
