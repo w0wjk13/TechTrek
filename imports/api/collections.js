@@ -1,3 +1,7 @@
 import { Mongo } from "meteor/mongo";
+import { FilesCollection } from "meteor/ostrio:files";
 
-// export const LinksCollection = new Mongo.Collection('links');
+
+export const Files = new FilesCollection({
+  collectionName: "files"
+});

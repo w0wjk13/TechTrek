@@ -1,0 +1,32 @@
+/* Nav.css */
+.nav-list {
+  list-style-type: none;
+  /* 기본 불릿 포인트 제거 */
+  padding: 0;
+  /* 기본 padding 제거 */
+  margin: 0;
+  /* 기본 margin 제거 */
+  display: flex;
+  /* 수평으로 배치 */
+  justify-content: space-around;
+  /* 각 항목을 균등하게 배치 */
+}
+
+.nav-item {
+  margin: 0 10px;
+  /* 각 항목 사이에 여백 추가 */
+}
+
+.nav-link {
+  text-decoration: none;
+  /* 링크 기본 밑줄 제거 */
+  color: #333;
+  /* 기본 글자 색상 */
+  font-weight: bold;
+  /* 글씨를 굵게 */
+}
+
+.nav-link:hover {
+  color: #007BFF;
+  /* 마우스 오버시 색상 변경 */
+}

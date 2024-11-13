@@ -1,0 +1,64 @@
+/* LoginMain.css */
+
+/* 전체 화면을 flexbox로 중앙 배치 */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  /* 화면 높이에 맞게 중앙 배치 */
+  background-color: #f4f4f4;
+  /* 배경색 추가 */
+}
+
+.login-box {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  /* 고정 너비 */
+  text-align: center;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.login-button:hover {
+  background-color: #0056b3;
+}
+
+.logout-button {
+  text-align: center;
+}
+
+.additional-links {
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.additional-links a {
+  text-decoration: none;
+  color: #007BFF;
+}
+
+.additional-links a:hover {
+  text-decoration: underline;
+}
