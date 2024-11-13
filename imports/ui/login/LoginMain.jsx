@@ -1,22 +1,26 @@
 import React, { useRef } from "react";
 import { useTracker } from "meteor/react-meteor-data";
 import "../css/LoginMain.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default () => {
   const { user } = useTracker(() => {
     return { user: Meteor.user() };
   });
 
+  const navigate = useNavigate(); // useNavigate 훅을 사용하여 페이지 이동
   const refEmail = useRef(null);
   const refPassword = useRef(null);
 
   const handleLogin = () => {
-    const rslt = Meteor.loginWithPassword(
-      refEmail.current.value,
-      refPassword.current.value
-    );
-    console.log(rslt);
+    Meteor.loginWithPassword(refEmail.current.value, refPassword.current.value, (error) => {
+      if (error) {
+        console.log("Login failed:", error);
+      } else {
+        // 로그인 성공 시 홈 페이지로 이동
+        navigate('/');
+      }
+    });
   };
 
   return (

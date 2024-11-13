@@ -1,11 +1,5 @@
 import { Accounts } from 'meteor/accounts-base';
 
-/*
-const randomName = () => {
-  const names = ["John Doe", "Jane Smith", "Alice Lee", "Bob Kim", "Charlie Park", "David Choi", "Eva Kim", "Frank Lee", "Grace Park", "Hannah Lee"];
-  return names[Math.floor(Math.random() * names.length)];
-};
-
 const randomEmail = (index) => `user${index}@example.com`;
 
 const randomPhone = () => {
@@ -41,29 +35,33 @@ const randomAddress = () => {
   ];
   const district = districts[Math.floor(Math.random() * districts.length)];
   return {
-    zipcode: "01234",
     address: `서울 ${district}`,
-    addressdetail: "1동 101호"
   };
 };
 
 if (!Accounts.findUserByUsername("admin")) {
   Accounts.createUser({
-    username: "admin",
+    name: "admin",
     email: "admin@example.com",
-    password: "admin1234",
+    password: "1234",
+    profile: {
+      name: "admin",
+    },
   });
-  console.log("Admin account created: username: admin, password: admin1234");
+  console.log("Admin account created: name: admin, password: 1234");
 } else {
   console.log("Admin account already exists.");
 }
 
 for (let i = 1; i <= 100; i++) {
+  const name = `user${i}`;
   Accounts.createUser({
+    name: name,
     email: randomEmail(i),
     password: "1234",
     profile: {
-      name: randomName(),
+      name: name,
+      nickname: `nickname${i}`,
       phone: randomPhone(),
       profilePicture: "https://example.com/profile.jpg",
       address: randomAddress(),
@@ -80,4 +78,3 @@ for (let i = 1; i <= 100; i++) {
     }
   });
 }
-*/
