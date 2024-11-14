@@ -33,6 +33,8 @@ const UploadStudy = () => {
   const [stackList, setStackList] = useState([]); //선택한 기술스택 목록
   const [date, setDate] = useState(null);
 
+  const addressMap = () => {};
+
   const addStack = (e) => {
     const selectStack = e.target.value;
     //사용자가 스택을 선택했고 && useState([])에 사용자가 선택한 스택이 없다면 추가
@@ -115,6 +117,12 @@ const UploadStudy = () => {
           dateFormat="yyyy년 MM월 dd일"
           placeholderText="모집마감일"
         />
+        <br />
+
+        <a href="#" onClick={addressMap}>
+          주소 선택
+        </a>
+        <br />
 
         <button type="submit">제출하기</button>
 
