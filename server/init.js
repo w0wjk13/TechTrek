@@ -16,7 +16,7 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
       username: "user" + i,
       password: "1234",
       profile: {
-        avgScore: {
+        scores: {
           manner: [1, 2, 3, 4, 5].random(), //매너(친절)
           mentoring: [1, 2, 3, 4, 5].random(), //다른 사람 도와주기(지식 공유)
           passion: [1, 2, 3, 4, 5].random(), //열정(참여도)
@@ -48,23 +48,26 @@ if (!Study.findOne()) {
       title: `스터디 모임 ${i}`,
       content: `내용 ${i}`,
       studyCount: [2, 3, 4, 5, 6, 7, 8, 9, 10].random(), //모집 인원
-      giftScore: score,
+      scores: score,
+      status: "진행중",
     });
   }
 }
 
 //스터디 모임이 하나도 없다면
 if (!StudyUsers.findOne()) {
-  const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
-
   Study.find().forEach((study) => {
     //스터디 모집 작성자 이외의 사용자 목록
-    const applyUsers = users.filter((user) => user._id !== study.user_id);
+    const applyUsers = Meteor.uses
+      .find({
+        $and: [{ _id: { $ne: study.userId } }, { username: { $ne: "admin" } }],
+      })
+      .fetch();
     //스터디 모집 작성자를 포함한 스터디 모임 참가자 목록 생성
-    const teamMember = new Set([study.user_id]);
+    const teamMembers = [study.user_id];
 
     //스터디 모집 인원 만큼 참가자 채우기
-    while (teamMember.size < study.study_count) {
+    while (teamMembers.length < study.studyCount) {
       const randomUser = applyUsers.random();
 
       let ok = true;
@@ -76,16 +79,16 @@ if (!StudyUsers.findOne()) {
         }
       }
 
-      if (ok) {
-        teamMember.add(randomUser._id);
+      //유저의 점수가 모집글 요구 점수를 만족하고 중복된 아이디가 아니라면 모임에 추가
+      if (ok && !teamMembers.includes(randomUser._id)) {
+        teamMembers.push(randomUser._id);
       }
     }
 
-    Array.from(teamMember).forEach((userId) => {
+    Array.from(teamMembers).forEach((userId) => {
       StudyUsers.insert({
         studyId: study._id,
         userId: userId,
-        studyStatus: "시작",
       });
     });
   });
