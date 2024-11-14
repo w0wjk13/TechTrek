@@ -34,22 +34,23 @@ if (!Study.findOne()) {
   const gift = ["manner", "mentoring", "passion", "communication", "time"]; //설문지에서 평가하는 역량
 
   for (let i = 0; i < 20; i++) {
-    //모집글 작성자가 요구하는 역량
+    //모집글 작성자가 요구하는 역량 1~5개 추출
     const requiredGifts = gift.random(1, 5);
 
-    //항목 개수와 그에 해당하는 점수를 랜덤으로 할당
-    const score = {}; //항목과 점수를 키-값 쌍으로 저장하기 위해 빈 객체 선언
-    requiredGifts.forEach((선물) => {
-      score[gift] = [1, 2, 3, 4].random(); //gift, 1~4가 키: 값이 됨
+    //추출한 역량에 해당하는 점수 1점 ~ 4점까지 랜덤으로 할당
+    const score = {};
+    requiredGifts.forEach((g) => {
+      score[g] = [1, 2, 3, 4].random();
     });
+    //const scores = requiredGifts.map((gift) => [1, 2, 3, 4].random());
 
     Study.insert({
       user_id: users.random()._id,
       title: `스터디 모임 ${i}`,
       content: `내용 ${i}`,
-      study_count: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].random(), //모집 인원
-      gift: requiredGifts, //모집글 작성자가 요구하는 역량
-      gift_score: score, //역량에 해당하는 점수
+      study_count: [2, 3, 4, 5, 6, 7, 8, 9, 10].random(), //모집 인원
+      gift: requiredGifts,
+      gift_score: score,
     });
   }
 }
