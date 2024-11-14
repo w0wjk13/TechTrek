@@ -16,7 +16,7 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
       username: "user" + i,
       password: "1234",
       profile: {
-        avg_score: {
+        avgScore: {
           manner: [1, 2, 3, 4, 5].random(), //매너(친절)
           mentoring: [1, 2, 3, 4, 5].random(), //다른 사람 도와주기(지식 공유)
           passion: [1, 2, 3, 4, 5].random(), //열정(참여도)
@@ -39,18 +39,16 @@ if (!Study.findOne()) {
 
     //추출한 역량에 해당하는 점수 1점 ~ 4점까지 랜덤으로 할당
     const score = {};
-    requiredGifts.forEach((g) => {
-      score[g] = [1, 2, 3, 4].random();
+    requiredGifts.forEach((gift) => {
+      score[gift] = [1, 2, 3, 4].random(); //키(gift): 값(점수) 형태로 score에 들어감
     });
-    //const scores = requiredGifts.map((gift) => [1, 2, 3, 4].random());
 
     Study.insert({
-      user_id: users.random()._id,
+      userId: users.random()._id,
       title: `스터디 모임 ${i}`,
       content: `내용 ${i}`,
-      study_count: [2, 3, 4, 5, 6, 7, 8, 9, 10].random(), //모집 인원
-      gift: requiredGifts,
-      gift_score: score,
+      studyCount: [2, 3, 4, 5, 6, 7, 8, 9, 10].random(), //모집 인원
+      giftScore: score,
     });
   }
 }
@@ -68,14 +66,26 @@ if (!StudyUsers.findOne()) {
     //스터디 모집 인원 만큼 참가자 채우기
     while (teamMember.size < study.study_count) {
       const randomUser = applyUsers.random();
-      teamMember.add(randomUser._id);
+
+      let ok = true;
+      for (let gift in study.giftScore) {
+        //유저의 점수가 모집글 요구 점수보다 작으면 추가하지 않음
+        if (randomUser.profile.avgScore[gift] < study.giftScore[gift]) {
+          ok = false;
+          break;
+        }
+      }
+
+      if (ok) {
+        teamMember.add(randomUser._id);
+      }
     }
 
     Array.from(teamMember).forEach((userId) => {
       StudyUsers.insert({
-        study_id: study._id,
-        user_id: userId,
-        study_status: "시작",
+        studyId: study._id,
+        userId: userId,
+        studyStatus: "시작",
       });
     });
   });
