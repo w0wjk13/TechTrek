@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Accounts } from "meteor/accounts-base";
-//import '../../client/css/LoginForm.css';
+import { Meteor } from "meteor/meteor";
 
 // 기술 스택 및 포지션 목록
 const techStacks = [
@@ -25,16 +24,6 @@ export default function LoginForm() {
   const [isSubmitting, setIsSubmitting] = useState(false); // 제출 중 여부
   const navigate = useNavigate(); // 페이지 이동을 위한 hook
 
-  // 이메일 중복 체크
-  const checkDuplicateEmail = (email) => {
-    return !!Meteor.users.findOne({ email });
-  };
-
-  // 전화번호 중복 체크
-  const checkDuplicatePhone = (phone) => {
-    return !!Meteor.users.findOne({ "profile.phone": phone });
-  };
-
   // 이미지 파일 선택 핸들러
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -48,7 +37,7 @@ export default function LoginForm() {
   };
 
   // 제출 핸들러
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // 입력 값 검증
@@ -63,43 +52,18 @@ export default function LoginForm() {
       return;
     }
 
-    // 이메일 중복 체크
-    if (checkDuplicateEmail(email)) {
-      setError("이미 등록된 이메일입니다.");
-      return;
-    }
+    setError(""); // 에러 메시지 초기화
+    setIsSubmitting(true); // 제출 중 상태로 설정
 
-    // 전화번호 중복 체크
-    if (checkDuplicatePhone(phone)) {
-      setError("이미 등록된 전화번호입니다.");
-      return;
-    }
-
-    setError("");
-    setIsSubmitting(true);
-
-    // 사용자 생성
-    Accounts.createUser({
-      username: email, // 이메일을 username으로 사용
-      email,
-      password,
-      profile: {
-        name,
-        phone,
-        techStack, // 기술 스택 그대로 저장
-        position,
-        profilePicture, // 선택된 프로필 사진 저장
-        address, // 사용자가 입력한 주소
-        averageScore: 3 // 초기 평균 점수 설정
-      },
-      createdAt: new Date()
-    }, (err) => {
-      setIsSubmitting(false);
+    // 서버에 사용자 생성 요청
+    Meteor.call('users.create', { name, email, password, phone, techStack, position, address, profilePicture }, (err, res) => {
+      setIsSubmitting(false); // 제출 중 상태 해제
       if (err) {
-        setError("회원가입 중 오류가 발생했습니다.");
+        setError(err.reason); // 에러 메시지 표시
       } else {
-        // 회원가입 성공 시 로그인 페이지로 리디렉션
-        navigate("/login");
+        // 회원가입 성공 시 알림 팝업과 함께 메인 페이지로 이동
+        alert("회원가입이 완료되었습니다.");
+        navigate("/"); // 메인 페이지로 이동
       }
     });
   };
@@ -122,7 +86,6 @@ export default function LoginForm() {
     <div className="signup-form-container">
       {error && <div className="error">{error}</div>} {/* 에러 메시지 표시 */}
       <form onSubmit={handleSubmit} className="signup-form">
-
         {/* 이미지 업로드 영역 */}
         <div className="image-upload-container">
           <label htmlFor="profile-picture" className="image-upload-label">
@@ -195,36 +158,18 @@ export default function LoginForm() {
 
         {/* 기술 스택 선택 */}
         <div>
-          <label>기술 스택 (최대 5개)</label>
-          <div className="checkbox-group">
-            {techStacks.map((stack, index) => (
-              <div key={index}>
-                <input
-                  type="checkbox"
-                  id={stack}
-                  value={stack}
-                  checked={techStack.includes(stack)}
-                  onChange={handleTechStackChange}
-                  disabled={techStack.length >= 5 && !techStack.includes(stack)} // 5개 이상 선택되었으면 비활성화
-                />
-                <label htmlFor={stack}>{stack}</label>
-              </div>
-            ))}
-          </div>
-
-          <div className="selected-tech-stacks">
-            {techStack.map((stack, index) => (
-              <span key={index}>
-                {stack}
-                <button
-                  type="button"
-                  onClick={() => handleTechStackChange({ target: { value: stack } })}
-                >
-                  ×
-                </button>
-              </span>
-            ))}
-          </div>
+          <label>기술 스택</label>
+          {techStacks.map((stack) => (
+            <div key={stack}>
+              <input
+                type="checkbox"
+                value={stack}
+                onChange={handleTechStackChange}
+                checked={techStack.includes(stack)}
+              />
+              <label>{stack}</label>
+            </div>
+          ))}
         </div>
 
         {/* 포지션 선택 */}
@@ -235,14 +180,18 @@ export default function LoginForm() {
             value={position}
             onChange={(e) => setPosition(e.target.value)}
           >
-            {positions.map((pos, index) => (
-              <option key={index} value={pos}>{pos}</option>
+            <option value="">포지션을 선택하세요</option>
+            {positions.map((pos) => (
+              <option key={pos} value={pos}>
+                {pos}
+              </option>
             ))}
           </select>
         </div>
 
+        {/* 제출 버튼 */}
         <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "회원가입 중..." : "회원가입"}
+          {isSubmitting ? "가입 중..." : "회원가입"}
         </button>
       </form>
     </div>
