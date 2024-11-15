@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { useTracker } from "meteor/react-meteor-data";
 import { Meteor } from "meteor/meteor";
 import DatePicker from "react-datepicker";
@@ -59,11 +58,9 @@ const UploadStudy = () => {
   const [date, setDate] = useState(null); //모집마감일
   const [studyType, setStudyType] = useState("offline"); //오프라인일 경우 주소입력창 보여주기
   const [giftScore, setGiftScore] = useState({}); //요구하는 역량과 점수
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({ mode: "all" });
+  const formRef = useRef(null); //백엔드프론트 온라인오프라인
+  const titleRef = useRef(null);
+  const contentRef = useRef(null);
 
   useEffect(() => {
     const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
@@ -119,25 +116,30 @@ const UploadStudy = () => {
     setStackList(stackList.filter((item) => item !== stack));
   };
 
-  const onSubmit = (data) => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(formRef.current);
+
     if (Meteor.userId()) {
       console.log(Meteor.userId());
       const uploadData = {
-        roles: data.roles, //모집분야(프론트/백)
+        roles: formData.get("roles"), //모집분야(프론트/백)
         onOffline: studyType, //모집형태(온/오프라인)
-        location: data.location,
-        studyCount: data.studyCount, //모집인원
+        location: formData.get("location"),
+        studyCount: formData.get("studyCount"), //모집인원
         techStack: stackList, //기술스택
         studyClose: date,
         score: giftScore,
-        title: data.title,
-        content: data.content,
+        title: titleRef.current.value,
+        content: contentRef.current.value,
       };
 
-      Meteor.call("insert", uploadData, (err) => {
+      Meteor.call("insert", uploadData, (err, rlt) => {
         if (err) {
-          console.error("uploadStudy insert call 실패: ", err);
-        } else {
+          console.error("insert 실패: ", err.reason);
+          alert(err.reason);
+        } else if (rlt.success) {
           console.log("uploadStudy insert call 성공");
         }
       });
@@ -149,7 +151,7 @@ const UploadStudy = () => {
   return (
     <>
       <h2>스터디 모집페이지</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit} ref={formRef}>
         <h3>모집 분야</h3>
         <div>
           <div>
@@ -199,10 +201,7 @@ const UploadStudy = () => {
 
           {studyType === "offline" && (
             <>
-              <select
-                {...register("location", { required: "지역을 선택해 주세요" })}
-                defaultValue=""
-              >
+              <select name="location" defaultValue="">
                 <option value="" disabled>
                   지역 선택
                 </option>
@@ -212,37 +211,25 @@ const UploadStudy = () => {
                   </option>
                 ))}
               </select>
-              {errors.location && (
-                <span style={{ color: "red" }}>{errors.location.message}</span>
-              )}
             </>
           )}
           <br />
         </div>
 
-        <select
-          {...register("studyCount", { required: "총 인원을 선택해 주세요" })}
-          defaultValue=""
-        >
+        <select name="studyCount" defaultValue="">
           <option value="" disabled>
             모집인원
           </option>
-          {Array.from({ length: 10 }, (_, i) => (
+          {Array.from({ length: 9 }, (_, i) => (
             <option key={i + 1} value={i + 1}>
               {i + 1}명
             </option>
           ))}
         </select>
-        {errors.studyCount && (
-          <span style={{ color: "red" }}>{errors.studyCount.message}</span>
-        )}
         <br />
 
         <div>
           <select
-            {...register("techStack", {
-              required: "아직 선택한 기술이 없어요",
-            })}
             onChange={addStack}
             defaultValue=""
             disabled={stackList.length >= 5}
@@ -268,9 +255,6 @@ const UploadStudy = () => {
           ))}
           <br />
         </div>
-        {errors.techStack && (
-          <p style={{ color: "red" }}>{errors.techStack.message}</p>
-        )}
 
         <DatePicker
           locale={ko}
@@ -278,6 +262,7 @@ const UploadStudy = () => {
           onChange={(date) => setDate(date)}
           dateFormat="yyyy년 MM월 dd일"
           placeholderText="모집마감일"
+          minDate={new Date()}
         />
         <br />
 
@@ -308,10 +293,11 @@ const UploadStudy = () => {
         </div>
 
         <div>
-          <input type="text" placeholder="제목을 입력하세요" />
+          <input type="text" ref={titleRef} placeholder="제목을 입력하세요" />
           <br />
           <textarea
             style={{ width: "500px", height: "100px" }}
+            ref={contentRef}
             placeholder="프로젝트에 대해 설명해 주세요"
           />
         </div>
