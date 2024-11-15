@@ -9,6 +9,7 @@ import LoginIdFind from "./login/LoginIdFind.jsx";
 import LoginFwFind from "./login/LoginPwFind.jsx";
 import LoginMain from "./login/LoginMain.jsx";
 import UploadStudy from "./uploadStudy/UploadStudy";
+import MyPageMain from "./mypage/MypageMain.jsx";
 
 
 export const App = () => (
@@ -22,11 +23,11 @@ export const App = () => (
         <Route path="idfind" element={<LoginIdFind />} />
         <Route path="fwfind" element={<LoginFwFind />} />
       </Route>
-
-      <Route path="/" element={<Home />}></Route>
-
-      <Route path="*" element={<NotFound />}></Route>
+      <Route path="/mypage">
+        <Route path="main" element={<MyPageMain />} />
+      </Route>
       <Route path="/uploadStudy" element={<UploadStudy />} />
+      <Route path="*" element={<NotFound />}></Route>
     </Routes>
   </Router>
 );

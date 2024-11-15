@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+//import '../../client/css/Home.css';
 
 // 기술 스택 및 포지션 목록
 const techStacks = [
@@ -9,7 +10,6 @@ const techStacks = [
 
 const positions = ["백엔드", "프론트엔드", "풀스택"];
 
-// 지역, 시, 구 데이터 구조 변경 (동은 제외)
 const regions = [
   {
     name: "서울",
@@ -26,7 +26,6 @@ const regions = [
 ];
 
 export default function Home() {
-  // 상태 관리
   const [selectedRegion, setSelectedRegion] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [techStack, setTechStack] = useState([]);
@@ -34,42 +33,37 @@ export default function Home() {
   const [onlineOffline, setOnlineOffline] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
-  // 기술 스택에 맞는 포지션 필터링
   const filterPositions = () => {
     if (techStack.length === 0) {
       return positions;
     }
-    return positions; // 여기에 추가적인 로직을 넣을 수 있습니다.
+    return positions;
   };
 
-  // 지역, 시 선택 핸들러
   const handleRegionChange = (e) => {
     setSelectedRegion(e.target.value);
-    setSelectedCity(""); // 시 초기화
+    setSelectedCity("");
   };
 
   const handleCityChange = (e) => {
     setSelectedCity(e.target.value);
   };
 
-  // 기술 스택 선택 핸들러
   const handleTechStackChange = (e) => {
     const value = e.target.value;
     setTechStack((prevTechStack) => {
       if (prevTechStack.includes(value)) {
-        return prevTechStack.filter((stack) => stack !== value); // 이미 선택된 항목은 제거
+        return prevTechStack.filter((stack) => stack !== value);
       } else {
-        return [...prevTechStack, value]; // 새 항목은 추가
+        return [...prevTechStack, value];
       }
     });
   };
 
-  // 온라인/오프라인 선택 핸들러
   const handleOnlineOfflineChange = (e) => {
     setOnlineOffline(e.target.value);
   };
 
-  // 검색 버튼 클릭 시 실행되는 함수
   const handleSearch = () => {
     const filteredResults = exampleResults.filter((result) => {
       const matchesRegion = selectedRegion ? result.region === selectedRegion : true;
@@ -91,13 +85,13 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <h1>This is Home.</h1>
+    <div className="home-container">
+      <h1 className="title">This is Home.</h1>
 
       {/* 지역, 시 선택 */}
-      <div>
-        <label>지역</label>
-        <select value={selectedRegion} onChange={handleRegionChange}>
+      <div className="select-group">
+        <label htmlFor="region">지역</label>
+        <select id="region" value={selectedRegion} onChange={handleRegionChange}>
           <option value="">선택하세요</option>
           {regions.map((region, index) => (
             <option key={index} value={region.name}>
@@ -108,9 +102,9 @@ export default function Home() {
       </div>
 
       {selectedRegion && (
-        <div>
-          <label>구</label>
-          <select value={selectedCity} onChange={handleCityChange}>
+        <div className="select-group">
+          <label htmlFor="city">구</label>
+          <select id="city" value={selectedCity} onChange={handleCityChange}>
             <option value="">선택하세요</option>
             {regions
               .find((region) => region.name === selectedRegion)
@@ -124,37 +118,35 @@ export default function Home() {
       )}
 
       {/* 기술 스택 선택 */}
-      <div>
+      <div className="checkbox-group">
         <label>기술 스택 (최대 5개)</label>
-        <div>
+        <div className="checkbox-list">
           {techStacks.map((stack, index) => (
-            <div key={index}>
+            <div key={index} className="checkbox-item">
               <input
                 type="checkbox"
                 id={stack}
                 value={stack}
                 checked={techStack.includes(stack)}
                 onChange={handleTechStackChange}
-                disabled={techStack.length >= 5 && !techStack.includes(stack)} // 5개 이상 선택되었으면 비활성화
+                disabled={techStack.length >= 5 && !techStack.includes(stack)}
               />
               <label htmlFor={stack}>{stack}</label>
             </div>
           ))}
         </div>
-        <div>
-          {techStack.length > 0 && (
-            <div>
-              <strong>선택된 기술 스택: </strong>
-              {techStack.join(", ")}
-            </div>
-          )}
-        </div>
+        {techStack.length > 0 && (
+          <div className="selected-tech">
+            <strong>선택된 기술 스택: </strong>
+            {techStack.join(", ")}
+          </div>
+        )}
       </div>
 
-      {/* 포지션 선택 (기술 스택에 맞는 포지션 자동 필터링) */}
-      <div>
-        <label>포지션</label>
-        <select value={position} onChange={(e) => setPosition(e.target.value)}>
+      {/* 포지션 선택 */}
+      <div className="select-group">
+        <label htmlFor="position">포지션</label>
+        <select id="position" value={position} onChange={(e) => setPosition(e.target.value)}>
           <option value="">선택하세요</option>
           {filterPositions().map((pos, index) => (
             <option key={index} value={pos}>
@@ -166,7 +158,7 @@ export default function Home() {
       </div>
 
       {/* 온라인/오프라인 선택 */}
-      <div>
+      <div className="radio-group">
         <label>진행 방식</label>
         <div>
           <input
@@ -192,11 +184,9 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 검색 버튼 */}
-      <button onClick={handleSearch}>검색하기</button>
+      <button onClick={handleSearch} className="search-button">검색하기</button>
 
-      {/* 검색 결과 출력 */}
-      <div>
+      <div className="search-results">
         <h2>검색 결과</h2>
         {searchResults.length > 0 ? (
           <ul>

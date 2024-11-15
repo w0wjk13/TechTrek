@@ -16,6 +16,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [name, setName] = useState(""); // 이름 상태
+  const [nickname, setNickname] = useState(""); // 닉네임 상태 추가
   const [techStack, setTechStack] = useState([]); // 기술 스택 상태
   const [position, setPosition] = useState(""); // 포지션 상태
   const [address, setAddress] = useState(""); // 주소 상태
@@ -41,7 +42,7 @@ export default function LoginForm() {
     e.preventDefault();
 
     // 입력 값 검증
-    if (!name || !email || !password || !phone || techStack.length === 0 || !position || !address) {
+    if (!name || !email || !password || !phone || techStack.length === 0 || !position || !address || !nickname) {
       setError("모든 필드를 입력해주세요.");
       return;
     }
@@ -56,7 +57,7 @@ export default function LoginForm() {
     setIsSubmitting(true); // 제출 중 상태로 설정
 
     // 서버에 사용자 생성 요청
-    Meteor.call('users.create', { name, email, password, phone, techStack, position, address, profilePicture }, (err, res) => {
+    Meteor.call('users.create', { name, email, password, phone, techStack, position, address, profilePicture, nickname }, (err, res) => {
       setIsSubmitting(false); // 제출 중 상태 해제
       if (err) {
         setError(err.reason); // 에러 메시지 표시
@@ -133,6 +134,16 @@ export default function LoginForm() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="이름을 입력하세요"
+          />
+        </div>
+        <div>
+          <label htmlFor="nickname">닉네임</label>
+          <input
+            id="nickname"
+            type="text"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            placeholder="닉네임을 입력하세요"
           />
         </div>
         <div>

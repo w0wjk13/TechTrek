@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 
 Meteor.methods({
-  'users.create'({ name, email, password, phone, techStack, position, address, profilePicture }) {
+  'users.create'({ name, email, password, phone, techStack, position, address, profilePicture, nickname }) {
     // 입력 값 검증
     if (typeof name !== 'string' || name.trim() === '') {
       throw new Meteor.Error('invalid-name', '이름은 필수 입력 항목입니다.');
@@ -32,6 +32,9 @@ Meteor.methods({
     if (typeof address !== 'string' || address.trim() === '') {
       throw new Meteor.Error('invalid-address', '주소는 필수 입력 항목입니다.');
     }
+    if (typeof nickname !== 'string' || nickname.trim() === '') {
+      throw new Meteor.Error('invalid-nickname', '닉네임은 필수 입력 항목입니다.');
+    }
 
     // 사용자 생성
     const userId = Accounts.createUser({
@@ -40,6 +43,7 @@ Meteor.methods({
       password,
       profile: {
         name,
+        nickname, // 닉네임 추가
         phone,
         techStack,
         position,
