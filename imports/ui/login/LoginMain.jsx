@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useTracker } from "meteor/react-meteor-data";
-import "../css/LoginMain.css";
+//import '../../client/css/LoginMain.css';
 import { Link, useNavigate } from "react-router-dom";
 
 export default () => {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Meteor } from "meteor/meteor";
-import '../css/LoginIdFind.css';  // CSS 파일을 import
+//import '../../client/css/LoginFind.css';  // CSS 파일을 import
 
 export default function LoginIdFind() {
   const [name, setName] = useState("");

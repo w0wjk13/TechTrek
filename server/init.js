@@ -1,32 +1,7 @@
 // import { Study, StudyUsers } from "/imports/api/collections";
 // import "/lib/utils.js";
 
-// //admin 생성
-// if (!Meteor.users.findOne({ username: "admin" })) {
-//   Accounts.createUser({
-//     username: "admin",
-//     password: "1234",
-//   });
-// }
 
-// //admin 외에 다른 사용자가 없다면
-// if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
-//   for (let i = 0; i < 50; i++) {
-//     Accounts.createUser({
-//       username: "user" + i,
-//       password: "1234",
-//       profile: {
-//         scores: {
-//           manner: [1, 2, 3, 4, 5].random(), //매너(친절)
-//           mentoring: [1, 2, 3, 4, 5].random(), //다른 사람 도와주기(지식 공유)
-//           passion: [1, 2, 3, 4, 5].random(), //열정(참여도)
-//           communication: [1, 2, 3, 4, 5].random(), //의사소통
-//           time: [1, 2, 3, 4, 5].random(), //시간준수
-//         },
-//       },
-//     });
-//   }
-// }
 
 // //스터디 모집글이 하나도 없다면
 // if (!Study.findOne()) {

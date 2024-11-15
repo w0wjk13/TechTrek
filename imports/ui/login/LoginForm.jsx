@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Accounts } from "meteor/accounts-base";
-import "../css/LoginForm.css";
+//import '../../client/css/LoginForm.css';
 
 // 기술 스택 및 포지션 목록
 const techStacks = [

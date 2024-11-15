@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useTracker } from "meteor/react-meteor-data";
-import "./css/Nav.css"; // CSS 파일을 import
+//import '../client/css/Nav.css'; // CSS 파일을 import
 
 export default () => {
   // 로그인 상태를 추적
@@ -18,6 +18,9 @@ export default () => {
               <Link to="/" className="nav-link">
                 Home
               </Link>
+            </li >
+            <li className="nav-item">
+              <Link to="/uploadStudy">스터디 생성</Link>
             </li>
             {/* 로그인 상태에 따라 메뉴 변경 */}
             {user ? (
@@ -36,15 +39,9 @@ export default () => {
                 </Link>
               </li>
             )}
-            <li>
-              <Link to="/postDetail/testID">DetailPage</Link>
-            </li>
-            <li>
-              <Link to="/postInsert">NotFound</Link>
-            </li>
-            <li>
-              <Link to="/uploadStudy">스터디 생성</Link>
-            </li>
+
+
+
           </ul>
         </nav>
       </header>

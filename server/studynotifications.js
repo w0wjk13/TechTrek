@@ -1,120 +1,72 @@
-
 // /imports/api/studynotifications.js
-import { StudyNotifications } from '/imports/api/collections';  // 파일 경로 수정
+import { Meteor } from "meteor/meteor";
+import { StudyNotifications } from "/imports/api/collections"; // StudyNotifications 컬렉션 import
 
 Meteor.methods({
   'studyNotifications.create'(studyId, requesterId, creatorId) {
+    // 로그인된 사용자만 알림 생성 가능
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized', '로그인된 유저만 요청할 수 있습니다.');
+    }
 
-    import { Meteor } from "meteor/meteor";
-    import { StudyNotifications } from "/imports/api/collections"; // StudyNotifications 컬렉션 import
+    const notification = {
+      studyId,
+      requesterId,
+      creatorId,
+      status: 'pending',           // 초기 상태는 'pending'
+      requestedAt: new Date(),      // 요청 시간
+      respondedAt: null             // 응답 시간 (초기값 null)
+    };
 
-    Meteor.methods({
-      "studyNotifications.create"(studyId, requesterId, creatorId) {
-        // 로그인된 사용자만 알림 생성 가능
+    return StudyNotifications.insert(notification);
+  },
 
-        if (!this.userId) {
-          throw new Meteor.Error(
-            "not-authorized",
-            "로그인된 유저만 요청할 수 있습니다."
-          );
-        }
+  'studyNotifications.updateStatus'(notificationId, status) {
+    // 로그인된 사용자만 알림 상태 업데이트 가능
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized', '로그인된 유저만 상태를 변경할 수 있습니다.');
+    }
 
-        const notification = {
-          studyId,
-          requesterId,
-          creatorId,
+    const validStatuses = ['pending', 'accepted', 'rejected'];
+    if (!validStatuses.includes(status)) {
+      throw new Meteor.Error('invalid-status', '상태는 pending, accepted, rejected만 가능합니다.');
+    }
 
-          status: 'pending',
-          requestedAt: new Date(),
-          respondedAt: null,
+    const notification = StudyNotifications.findOne(notificationId);
+    if (!notification) {
+      throw new Meteor.Error('notification-not-found', '알림을 찾을 수 없습니다.');
+    }
 
-          status: "pending", // 초기 상태는 대기(pending)
-          requestedAt: new Date(),
-          respondedAt: null, // 응답 시간이 없으므로 null로 설정
+    const updateFields = {
+      status,
+      respondedAt: status === 'pending' ? null : new Date()  // 상태가 'pending'이 아니면 응답 시간 기록
+    };
 
-        };
+    return StudyNotifications.update(notificationId, { $set: updateFields });
+  },
+});
 
-        return StudyNotifications.insert(notification);
-      },
-
-
-
-      "studyNotifications.updateStatus"(notificationId, status) {
-        // 로그인된 사용자만 알림 상태 업데이트 가능
-
-        if (!this.userId) {
-          throw new Meteor.Error(
-            "not-authorized",
-            "로그인된 유저만 상태를 변경할 수 있습니다."
-          );
-        }
-
-        AD
-        const validStatuses = ['pending', 'accepted', 'rejected'];
-
-
-
-        if (!validStatuses.includes(status)) {
-          throw new Meteor.Error(
-            "invalid-status",
-            "상태는 pending, accepted, rejected만 가능합니다."
-          );
-        }
-
-        const notification = StudyNotifications.findOne(notificationId);
-        if (!notification) {
-          throw new Meteor.Error(
-            "notification-not-found",
-            "알림을 찾을 수 없습니다."
-          );
-        }
-
-        const updateFields = {
-          status,
-
-          respondedAt: status === "pending" ? null : new Date(), // "pending"은 응답 시간을 기록하지 않음
-
-        };
-
-        return StudyNotifications.update(notificationId, {
-          $set: updateFields,
-        });
-      },
-    });
-
+// 주석 처리된 더미 데이터 생성 코드
+// 필요 시 주석을 해제하고 테스트에 사용할 수 있습니다.
 
 // Meteor.startup(() => {
-//   // 로그인된 유저를 찾는 로직
 //   const user = Meteor.users.findOne({ username: "admin" });
-
 //   if (!user) {
 //     console.log("Admin user not found. Please ensure admin is created first.");
 //     return;
 //   }
 
-//   // 더미 데이터 생성 (studyId는 고정, requesterId와 creatorId는 랜덤하게 설정)
 //   const studyId = "study1"; // 예시로 고정된 studyId 사용
-
 //   for (let i = 1; i <= 100; i++) {
 //     const requesterId = `user${i}`; // user1, user2, ... user100
-//     const creatorId = `user${(i % 100) + 1}`; // creatorId는 다른 user로 설정 (순차적으로 할당)
+//     const creatorId = `user${(i % 100) + 1}`; // creatorId는 순차적으로 할당
 
-//     // studyNotifications.create 메서드를 통해 알림 생성
-//     // 로그인된 사용자(관리자)를 사용하여 메서드를 호출
-//     Meteor.call(
-//       "studyNotifications.create",
-//       studyId,
-//       requesterId,
-//       creatorId,
-//       { userId: user._id },
-//       (error, result) => {
-//         if (error) {
-//           console.log(`Error creating notification for user${i}:`, error);
-//         } else {
-//           console.log(`Notification created for user${i}:`, result);
-//         }
+//     Meteor.call("studyNotifications.create", studyId, requesterId, creatorId, { userId: user._id }, (error, result) => {
+//       if (error) {
+//         console.log(`Error creating notification for user${i}:`, error);
+//       } else {
+//         console.log(`Notification created for user${i}:`, result);
 //       }
-//     );
+//     });
 //   }
 // });
-
