@@ -28,17 +28,35 @@ const UploadStudy = () => {
     "ReactNative",
   ];
 
-  const numberPeopleRef = useRef(null); //모집인원
+  const gifts = ["manner", "mentoring", "passion", "communication", "time"]; //역량 종류
+
+  const regions = [
+    "서울",
+    "경기",
+    "인천",
+    "대구",
+    "대전",
+    "세종",
+    "경남",
+    "전남",
+    "충남",
+    "제주",
+    "부산",
+    "광주",
+    "울산",
+    "강원",
+    "경북",
+    "전북",
+    "충북",
+  ];
+
   const [stackList, setStackList] = useState([]); //선택한 기술스택 목록
   const [date, setDate] = useState(null); //모집마감일
   const [studyType, setStudyType] = useState("offline"); //오프라인일 경우 주소입력창 보여주기
-  const addressRef = useRef(null); //주소
   const formRef = useRef(null); //백엔드프론트 온라인오프라인
   const titleRef = useRef(null);
   const contentRef = useRef(null);
   const [giftScore, setGiftScore] = useState({}); //요구하는 역량과 점수
-
-  const gifts = ["manner", "mentoring", "passion", "communication", "time"]; //역량 종류
 
   //체크박스를 클릭하면 추가/해제
   const toggleCheckbox = (gift) => {
@@ -55,8 +73,11 @@ const UploadStudy = () => {
     });
   };
 
-  const changeScore = (gift, score) => {
-    setGiftScore(() => {});
+  const addScore = (gift, score) => {
+    setGiftScore((prevGiftScore) => ({
+      ...prevGiftScore,
+      [gift]: parseInt(score),
+    }));
   };
 
   const addStack = (e) => {
@@ -81,14 +102,10 @@ const UploadStudy = () => {
     const formData = new FormData(formRef.current);
 
     const uploadData = {
-      roles: formData.get("studyType"), //모집분야(프론트/백)
+      roles: formData.get("roles"), //모집분야(프론트/백)
       onOffline: studyType, //모집형태(온/오프라인)
-      //주소
-      address:
-        formData.get("studyType") === "offline"
-          ? addressRef.current.value
-          : null,
-      studyCount: numberPeopleRef.current.value, //모집인원
+      location: formData.get("location"),
+      studyCount: formData.get("studyCount"), //모집인원
       techStack: stackList, //기술스택
       studyClose: date,
       title: titleRef.current.value,
@@ -157,14 +174,23 @@ const UploadStudy = () => {
 
           {studyType === "offline" && (
             <>
-              <input type="text" placeholder="주소 입력하기" ref={addressRef} />
+              <select name="location" defaultValue="">
+                <option value="" disabled>
+                  지역 선택
+                </option>
+                {regions.map((region) => (
+                  <option key={region} value={region}>
+                    {region}
+                  </option>
+                ))}
+              </select>
             </>
           )}
           <br />
         </div>
 
-        <select ref={numberPeopleRef} defaultValue="모집인원">
-          <option value="모집인원" disabled>
+        <select name="studyCount" defaultValue="모집인원">
+          <option value="" disabled>
             모집인원
           </option>
           {Array.from({ length: 9 }, (_, i) => (
@@ -225,8 +251,8 @@ const UploadStudy = () => {
 
               {gift in giftScore && (
                 <select
-                  value={giftScore[gift]}
-                  onChange={(e) => addScore(gift, e.target.value)}
+                  value={giftScore[gift]} //giftScore.manner = 1
+                  onChange={(e) => addScore(gift, e.target.value)} //manner와 점수를 넘김
                 >
                   <option value="1">1점</option>
                   <option value="2">2점</option>
