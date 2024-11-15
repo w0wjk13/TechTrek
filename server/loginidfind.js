@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Meteor } from "meteor/meteor";
-import '../css/LoginIdFind.css';
+
 
 export default function LoginIdFind() {
   const [name, setName] = useState("");
