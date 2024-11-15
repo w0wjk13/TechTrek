@@ -36,9 +36,28 @@ const UploadStudy = () => {
   const formRef = useRef(null); //백엔드프론트 온라인오프라인
   const titleRef = useRef(null);
   const contentRef = useRef(null);
-  const [score, setScore] = useState({}); //요구하는 역량과 점수
+  const [giftScore, setGiftScore] = useState({}); //요구하는 역량과 점수
 
   const gifts = ["manner", "mentoring", "passion", "communication", "time"]; //역량 종류
+
+  //체크박스를 클릭하면 추가/해제
+  const toggleCheckbox = (gift) => {
+    setGiftScore((prevGiftScore) => {
+      const newGiftScore = { ...prevGiftScore }; //현재 체크 돼있는 역량
+      if (gift in newGiftScore) {
+        //사용자가 클릭한 항목이 현재 체크 돼있다면 삭제
+        delete newGiftScore[gift];
+      } else {
+        //사용자가 클릭한 항목이 체크돼 있지 않다면 1점으로 추가
+        newGiftScore[gift] = 1;
+      }
+      return newGiftScore;
+    });
+  };
+
+  const changeScore = (gift, score) => {
+    setGiftScore(() => {});
+  };
 
   const addStack = (e) => {
     const selectStack = e.target.value;
@@ -87,7 +106,7 @@ const UploadStudy = () => {
 
   return (
     <>
-      <h2>스터디 생성 페이지</h2>
+      <h2>스터디 모집페이지</h2>
       <form onSubmit={handleSubmit} ref={formRef}>
         <h3>모집 분야</h3>
         <div>
@@ -131,6 +150,7 @@ const UploadStudy = () => {
               name="studyType"
               value="offline"
               onChange={(e) => setStudyType(e.target.value)}
+              defaultChecked
             />
             <label htmlFor="offline">오프라인</label>
           </div>
@@ -194,7 +214,27 @@ const UploadStudy = () => {
 
         <div>
           {gifts.map((gift) => (
-            <div key={}></div>
+            <div key={gift}>
+              <input
+                type="checkbox"
+                id={gift}
+                checked={gift in giftScore}
+                onChange={() => toggleCheckbox(gift)}
+              />
+              <label htmlFor={gift}>{gift}</label>
+
+              {gift in giftScore && (
+                <select
+                  value={giftScore[gift]}
+                  onChange={(e) => addScore(gift, e.target.value)}
+                >
+                  <option value="1">1점</option>
+                  <option value="2">2점</option>
+                  <option value="3">3점</option>
+                  <option value="4">4점</option>
+                </select>
+              )}
+            </div>
           ))}
         </div>
 
