@@ -1,15 +1,12 @@
-import { Accounts } from 'meteor/accounts-base';
+// import { Accounts } from 'meteor/accounts-base';
 
-// 랜덤 이메일 생성
 const randomEmail = (index) => `user${index}@example.com`;
 
-// 랜덤 전화번호 생성
 const randomPhone = () => {
   const randomDigits = () => Math.floor(1000 + Math.random() * 9000);
   return `010-${randomDigits()}-${randomDigits()}`;
 };
 
-// 랜덤 기술 스택 생성
 const randomTechStack = () => {
   const techStacks = [
     "Java", "NodeJS", "Kotlin", "Mysql", "MongoDB", "Python", "Oracle",
@@ -24,13 +21,11 @@ const randomTechStack = () => {
   return [stack1, stack2];
 };
 
-// 랜덤 직군 생성
 const randomPosition = () => {
   const positions = ["백엔드", "프론트엔드", "풀스택"];
   return [positions[Math.floor(Math.random() * positions.length)]];
 };
 
-// 랜덤 주소 생성
 const randomAddress = () => {
   const districts = [
     "강남구", "강동구", "강서구", "강북구", "광진구", "구로구", "금천구",
@@ -44,22 +39,19 @@ const randomAddress = () => {
   };
 };
 
-// 점수 1~5 랜덤으로 생성
-const getRandomScore = () => Math.floor(Math.random() * 5) + 1;
-
-if (!Accounts.findUserByUsername("admin")) {
-  Accounts.createUser({
-    name: "admin",
-    email: "admin@example.com",
-    password: "1234",
-    profile: {
-      name: "admin",
-    },
-  });
-  console.log("Admin account created: name: admin, password: 1234");
-} else {
-  console.log("Admin account already exists.");
-}
+// if (!Accounts.findUserByUsername("admin")) {
+//   Accounts.createUser({
+//     name: "admin",
+//     email: "admin@example.com",
+//     password: "1234",
+//     profile: {
+//       name: "admin",
+//     },
+//   });
+//   console.log("Admin account created: name: admin, password: 1234");
+// } else {
+//   console.log("Admin account already exists.");
+// }
 
 for (let i = 1; i <= 100; i++) {
   const name = `user${i}`;
@@ -76,11 +68,11 @@ for (let i = 1; i <= 100; i++) {
       techStack: randomTechStack(),
       position: randomPosition(),
       avgScore: {
-        manner: getRandomScore(),           // 매너
-        mentoring: getRandomScore(),        // 재능기부
-        passion: getRandomScore(),          // 참여도
-        communication: getRandomScore(),    // 소통
-        time: getRandomScore()              // 시간 준수
+        manner: 3,           // 매너
+        mentoring: 3,        // 재능기부
+        passion: 3,          // 참여도
+        communication: 3,    // 소통
+        time: 3              // 시간 준수
       },
       createdAt: new Date(),
     }

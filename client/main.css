@@ -1,8 +1,8 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
 
- body {
+body {
    /* padding: 10px;
    font-family: sans-serif; */
- }
+}
