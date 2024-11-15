@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Meteor } from "meteor/meteor";
 
+
 export default function LoginFwFind() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -9,9 +10,10 @@ export default function LoginFwFind() {
   const handleFindPassword = (e) => {
     e.preventDefault();
 
-    Meteor.call("findUserPassword", name, phone, email, (error, result) => {
+    // 서버 메서드 호출
+    Meteor.call("findUserPassword", name, email, phone, (error, result) => {
       if (error) {
-        alert("에러가 발생했습니다: " + error.message);
+        alert("에러가 발생했습니다: " + error.reason);
       } else if (result) {
         alert("비밀번호는: " + result);
       } else {
@@ -21,40 +23,48 @@ export default function LoginFwFind() {
   };
 
   return (
-    <div>
-      <h2>비밀번호 찾기</h2>
-      <form onSubmit={handleFindPassword}>
-        <label>
-          이름:
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          연락처:
-          <input
-            type="text"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          아이디(이메일):
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
-        <br />
-        <button type="submit">비밀번호 찾기</button>
+    <div className="login-idfind-container">
+      <div className="login-idfind-header">
+        <h2 className="login-idfind-title">비밀번호 찾기</h2>
+      </div>
+      <form onSubmit={handleFindPassword} className="login-idfind-form">
+        <div className="login-idfind-form-group">
+          <label className="login-idfind-label">
+            이름:
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="login-idfind-input"
+            />
+          </label>
+        </div>
+        <div className="login-idfind-form-group">
+          <label className="login-idfind-label">
+            연락처:
+            <input
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+              className="login-idfind-input"
+            />
+          </label>
+        </div>
+        <div className="login-idfind-form-group">
+          <label className="login-idfind-label">
+            아이디(이메일):
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="login-idfind-input"
+            />
+          </label>
+        </div>
+        <button type="submit" className="login-idfind-button">비밀번호 찾기</button>
       </form>
     </div>
   );
