@@ -108,15 +108,16 @@ const UploadStudy = () => {
       studyCount: formData.get("studyCount"), //모집인원
       techStack: stackList, //기술스택
       studyClose: date,
+      score: giftScore,
       title: titleRef.current.value,
       content: contentRef.current.value,
     };
 
-    Meteor.call("uploadStudy", uploadData, (err) => {
+    Meteor.call("insert", uploadData, (err) => {
       if (err) {
-        console.error("uploadStudy call 실패: ", err);
+        console.error("uploadStudy insert call 실패: ", err);
       } else {
-        console.log("uploadStudy call 성공");
+        console.log("uploadStudy insert call 성공");
       }
     });
   };
@@ -193,7 +194,7 @@ const UploadStudy = () => {
           <option value="" disabled>
             모집인원
           </option>
-          {Array.from({ length: 9 }, (_, i) => (
+          {Array.from({ length: 10 }, (_, i) => (
             <option key={i + 1} value={i + 1}>
               {i + 1}명
             </option>
