@@ -13,15 +13,17 @@ const positions = ["백엔드", "프론트엔드", "풀스택"];
 const regions = [
   {
     name: "서울",
-    cities: ["강남구", "송파구", "강북구", "중구"]
+    cities: [
+      "강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구",
+      "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구",
+      "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"
+    ]
   },
   {
     name: "부산",
     cities: ["해운대구", "수영구", "동래구", "사상구"]
   }
 ];
-
-
 
 export default function Home() {
   // 상태 관리
@@ -34,14 +36,10 @@ export default function Home() {
 
   // 기술 스택에 맞는 포지션 필터링
   const filterPositions = () => {
-    // 선택된 기술 스택에 해당하는 포지션을 필터링
     if (techStack.length === 0) {
       return positions;
     }
-
-    // 예시로 "Java", "React"를 선택하면 "프론트엔드", "백엔드" 등 기술에 맞는 포지션만 출력될 수 있도록 해야 합니다.
-    // 예시 데이터에서는 단순히 모든 포지션을 제공하도록 설정.
-    return positions;
+    return positions; // 여기에 추가적인 로직을 넣을 수 있습니다.
   };
 
   // 지역, 시 선택 핸들러
@@ -57,8 +55,6 @@ export default function Home() {
   // 기술 스택 선택 핸들러
   const handleTechStackChange = (e) => {
     const value = e.target.value;
-
-    // 체크박스를 클릭했을 때, 기술 스택 배열에 추가하거나 제거
     setTechStack((prevTechStack) => {
       if (prevTechStack.includes(value)) {
         return prevTechStack.filter((stack) => stack !== value); // 이미 선택된 항목은 제거
@@ -204,7 +200,7 @@ export default function Home() {
         <h2>검색 결과</h2>
         {searchResults.length > 0 ? (
           <ul>
-            {searchResults.map(result => (
+            {searchResults.map((result) => (
               <li key={result.id}>
                 {result.name} - {result.region} {result.city} - {result.position} - {result.onlineOffline} - 기술 스택: {result.techStack.join(", ")}
               </li>
