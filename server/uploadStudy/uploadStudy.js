@@ -1,11 +1,11 @@
 import { Study } from "/imports/api/collections";
 import { Meteor } from "meteor/meteor";
 
-//Study.remove({});
 Meteor.methods({
+  //스터디 모집글 작성
   insert: function (uploadData) {
     if (!this.userId) {
-      throw new Meteor.Error("notLogin", "로그인 하세요");
+      throw new Meteor.Error("notLogin", "로그인이 필요합니다");
     }
 
     const validationMessage = {
@@ -29,6 +29,10 @@ Meteor.methods({
         if (!uploadData[field] || Object.keys(uploadData[field]).length === 0) {
           throw new Meteor.Error("validationError", message);
         }
+      } else if (field === "location") {
+        if (uploadData.onOffline === "오프라인" && !uploadData.location) {
+          throw new Meteor.Error("validationError", message);
+        }
       } else if (!uploadData[field]) {
         throw new Meteor.Error("validationError", message);
       }
@@ -38,10 +42,20 @@ Meteor.methods({
       userId: this.userId,
       ...uploadData,
       createdAt: new Date(),
+      views: 0,
     };
 
-    Study.insert(data);
+    return Study.insert(data); //insert된 문서 id 반환
+  },
 
-    return { success: true };
+  //조회수 증가
+  viewCount: (id) => {
+    const result = Study.update({ _id: id }, { $inc: { views: 1 } });
+
+    if (result === 0) {
+      throw new Meteor.Error("notFound", "해당 게시물을 찾을 수 없습니다");
+    }
+
+    return true;
   },
 });

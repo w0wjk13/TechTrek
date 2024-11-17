@@ -1,2 +1,3 @@
-import "./init.js";
-import "./uploadStudy/uploadStudy.js";
+import "./init";
+import "./uploadStudy/uploadStudy";
+import "./uploadStudy/detailStudy";

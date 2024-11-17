@@ -1,7 +1,7 @@
 import { Study, StudyUsers } from "/imports/api/collections";
 import "/lib/utils.js";
 
-//Study.remove({});
+//Meteor.users.remove({});
 
 //admin 생성
 if (!Meteor.users.findOne({ username: "admin" })) {
@@ -13,12 +13,13 @@ if (!Meteor.users.findOne({ username: "admin" })) {
 
 //admin 외에 다른 사용자가 없다면
 if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 10; i++) {
     Accounts.createUser({
       username: "user" + i,
       password: "1234",
       profile: {
-        scores: {
+        profilePicture: `https://example.com/images/user${i}.jpg`,
+        score: {
           manner: [1, 2, 3, 4, 5].random(), //매너(친절)
           mentoring: [1, 2, 3, 4, 5].random(), //다른 사람 도와주기(지식 공유)
           passion: [1, 2, 3, 4, 5].random(), //열정(참여도)

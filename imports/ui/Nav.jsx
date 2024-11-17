@@ -11,7 +11,7 @@ export default () => {
               <Link to="/">Home</Link>
             </li>
             <li>
-              <Link to="/postDetail/testID">DetailPage</Link>
+              <Link to="/study/:id">상세페이지</Link>
             </li>
             <li>
               <Link to="/postInsert">NotFound</Link>
