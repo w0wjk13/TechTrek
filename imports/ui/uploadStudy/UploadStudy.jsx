@@ -138,6 +138,9 @@ const UploadStudy = () => {
 
       Meteor.call("insert", uploadData, (err, detailId) => {
         if (err) {
+          if (err.error === "noWrite") {
+            alert(err.reason);
+          }
           console.error("insert 실패: ", err.reason);
           alert(err.reason);
         } else {
@@ -212,21 +215,20 @@ const UploadStudy = () => {
             <label htmlFor="onOffline">온/오프라인</label>
           </div>
 
-          {studyType === "오프라인" ||
-            (studyType === "온/오프라인" && (
-              <>
-                <select name="location" defaultValue="">
-                  <option value="" disabled>
-                    지역 선택
+          {(studyType === "오프라인" || studyType === "온/오프라인") && (
+            <>
+              <select name="location" defaultValue="">
+                <option value="" disabled>
+                  지역 선택
+                </option>
+                {regions.map((region) => (
+                  <option key={region} value={region}>
+                    {region}
                   </option>
-                  {regions.map((region) => (
-                    <option key={region} value={region}>
-                      {region}
-                    </option>
-                  ))}
-                </select>
-              </>
-            ))}
+                ))}
+              </select>
+            </>
+          )}
           <br />
         </div>
 
