@@ -32,7 +32,7 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
   }
 }
 
-// //스터디 모집글이 하나도 없다면
+//스터디 모집글이 하나도 없다면
 // if (!Study.findOne()) {
 //   const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
 //   const gift = ["manner", "mentoring", "passion", "communication", "time"]; //설문지에서 평가하는 역량
