@@ -61,7 +61,7 @@ const MyProfile = () => {
           style={{ width: "100px", height: "100px", borderRadius: "50%" }}
         />
       )}
-      닉네임 : {user.username}
+      닉네임 : {user.profile.nickname}
       <br />
       이메일 : {user.emails[0].address}
       <br />
