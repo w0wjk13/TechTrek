@@ -197,7 +197,7 @@ export default function Home() {
                 <li key={result._id}>
                   <p>마감일: {formatDDay(result.studyClose)}</p>
                   <strong>{result.title}</strong><br />
-                  <span>{result.roles}</span><br />
+                  <span>포지션: {result.roles}</span><br />
                   <span>기술 스택: {result.techStack.join(", ")}</span><br />
                   <span>작성자: {username}</span>
                   <button>상세보기</button>
