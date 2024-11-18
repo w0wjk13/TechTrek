@@ -1,10 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import UploadStudy from "./uploadStudy/UploadStudy";
+//import UploadStudy from "./uploadstudy/UploadStudy";
 import NotFound from "./NotFound";
 import Nav from "./Nav";
-import DetailStudy from "./uploadStudy/DetailStudy";
-import MyPageNav from "./myPage/MyPageNav";
+import DetailStudy from "./uploadstudy/DetailStudy";
+import MyPageNav from "./mypage/MyPageNav";
 
 export const App = () => (
   <Router>
