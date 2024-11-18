@@ -1,11 +1,15 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useTracker } from "meteor/react-meteor-data";
 import { Meteor } from "meteor/meteor";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
+import "/lib/utils";
 
 const UploadStudy = () => {
   const stackOptions = [
+    //기술스택 목록
     "Java",
     "NodeJS",
     "Kotlin",
@@ -28,17 +32,54 @@ const UploadStudy = () => {
     "ReactNative",
   ];
 
-  const numberPeopleRef = useRef(null); //모집인원
+  const gifts = ["manner", "mentoring", "passion", "communication", "time"]; //역량 종류
+
+  const regions = [
+    //지역 목록
+    "서울",
+    "경기",
+    "인천",
+    "대구",
+    "대전",
+    "세종",
+    "경남",
+    "전남",
+    "충남",
+    "제주",
+    "부산",
+    "광주",
+    "울산",
+    "강원",
+    "경북",
+    "전북",
+    "충북",
+  ];
+
   const [stackList, setStackList] = useState([]); //선택한 기술스택 목록
   const [date, setDate] = useState(null); //모집마감일
   const [studyType, setStudyType] = useState("offline"); //오프라인일 경우 주소입력창 보여주기
-  const addressRef = useRef(null); //주소
-  const formRef = useRef(null); //백엔드프론트 온라인오프라인
-  const titleRef = useRef(null);
-  const contentRef = useRef(null);
   const [giftScore, setGiftScore] = useState({}); //요구하는 역량과 점수
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: "all" });
 
-  const gifts = ["manner", "mentoring", "passion", "communication", "time"]; //역량 종류
+  useEffect(() => {
+    const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
+    const loginUser = users.random();
+    console.log("user: ", loginUser);
+
+    if (loginUser) {
+      Meteor.loginWithPassword(loginUser.username, "1234", (err) => {
+        if (err) {
+          console.error("login error: ", err);
+        } else {
+          console.log("로그인 유저: ", loginUser.username);
+        }
+      });
+    }
+  }, []);
 
   //체크박스를 클릭하면 추가/해제
   const toggleCheckbox = (gift) => {
@@ -55,8 +96,11 @@ const UploadStudy = () => {
     });
   };
 
-  const changeScore = (gift, score) => {
-    setGiftScore(() => {});
+  const addScore = (gift, score) => {
+    setGiftScore((prevGiftScore) => ({
+      ...prevGiftScore,
+      [gift]: parseInt(score),
+    }));
   };
 
   const addStack = (e) => {
@@ -75,39 +119,37 @@ const UploadStudy = () => {
     setStackList(stackList.filter((item) => item !== stack));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const onSubmit = (data) => {
+    if (Meteor.userId()) {
+      console.log(Meteor.userId());
+      const uploadData = {
+        roles: data.roles, //모집분야(프론트/백)
+        onOffline: studyType, //모집형태(온/오프라인)
+        location: data.location,
+        studyCount: data.studyCount, //모집인원
+        techStack: stackList, //기술스택
+        studyClose: date,
+        score: giftScore,
+        title: data.title,
+        content: data.content,
+      };
 
-    const formData = new FormData(formRef.current);
-
-    const uploadData = {
-      roles: formData.get("studyType"), //모집분야(프론트/백)
-      onOffline: studyType, //모집형태(온/오프라인)
-      //주소
-      address:
-        formData.get("studyType") === "offline"
-          ? addressRef.current.value
-          : null,
-      studyCount: numberPeopleRef.current.value, //모집인원
-      techStack: stackList, //기술스택
-      studyClose: date,
-      title: titleRef.current.value,
-      content: contentRef.current.value,
-    };
-
-    Meteor.call("uploadStudy", uploadData, (err) => {
-      if (err) {
-        console.error("uploadStudy call 실패: ", err);
-      } else {
-        console.log("uploadStudy call 성공");
-      }
-    });
+      Meteor.call("insert", uploadData, (err) => {
+        if (err) {
+          console.error("uploadStudy insert call 실패: ", err);
+        } else {
+          console.log("uploadStudy insert call 성공");
+        }
+      });
+    } else {
+      console.error("유저가 로그인하지 않았음");
+    }
   };
 
   return (
     <>
       <h2>스터디 모집페이지</h2>
-      <form onSubmit={handleSubmit} ref={formRef}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <h3>모집 분야</h3>
         <div>
           <div>
@@ -157,26 +199,50 @@ const UploadStudy = () => {
 
           {studyType === "offline" && (
             <>
-              <input type="text" placeholder="주소 입력하기" ref={addressRef} />
+              <select
+                {...register("location", { required: "지역을 선택해 주세요" })}
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  지역 선택
+                </option>
+                {regions.map((region) => (
+                  <option key={region} value={region}>
+                    {region}
+                  </option>
+                ))}
+              </select>
+              {errors.location && (
+                <span style={{ color: "red" }}>{errors.location.message}</span>
+              )}
             </>
           )}
           <br />
         </div>
 
-        <select ref={numberPeopleRef} defaultValue="모집인원">
-          <option value="모집인원" disabled>
+        <select
+          {...register("studyCount", { required: "총 인원을 선택해 주세요" })}
+          defaultValue=""
+        >
+          <option value="" disabled>
             모집인원
           </option>
-          {Array.from({ length: 9 }, (_, i) => (
+          {Array.from({ length: 10 }, (_, i) => (
             <option key={i + 1} value={i + 1}>
               {i + 1}명
             </option>
           ))}
         </select>
+        {errors.studyCount && (
+          <span style={{ color: "red" }}>{errors.studyCount.message}</span>
+        )}
         <br />
 
         <div>
           <select
+            {...register("techStack", {
+              required: "아직 선택한 기술이 없어요",
+            })}
             onChange={addStack}
             defaultValue=""
             disabled={stackList.length >= 5}
@@ -202,6 +268,9 @@ const UploadStudy = () => {
           ))}
           <br />
         </div>
+        {errors.techStack && (
+          <p style={{ color: "red" }}>{errors.techStack.message}</p>
+        )}
 
         <DatePicker
           locale={ko}
@@ -225,8 +294,8 @@ const UploadStudy = () => {
 
               {gift in giftScore && (
                 <select
-                  value={giftScore[gift]}
-                  onChange={(e) => addScore(gift, e.target.value)}
+                  value={giftScore[gift]} //giftScore.manner = 1
+                  onChange={(e) => addScore(gift, e.target.value)} //manner와 점수를 넘김
                 >
                   <option value="1">1점</option>
                   <option value="2">2점</option>
@@ -239,11 +308,10 @@ const UploadStudy = () => {
         </div>
 
         <div>
-          <input type="text" ref={titleRef} placeholder="제목을 입력하세요" />
+          <input type="text" placeholder="제목을 입력하세요" />
           <br />
           <textarea
             style={{ width: "500px", height: "100px" }}
-            ref={contentRef}
             placeholder="프로젝트에 대해 설명해 주세요"
           />
         </div>

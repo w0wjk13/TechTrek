@@ -118,7 +118,7 @@ for (let i = 1; i <= 100; i++) {
 // if (!StudyUsers.findOne()) {
 //   Study.find().forEach((study) => {
 //     //스터디 모집 작성자 이외의 사용자 목록
-//     const applyUsers = Meteor.users
+//     const applyUsers = Meteor.uses
 //       .find({
 //         $and: [{ _id: { $ne: study.userId } }, { username: { $ne: "admin" } }],
 //       })
@@ -152,4 +152,4 @@ for (let i = 1; i <= 100; i++) {
 //       });
 //     });
 //   });
-// }
+//}

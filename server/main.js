@@ -6,3 +6,4 @@ import "../server/login/loginpwfind.js";
 import "../server/login/loginform.js";
 import "./studynotifications.js";
 import "./init.js";
+import "./uploadStudy/uploadStudy.js";
