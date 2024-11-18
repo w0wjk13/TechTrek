@@ -1,3 +1,3 @@
 import "./init";
-import "./uploadStudy/uploadStudy";
-import "./uploadStudy/detailStudy";
+import "./uploadstudy/uploadStudy";
+import "./uploadstudy/detailStudy";
