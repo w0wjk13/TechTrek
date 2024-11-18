@@ -54,6 +54,33 @@ const UploadStudy = () => {
     "충북",
   ];
 
+  const districts = [
+    "강남구",
+    "강동구",
+    "강서구",
+    "강북구",
+    "광진구",
+    "구로구",
+    "금천구",
+    "노원구",
+    "도봉구",
+    "동대문구",
+    "동작구",
+    "마포구",
+    "서대문구",
+    "서초구",
+    "성동구",
+    "성북구",
+    "송파구",
+    "양천구",
+    "영등포구",
+    "용산구",
+    "은평구",
+    "종로구",
+    "중구",
+    "중랑구",
+  ];
+
   const [stackList, setStackList] = useState([]); //선택한 기술스택 목록
   const [date, setDate] = useState(null); //모집마감일
   const [studyType, setStudyType] = useState("온/오프라인"); //오프라인일 경우 주소입력창 보여주기
@@ -62,6 +89,8 @@ const UploadStudy = () => {
   const titleRef = useRef(null);
   const contentRef = useRef(null);
   const navigate = useNavigate();
+  const [city, setCity] = useState(""); //사용자가 선택한 지역
+  const [gubun, setGubun] = useState("");
 
   useEffect(() => {
     const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
@@ -78,6 +107,11 @@ const UploadStudy = () => {
       });
     }
   }, []);
+
+  const cityChange = (e) => {
+    setCity(e.target.value);
+    setGubun("");
+  };
 
   //체크박스를 클릭하면 추가/해제
   const toggleCheckbox = (gift) => {
@@ -138,9 +172,6 @@ const UploadStudy = () => {
 
       Meteor.call("insert", uploadData, (err, detailId) => {
         if (err) {
-          if (err.error === "noWrite") {
-            alert(err.reason);
-          }
           console.error("insert 실패: ", err.reason);
           alert(err.reason);
         } else {
@@ -217,7 +248,7 @@ const UploadStudy = () => {
 
           {(studyType === "오프라인" || studyType === "온/오프라인") && (
             <>
-              <select name="location" defaultValue="">
+              <select name="location" value={city} onChange={cityChange}>
                 <option value="" disabled>
                   지역 선택
                 </option>
@@ -228,6 +259,23 @@ const UploadStudy = () => {
                 ))}
               </select>
             </>
+          )}
+
+          {city === "서울" && (
+            <select
+              name="district"
+              value={gubun}
+              onChange={(e) => setGubun(e.target.value)}
+            >
+              <option value="" disabled>
+                구 선택
+              </option>
+              {districts.map((district) => (
+                <option key={district} value={district}>
+                  {district}
+                </option>
+              ))}
+            </select>
           )}
           <br />
         </div>

@@ -38,13 +38,13 @@ Meteor.methods({
       }
     }
 
-    const writeCount = Study.findOne({ userId: this.userId });
-    if (writeCount) {
-      throw new Meteor.Error(
-        "noWrite",
-        "스터디 모집글은 1개만 작성 가능합니다"
-      );
-    }
+    // const writeCount = Study.findOne({ userId: this.userId });
+    // if (writeCount) {
+    //   throw new Meteor.Error(
+    //     "noWrite",
+    //     "스터디 모집글은 1개만 작성 가능합니다"
+    //   );
+    // }
 
     const data = {
       userId: this.userId,
@@ -66,4 +66,13 @@ Meteor.methods({
 
     return true;
   },
+
+  //스터디 모집글이 1개 있는지 확인한 후 모집글 작성 허용/거부
+  // canWrite: function () {
+  //   if (!this.userId) {
+  //     throw new Meteor.Error("notLogin", "로그인이 필요합니다");
+  //   }
+  //   const writeCount = Study.findOne({ userId: this.userId });
+  //   return writeCount ? true : false;
+  // },
 });
