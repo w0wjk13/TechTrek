@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { useTracker } from "meteor/react-meteor-data";
 import { Meteor } from "meteor/meteor";
+import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
@@ -57,13 +56,12 @@ const UploadStudy = () => {
 
   const [stackList, setStackList] = useState([]); //선택한 기술스택 목록
   const [date, setDate] = useState(null); //모집마감일
-  const [studyType, setStudyType] = useState("offline"); //오프라인일 경우 주소입력창 보여주기
+  const [studyType, setStudyType] = useState("온/오프라인"); //오프라인일 경우 주소입력창 보여주기
   const [giftScore, setGiftScore] = useState({}); //요구하는 역량과 점수
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({ mode: "all" });
+  const formRef = useRef(null); //백엔드프론트 온라인오프라인
+  const titleRef = useRef(null);
+  const contentRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
@@ -119,26 +117,32 @@ const UploadStudy = () => {
     setStackList(stackList.filter((item) => item !== stack));
   };
 
-  const onSubmit = (data) => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(formRef.current);
+
     if (Meteor.userId()) {
       console.log(Meteor.userId());
       const uploadData = {
-        roles: data.roles, //모집분야(프론트/백)
+        roles: formData.get("roles"), //모집분야(프론트/백)
         onOffline: studyType, //모집형태(온/오프라인)
-        location: data.location,
-        studyCount: data.studyCount, //모집인원
+        location: formData.get("location"),
+        studyCount: formData.get("studyCount"), //모집인원
         techStack: stackList, //기술스택
         studyClose: date,
         score: giftScore,
-        title: data.title,
-        content: data.content,
+        title: titleRef.current.value,
+        content: contentRef.current.value,
       };
 
-      Meteor.call("insert", uploadData, (err) => {
+      Meteor.call("insert", uploadData, (err, detailId) => {
         if (err) {
-          console.error("uploadStudy insert call 실패: ", err);
+          console.error("insert 실패: ", err.reason);
+          alert(err.reason);
         } else {
           console.log("uploadStudy insert call 성공");
+          navigate(`/study/${detailId}`); //insert id
         }
       });
     } else {
@@ -149,7 +153,7 @@ const UploadStudy = () => {
   return (
     <>
       <h2>스터디 모집페이지</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit} ref={formRef}>
         <h3>모집 분야</h3>
         <div>
           <div>
@@ -179,7 +183,7 @@ const UploadStudy = () => {
               type="radio"
               id="online"
               name="studyType"
-              value="online"
+              value="온라인"
               onChange={(e) => setStudyType(e.target.value)}
             />
             <label htmlFor="online">온라인</label>
@@ -190,59 +194,56 @@ const UploadStudy = () => {
               type="radio"
               id="offline"
               name="studyType"
-              value="offline"
+              value="오프라인"
               onChange={(e) => setStudyType(e.target.value)}
-              defaultChecked
             />
             <label htmlFor="offline">오프라인</label>
           </div>
 
-          {studyType === "offline" && (
-            <>
-              <select
-                {...register("location", { required: "지역을 선택해 주세요" })}
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  지역 선택
-                </option>
-                {regions.map((region) => (
-                  <option key={region} value={region}>
-                    {region}
+          <div>
+            <input
+              type="radio"
+              id="onOffline"
+              name="studyType"
+              value="온/오프라인"
+              onChange={(e) => setStudyType(e.target.value)}
+              defaultChecked
+            />
+            <label htmlFor="onOffline">온/오프라인</label>
+          </div>
+
+          {studyType === "오프라인" ||
+            (studyType === "온/오프라인" && (
+              <>
+                <select name="location" defaultValue="">
+                  <option value="" disabled>
+                    지역 선택
                   </option>
-                ))}
-              </select>
-              {errors.location && (
-                <span style={{ color: "red" }}>{errors.location.message}</span>
-              )}
-            </>
-          )}
+                  {regions.map((region) => (
+                    <option key={region} value={region}>
+                      {region}
+                    </option>
+                  ))}
+                </select>
+              </>
+            ))}
           <br />
         </div>
 
-        <select
-          {...register("studyCount", { required: "총 인원을 선택해 주세요" })}
-          defaultValue=""
-        >
+        <select name="studyCount" defaultValue="">
           <option value="" disabled>
             모집인원
           </option>
-          {Array.from({ length: 10 }, (_, i) => (
+          {Array.from({ length: 9 }, (_, i) => (
             <option key={i + 1} value={i + 1}>
               {i + 1}명
             </option>
           ))}
         </select>
-        {errors.studyCount && (
-          <span style={{ color: "red" }}>{errors.studyCount.message}</span>
-        )}
         <br />
 
         <div>
           <select
-            {...register("techStack", {
-              required: "아직 선택한 기술이 없어요",
-            })}
             onChange={addStack}
             defaultValue=""
             disabled={stackList.length >= 5}
@@ -268,9 +269,6 @@ const UploadStudy = () => {
           ))}
           <br />
         </div>
-        {errors.techStack && (
-          <p style={{ color: "red" }}>{errors.techStack.message}</p>
-        )}
 
         <DatePicker
           locale={ko}
@@ -278,6 +276,7 @@ const UploadStudy = () => {
           onChange={(date) => setDate(date)}
           dateFormat="yyyy년 MM월 dd일"
           placeholderText="모집마감일"
+          minDate={new Date()}
         />
         <br />
 
@@ -308,10 +307,11 @@ const UploadStudy = () => {
         </div>
 
         <div>
-          <input type="text" placeholder="제목을 입력하세요" />
+          <input type="text" ref={titleRef} placeholder="제목을 입력하세요" />
           <br />
           <textarea
             style={{ width: "500px", height: "100px" }}
+            ref={contentRef}
             placeholder="프로젝트에 대해 설명해 주세요"
           />
         </div>
