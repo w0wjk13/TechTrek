@@ -10,6 +10,7 @@ export const App = () => (
   <Router>
     <Nav />
     <Routes>
+      //App 합치기 위해 올림
       <Route path="/mypage/*" element={<MyPageNav />} />
       <Route path="/study/:id" element={<DetailStudy />} />
       <Route path="*" element={<NotFound />}></Route>
