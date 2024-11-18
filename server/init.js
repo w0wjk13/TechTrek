@@ -114,11 +114,11 @@ for (let i = 1; i <= 100; i++) {
       techStack: randomTechStack(),
       position: randomPosition(),
       avgScore: {
-        manner: 3, // 매너
-        mentoring: 3, // 재능기부
-        passion: 3, // 참여도
-        communication: 3, // 소통
-        time: 3, // 시간 준수
+        manner: 0, // 매너
+        mentoring: 0, // 재능기부
+        passion: 0, // 참여도
+        communication: 0, // 소통
+        time: 0, // 시간 준수
       },
       createdAt: new Date(),
     },
