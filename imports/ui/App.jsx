@@ -9,7 +9,8 @@ import LoginIdFind from "./login/LoginIdFind.jsx";
 import LoginFwFind from "./login/LoginPwFind.jsx";
 import LoginMain from "./login/LoginMain.jsx";
 import UploadStudy from "./uploadStudy/UploadStudy";
-
+import DetailStudy from "./uploadStudy/DetailStudy";
+import MyPageNav from "./myPage/MyPageNav";
 
 export const App = () => (
   <Router>
@@ -23,10 +24,10 @@ export const App = () => (
         <Route path="fwfind" element={<LoginFwFind />} />
       </Route>
       <Route path="*" element={<NotFound />} />
-
+      //App 합치기 위해 올림
+      <Route path="/mypage/*" element={<MyPageNav />} />
       <Route path="/study/:id" element={<DetailStudy />} />
       <Route path="/uploadStudy" element={<UploadStudy />} />
-
     </Routes>
   </Router>
 );
