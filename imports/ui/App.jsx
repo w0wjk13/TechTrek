@@ -9,7 +9,7 @@ import LoginIdFind from "./login/LoginIdFind.jsx";
 import LoginFwFind from "./login/LoginPwFind.jsx";
 import LoginMain from "./login/LoginMain.jsx";
 import UploadStudy from "./uploadStudy/UploadStudy";
-
+import DetailStudy from "./uploadStudy/DetailStudy";
 
 export const App = () => (
   <Router>
