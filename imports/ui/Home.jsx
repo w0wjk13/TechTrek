@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-//import '../../client/css/Home.css';
+import React, { useState, useEffect } from "react";
+import { Meteor } from "meteor/meteor";
 
 // 기술 스택 및 포지션 목록
 const techStacks = [
@@ -25,6 +25,23 @@ const regions = [
   }
 ];
 
+// 모집 마감일 형식 함수
+const formatDDay = (studyClose) => {
+  const today = new Date();
+  const closeDay = new Date(studyClose);
+
+  const timeDiff = closeDay.getTime() - today.getTime();
+  const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+
+  if (dayDiff > 0) {
+    return `D-${dayDiff}일`;
+  } else if (dayDiff === 0) {
+    return "오늘 마감";
+  } else {
+    return "마감";
+  }
+};
+
 export default function Home() {
   const [selectedRegion, setSelectedRegion] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
@@ -33,55 +50,35 @@ export default function Home() {
   const [onlineOffline, setOnlineOffline] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
-  const filterPositions = () => {
-    if (techStack.length === 0) {
-      return positions;
-    }
-    return positions;
-  };
-
-  const handleRegionChange = (e) => {
-    setSelectedRegion(e.target.value);
-    setSelectedCity("");
-  };
-
-  const handleCityChange = (e) => {
-    setSelectedCity(e.target.value);
-  };
-
-  const handleTechStackChange = (e) => {
-    const value = e.target.value;
-    setTechStack((prevTechStack) => {
-      if (prevTechStack.includes(value)) {
-        return prevTechStack.filter((stack) => stack !== value);
+  // 페이지 로딩 시 모든 스터디 데이터를 가져오기
+  useEffect(() => {
+    Meteor.call("getAllStudies", (error, results) => {
+      if (error) {
+        console.error("모든 데이터 로드 실패:", error);
       } else {
-        return [...prevTechStack, value];
+        setSearchResults(results);
       }
     });
-  };
-
-  const handleOnlineOfflineChange = (e) => {
-    setOnlineOffline(e.target.value);
-  };
+  }, []); // 빈 배열을 넣어서 컴포넌트가 마운트 될 때 한 번만 호출되도록 함
 
   const handleSearch = () => {
-    const filteredResults = exampleResults.filter((result) => {
-      const matchesRegion = selectedRegion ? result.region === selectedRegion : true;
-      const matchesCity = selectedCity ? result.city === selectedCity : true;
-      const matchesTechStack = techStack.length > 0 ? techStack.every(tech => result.techStack.includes(tech)) : true;
-      const matchesPosition = position ? result.position === position : true;
-      const matchesOnlineOffline = onlineOffline ? result.onlineOffline === onlineOffline : true;
+    // 검색 조건 객체 생성
+    const filters = {
+      region: selectedRegion,
+      city: selectedCity,
+      techStack: techStack,
+      position: position,
+      onlineOffline: onlineOffline
+    };
 
-      return (
-        matchesRegion &&
-        matchesCity &&
-        matchesTechStack &&
-        matchesPosition &&
-        matchesOnlineOffline
-      );
+    // 서버에서 검색 결과 가져오기
+    Meteor.call("searchStudies", filters, (error, results) => {
+      if (error) {
+        console.error("검색 실패:", error);
+      } else {
+        setSearchResults(results);
+      }
     });
-
-    setSearchResults(filteredResults);
   };
 
   return (
@@ -91,7 +88,7 @@ export default function Home() {
       {/* 지역, 시 선택 */}
       <div className="select-group">
         <label htmlFor="region">지역</label>
-        <select id="region" value={selectedRegion} onChange={handleRegionChange}>
+        <select id="region" value={selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}>
           <option value="">선택하세요</option>
           {regions.map((region, index) => (
             <option key={index} value={region.name}>
@@ -104,7 +101,7 @@ export default function Home() {
       {selectedRegion && (
         <div className="select-group">
           <label htmlFor="city">구</label>
-          <select id="city" value={selectedCity} onChange={handleCityChange}>
+          <select id="city" value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)}>
             <option value="">선택하세요</option>
             {regions
               .find((region) => region.name === selectedRegion)
@@ -128,19 +125,23 @@ export default function Home() {
                 id={stack}
                 value={stack}
                 checked={techStack.includes(stack)}
-                onChange={handleTechStackChange}
-                disabled={techStack.length >= 5 && !techStack.includes(stack)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setTechStack((prevTechStack) => {
+                    if (prevTechStack.includes(value)) {
+                      return prevTechStack.filter((stack) => stack !== value);
+                    } else if (prevTechStack.length < 5) {
+                      return [...prevTechStack, value];
+                    }
+                    return prevTechStack;
+                  });
+                }}
               />
               <label htmlFor={stack}>{stack}</label>
             </div>
           ))}
         </div>
-        {techStack.length > 0 && (
-          <div className="selected-tech">
-            <strong>선택된 기술 스택: </strong>
-            {techStack.join(", ")}
-          </div>
-        )}
+        {techStack.length >= 5 && <p>최대 5개까지 선택 가능합니다.</p>}
       </div>
 
       {/* 포지션 선택 */}
@@ -148,13 +149,12 @@ export default function Home() {
         <label htmlFor="position">포지션</label>
         <select id="position" value={position} onChange={(e) => setPosition(e.target.value)}>
           <option value="">선택하세요</option>
-          {filterPositions().map((pos, index) => (
+          {positions.map((pos, index) => (
             <option key={index} value={pos}>
               {pos}
             </option>
           ))}
         </select>
-        {position && <div>선택된 포지션: {position}</div>}
       </div>
 
       {/* 온라인/오프라인 선택 */}
@@ -167,7 +167,7 @@ export default function Home() {
             name="onlineOffline"
             value="온라인"
             checked={onlineOffline === "온라인"}
-            onChange={handleOnlineOfflineChange}
+            onChange={(e) => setOnlineOffline(e.target.value)}
           />
           <label htmlFor="online">온라인</label>
         </div>
@@ -178,7 +178,7 @@ export default function Home() {
             name="onlineOffline"
             value="오프라인"
             checked={onlineOffline === "오프라인"}
-            onChange={handleOnlineOfflineChange}
+            onChange={(e) => setOnlineOffline(e.target.value)}
           />
           <label htmlFor="offline">오프라인</label>
         </div>
@@ -190,11 +190,20 @@ export default function Home() {
         <h2>검색 결과</h2>
         {searchResults.length > 0 ? (
           <ul>
-            {searchResults.map((result) => (
-              <li key={result.id}>
-                {result.name} - {result.region} {result.city} - {result.position} - {result.onlineOffline} - 기술 스택: {result.techStack.join(", ")}
-              </li>
-            ))}
+            {searchResults.map((result) => {
+              const user = Meteor.users.findOne(result.userId);  // 작성자 정보 가져오기
+              const username = user?.profile?.nickname || user?.username || "알 수 없음";  // 닉네임이나 기본 유저명
+              return (
+                <li key={result._id}>
+                  <p>마감일: {formatDDay(result.studyClose)}</p>
+                  <strong>{result.title}</strong><br />
+                  <span>{result.roles}</span><br />
+                  <span>기술 스택: {result.techStack.join(", ")}</span><br />
+                  <span>작성자: {username}</span>
+                  <button>상세보기</button>
+                </li>
+              );
+            })}
           </ul>
         ) : (
           <p>검색 결과가 없습니다.</p>
