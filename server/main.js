@@ -4,3 +4,4 @@ import "./loginmain.js";
 import "./loginidfind.js";
 import "./studynotifications.js";
 import "./init.js";
+import "./uploadStudy/uploadStudy.js";

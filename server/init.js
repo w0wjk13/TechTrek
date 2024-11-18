@@ -1,5 +1,7 @@
-// import { Study, StudyUsers } from "/imports/api/collections";
-// import "/lib/utils.js";
+import { Study, StudyUsers } from "/imports/api/collections";
+import "/lib/utils.js";
+
+//Study.remove({});
 
 // //admin 생성
 // if (!Meteor.users.findOne({ username: "admin" })) {
@@ -58,7 +60,7 @@
 // if (!StudyUsers.findOne()) {
 //   Study.find().forEach((study) => {
 //     //스터디 모집 작성자 이외의 사용자 목록
-//     const applyUsers = Meteor.users
+//     const applyUsers = Meteor.uses
 //       .find({
 //         $and: [{ _id: { $ne: study.userId } }, { username: { $ne: "admin" } }],
 //       })
@@ -92,4 +94,4 @@
 //       });
 //     });
 //   });
-// }
+//}
