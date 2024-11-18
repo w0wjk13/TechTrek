@@ -16,6 +16,7 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
   for (let i = 0; i < 10; i++) {
     Accounts.createUser({
       username: "user" + i,
+      email: `user${i}@example.com`,
       password: "1234",
       profile: {
         profilePicture: `https://example.com/images/user${i}.jpg`,

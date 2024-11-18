@@ -124,6 +124,10 @@ const DetailStudy = () => {
       <br />
       모임형태 : {study.onOffline}
       <br />
+      지역 :{" "}
+      {study.onOffline === "오프라인" ||
+        (study.onOffline === "온/오프라인" && study.location)}
+      <br />
       모집인원 : {study.studyCount}
       <br />
       모집마감일{" "}
@@ -143,7 +147,7 @@ const DetailStudy = () => {
       <hr />
       내용 : {study.content}
       <hr />
-      프로젝트 참여자 목록
+      프로젝트 참여자 목록 {username}
       <br />
       <button onClick={goMain}>목록</button>
       <button onClick={joinRequest}>참여하기</button>

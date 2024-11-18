@@ -56,7 +56,7 @@ const UploadStudy = () => {
 
   const [stackList, setStackList] = useState([]); //선택한 기술스택 목록
   const [date, setDate] = useState(null); //모집마감일
-  const [studyType, setStudyType] = useState("오프라인"); //오프라인일 경우 주소입력창 보여주기
+  const [studyType, setStudyType] = useState("온/오프라인"); //오프라인일 경우 주소입력창 보여주기
   const [giftScore, setGiftScore] = useState({}); //요구하는 역량과 점수
   const formRef = useRef(null); //백엔드프론트 온라인오프라인
   const titleRef = useRef(null);
@@ -196,25 +196,37 @@ const UploadStudy = () => {
               name="studyType"
               value="오프라인"
               onChange={(e) => setStudyType(e.target.value)}
-              defaultChecked
             />
             <label htmlFor="offline">오프라인</label>
           </div>
 
-          {studyType === "오프라인" && (
-            <>
-              <select name="location" defaultValue="">
-                <option value="" disabled>
-                  지역 선택
-                </option>
-                {regions.map((region) => (
-                  <option key={region} value={region}>
-                    {region}
+          <div>
+            <input
+              type="radio"
+              id="onOffline"
+              name="studyType"
+              value="온/오프라인"
+              onChange={(e) => setStudyType(e.target.value)}
+              defaultChecked
+            />
+            <label htmlFor="onOffline">온/오프라인</label>
+          </div>
+
+          {studyType === "오프라인" ||
+            (studyType === "온/오프라인" && (
+              <>
+                <select name="location" defaultValue="">
+                  <option value="" disabled>
+                    지역 선택
                   </option>
-                ))}
-              </select>
-            </>
-          )}
+                  {regions.map((region) => (
+                    <option key={region} value={region}>
+                      {region}
+                    </option>
+                  ))}
+                </select>
+              </>
+            ))}
           <br />
         </div>
 
