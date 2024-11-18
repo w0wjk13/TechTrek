@@ -37,10 +37,10 @@ export default () => {
               </li>
             )}
             <li>
-              <Link to="/postDetail/testID">DetailPage</Link>
+              <Link to="/study/:id">상세페이지</Link>
             </li>
             <li>
-              <Link to="/postInsert">NotFound</Link>
+              <Link to="/mypage">마이페이지</Link>
             </li>
             <li>
               <Link to="/uploadStudy">스터디 생성</Link>

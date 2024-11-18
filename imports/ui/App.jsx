@@ -9,20 +9,15 @@ import LoginIdFind from "./login/LoginIdFind.jsx";
 import LoginFwFind from "./login/LoginPwFind.jsx";
 import LoginMain from "./login/LoginMain.jsx";
 import UploadStudy from "./uploadStudy/UploadStudy";
+import Home from "./Home";
+import NotFound from "./NotFound";
+import Nav from "./Nav";
 import PostDetail from "./PostDetail";
 
 export const App = () => (
   <Router>
     <Nav />
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login">
-        <Route path="main" element={<LoginMain />} />
-        <Route path="form" element={<LoginForm />} />
-        <Route path="idfind" element={<LoginIdFind />} />
-        <Route path="fwfind" element={<LoginFwFind />} />
-      </Route>
-      <Route path="*" element={<NotFound />} />
       <Route path="/" element={<Home />}></Route>
       <Route path="/postDetail/:_id" element={<PostDetail />}></Route>
       <Route path="*" element={<NotFound />}></Route>
