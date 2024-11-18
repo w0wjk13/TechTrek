@@ -19,7 +19,7 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
 
   const phone = randomPhone();
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 50; i++) {
     Accounts.createUser({
       username: "user" + i,
       email: `user${i}@example.com`,
@@ -119,47 +119,47 @@ if (!Study.findOne()) {
       scores: score,
       status: ["진행중", "마감"],
       views: Math.floor(Math.random() * 100) + 1,
-      createdAt: new Date(),
+      createdAt: loginUser.createdAt,
     });
   }
 }
 
-// //스터디 모임이 하나도 없다면
-// if (!StudyUsers.findOne()) {
-//   Study.find().forEach((study) => {
-//     //스터디 모집 작성자 이외의 사용자 목록
-//     const applyUsers = Meteor.users
-//       .find({
-//         $and: [{ _id: { $ne: study.userId } }, { username: { $ne: "admin" } }],
-//       })
-//       .fetch();
-//     //스터디 모집 작성자를 포함한 스터디 모임 참가자 목록 생성
-//     const teamMembers = [study.user_id];
+//스터디 모임이 하나도 없다면
+if (!StudyUsers.findOne()) {
+  Study.find().forEach((study) => {
+    //스터디 모집 작성자 이외의 사용자 목록
+    const applyUsers = Meteor.users
+      .find({
+        $and: [{ _id: { $ne: study.userId } }, { username: { $ne: "admin" } }],
+      })
+      .fetch();
+    //스터디 모집 작성자를 포함한 스터디 모임 참가자 목록 생성
+    const teamMembers = [study.user_id];
 
-//     //스터디 모집 인원 만큼 참가자 채우기
-//     while (teamMembers.length < study.studyCount) {
-//       const randomUser = applyUsers.random();
+    //스터디 모집 인원 만큼 참가자 채우기
+    while (teamMembers.length < study.studyCount) {
+      const randomUser = applyUsers.random();
 
-//       let ok = true;
-//       for (let gift in study.giftScore) {
-//         //유저의 점수가 모집글 요구 점수보다 작으면 추가하지 않음
-//         if (randomUser.profile.avgScore[gift] < study.giftScore[gift]) {
-//           ok = false;
-//           break;
-//         }
-//       }
+      let ok = true;
+      for (let gift in study.giftScore) {
+        //유저의 점수가 모집글 요구 점수보다 작으면 추가하지 않음
+        if (randomUser.profile.avgScore[gift] < study.giftScore[gift]) {
+          ok = false;
+          break;
+        }
+      }
 
-//       //유저의 점수가 모집글 요구 점수를 만족하고 중복된 아이디가 아니라면 모임에 추가
-//       if (ok && !teamMembers.includes(randomUser._id)) {
-//         teamMembers.push(randomUser._id);
-//       }
-//     }
+      //유저의 점수가 모집글 요구 점수를 만족하고 중복된 아이디가 아니라면 모임에 추가
+      if (ok && !teamMembers.includes(randomUser._id)) {
+        teamMembers.push(randomUser._id);
+      }
+    }
 
-//     Array.from(teamMembers).forEach((userId) => {
-//       StudyUsers.insert({
-//         studyId: study._id,
-//         userId: userId,
-//       });
-//     });
-//   });
-// }
+    Array.from(teamMembers).forEach((userId) => {
+      StudyUsers.insert({
+        studyId: study._id,
+        userId: userId,
+      });
+    });
+  });
+}
