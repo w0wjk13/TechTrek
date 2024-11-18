@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import { useTracker } from "meteor/react-meteor-data";
 import { Meteor } from "meteor/meteor";
 
@@ -42,11 +47,15 @@ export const App = () => {
         />
         <Route
           path="/study/:id"
-          element={user ? <DetailStudy /> : <Navigate to="/login/main" replace />}
+          element={
+            user ? <DetailStudy /> : <Navigate to="/login/main" replace />
+          }
         />
         <Route
           path="/uploadstudy/uploadstudy"
-          element={user ? <UploadStudy /> : <Navigate to="/login/main" replace />}
+          element={
+            user ? <UploadStudy /> : <Navigate to="/login/main" replace />
+          }
         />
 
         {/* 404 페이지 */}
