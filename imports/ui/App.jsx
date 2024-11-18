@@ -38,15 +38,15 @@ export const App = () => {
         {/* 로그인하지 않은 사용자가 접근하려는 페이지는 로그인 페이지로 리디렉션 */}
         <Route
           path="/mypage/*"
-          element={user ? <MyPageNav /> : <Navigate to="/login/main" replace />}
+          element={user ? <MyPageNav /> : <Navigate to="/login/main" state={{ from: "/mypage" }} replace />}
         />
         <Route
           path="/study/:id"
-          element={user ? <DetailStudy /> : <Navigate to="/login/main" replace />}
+          element={user ? <DetailStudy /> : <Navigate to="/login/main" state={{ from: "/study/:id" }} replace />}
         />
         <Route
           path="/uploadstudy/uploadstudy"
-          element={user ? <UploadStudy /> : <Navigate to="/login/main" replace />}
+          element={user ? <UploadStudy /> : <Navigate to="/login/main" state={{ from: "/uploadstudy/uploadstudy" }} replace />}
         />
 
         {/* 404 페이지 */}
