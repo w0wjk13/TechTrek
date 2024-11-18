@@ -35,7 +35,7 @@ const formatDDay = (studyClose) => {
   const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 
   if (dayDiff > 0) {
-    return `D-${dayDiff}일`;
+    return `D-${dayDiff}`;
   } else if (dayDiff === 0) {
     return "오늘 마감";
   } else {

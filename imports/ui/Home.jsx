@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Meteor } from "meteor/meteor";
+import { useNavigate } from "react-router-dom";
 
 // 기술 스택 및 포지션 목록
 const techStacks = [
@@ -50,6 +51,8 @@ export default function Home() {
   const [onlineOffline, setOnlineOffline] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
+  const navigate = useNavigate();  // navigate 훅을 사용하여 페이지 이동
+
   // 페이지 로딩 시 모든 스터디 데이터를 가져오기
   useEffect(() => {
     Meteor.call("getAllStudies", (error, results) => {
@@ -79,6 +82,11 @@ export default function Home() {
         setSearchResults(results);
       }
     });
+  };
+
+  const handleViewDetail = (studyId) => {
+    // 해당 studyId로 상세 페이지로 이동
+    navigate(`/study/${studyId}`);
   };
 
   return (
@@ -200,7 +208,7 @@ export default function Home() {
                   <span>포지션: {result.roles}</span><br />
                   <span>기술 스택: {result.techStack.join(", ")}</span><br />
                   <span>작성자: {username}</span>
-                  <button>상세보기</button>
+                  <button onClick={() => handleViewDetail(result._id)}>상세보기</button>
                 </li>
               );
             })}
