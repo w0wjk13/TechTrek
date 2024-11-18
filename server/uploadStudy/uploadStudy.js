@@ -38,6 +38,14 @@ Meteor.methods({
       }
     }
 
+    const writeCount = Study.findOne({ userId: this.userId });
+    if (writeCount) {
+      throw new Meteor.Error(
+        "noWrite",
+        "스터디 모집글은 1개만 작성 가능합니다"
+      );
+    }
+
     const data = {
       userId: this.userId,
       ...uploadData,
