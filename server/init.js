@@ -11,9 +11,26 @@ const randomPhone = () => {
 
 const randomTechStack = () => {
   const techStacks = [
-    "Java", "NodeJS", "Kotlin", "Mysql", "MongoDB", "Python", "Oracle",
-    "AWS", "Spring", "Azure", "NextJS", "Kubernetes", "Javascript",
-    "Flutter", "Docker", "Typescript", "Swift", "Django", "React", "ReactNative"
+    "Java",
+    "NodeJS",
+    "Kotlin",
+    "Mysql",
+    "MongoDB",
+    "Python",
+    "Oracle",
+    "AWS",
+    "Spring",
+    "Azure",
+    "NextJS",
+    "Kubernetes",
+    "Javascript",
+    "Flutter",
+    "Docker",
+    "Typescript",
+    "Swift",
+    "Django",
+    "React",
+    "ReactNative",
   ];
   const stack1 = techStacks[Math.floor(Math.random() * techStacks.length)];
   let stack2;
@@ -25,15 +42,35 @@ const randomTechStack = () => {
 
 const randomPosition = () => {
   const positions = ["백엔드", "프론트엔드", "풀스택"];
-  return [positions[Math.floor(Math.random() * positions.length)]];  // 배열로 반환
+  return [positions[Math.floor(Math.random() * positions.length)]]; // 배열로 반환
 };
 
 const randomAddress = () => {
   const districts = [
-    "강남구", "강동구", "강서구", "강북구", "광진구", "구로구", "금천구",
-    "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구",
-    "서초구", "성동구", "성북구", "송파구", "양천구", "영등포구",
-    "용산구", "은평구", "종로구", "중구", "중랑구"
+    "강남구",
+    "강동구",
+    "강서구",
+    "강북구",
+    "광진구",
+    "구로구",
+    "금천구",
+    "노원구",
+    "도봉구",
+    "동대문구",
+    "동작구",
+    "마포구",
+    "서대문구",
+    "서초구",
+    "성동구",
+    "성북구",
+    "송파구",
+    "양천구",
+    "영등포구",
+    "용산구",
+    "은평구",
+    "종로구",
+    "중구",
+    "중랑구",
   ];
   const district = districts[Math.floor(Math.random() * districts.length)];
   return { address: `서울 ${district}` };
@@ -59,7 +96,7 @@ for (let i = 1; i <= 100; i++) {
   const phone = randomPhone();
 
   // 이메일 중복 체크
-  if (Meteor.users.findOne({ 'profile.email': email })) {
+  if (Meteor.users.findOne({ "profile.email": email })) {
     console.log(`이메일 중복: ${email}`);
     continue; // 중복된 이메일이 있으면 이 유저는 건너뜀
   }
@@ -77,14 +114,14 @@ for (let i = 1; i <= 100; i++) {
       techStack: randomTechStack(),
       position: randomPosition(),
       avgScore: {
-        manner: 3,           // 매너
-        mentoring: 3,        // 재능기부
-        passion: 3,          // 참여도
-        communication: 3,    // 소통
-        time: 3              // 시간 준수
+        manner: 3, // 매너
+        mentoring: 3, // 재능기부
+        passion: 3, // 참여도
+        communication: 3, // 소통
+        time: 3, // 시간 준수
       },
       createdAt: new Date(),
-    }
+    },
   });
 }
 
