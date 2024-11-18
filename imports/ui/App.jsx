@@ -1,6 +1,13 @@
-// App.jsx 파일
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import { useTracker } from "meteor/react-meteor-data";
+import { Meteor } from "meteor/meteor";
+
 import Home from "./Home.jsx";
 import NotFound from "./NotFound.jsx";
 import Nav from "./Nav.jsx";
@@ -10,25 +17,50 @@ import LoginFwFind from "./login/LoginPwFind.jsx";
 import LoginMain from "./login/LoginMain.jsx";
 import UploadStudy from "./uploadstudy/UploadStudy";
 import DetailStudy from "./uploadstudy/DetailStudy";
-
 import MyPageNav from "./mypage/MyPageNav";
 
-export const App = () => (
-  <Router>
-    <Nav />
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login">
-        <Route path="main" element={<LoginMain />} />
-        <Route path="form" element={<LoginForm />} />
-        <Route path="idfind" element={<LoginIdFind />} />
-        <Route path="fwfind" element={<LoginFwFind />} />
-      </Route>
-      <Route path="*" element={<NotFound />} />
+export const App = () => {
+  // 로그인 상태를 확인
+  const { user } = useTracker(() => ({
+    user: Meteor.user(),
+  }));
 
-      <Route path="/mypage/*" element={<MyPageNav />} />
-      <Route path="/study/:id" element={<DetailStudy />} />
-      <Route path="/uploadStudy" element={<UploadStudy />} />
-    </Routes>
-  </Router>
-);
+  return (
+    <Router>
+      <Nav />
+      <Routes>
+        {/* 홈 페이지는 로그인하지 않은 사용자도 접근 가능 */}
+        <Route path="/" element={<Home />} />
+
+        {/* 로그인 페이지들 */}
+        <Route path="/login">
+          <Route path="main" element={<LoginMain />} />
+          <Route path="form" element={<LoginForm />} />
+          <Route path="idfind" element={<LoginIdFind />} />
+          <Route path="fwfind" element={<LoginFwFind />} />
+        </Route>
+
+        {/* 로그인하지 않은 사용자가 접근하려는 페이지는 로그인 페이지로 리디렉션 */}
+        <Route
+          path="/mypage/*"
+          element={user ? <MyPageNav /> : <Navigate to="/login/main" replace />}
+        />
+        <Route
+          path="/study/:id"
+          element={
+            user ? <DetailStudy /> : <Navigate to="/login/main" replace />
+          }
+        />
+        <Route
+          path="/uploadstudy/uploadstudy"
+          element={
+            user ? <UploadStudy /> : <Navigate to="/login/main" replace />
+          }
+        />
+
+        {/* 404 페이지 */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
+  );
+};
