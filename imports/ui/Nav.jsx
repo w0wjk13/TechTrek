@@ -42,7 +42,7 @@ export default () => {
             {/* 로그인한 유저만 Mypage로 접근 가능, 로그인 안 했으면 로그인 페이지로 이동 */}
             <li className="nav-item">
               {user ? (
-                <Link to="/mypage/main" className="nav-link">
+                <Link to="/mypage" className="nav-link">
                   Mypage
                 </Link>
               ) : (

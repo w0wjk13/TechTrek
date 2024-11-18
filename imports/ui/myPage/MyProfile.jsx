@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useTracker } from "meteor/react-meteor-data";
+import { useNavigate } from "react-router-dom";
 import { Meteor } from "meteor/meteor";
+import { Link } from "react-router-dom";
 
 const MyProfile = () => {
   const stackOptions = [
@@ -29,6 +31,7 @@ const MyProfile = () => {
 
   const [stackList, setStackList] = useState([]);
   const [edit, setEdit] = useState(false);
+  const navigate = useNavigate();
 
   const user = useTracker(() => Meteor.user());
   console.log("myProfile 유저: ", user);
@@ -66,6 +69,10 @@ const MyProfile = () => {
     }
   };
 
+  const profilePage = () => {
+    navigate("/mypage/editProfile");
+  };
+
   const saveTechStack = () => {
     Meteor.call("saveTechStack", stackList, (err) => {
       if (err) {
@@ -79,6 +86,14 @@ const MyProfile = () => {
   return (
     <>
       <h2>내 프로필</h2>
+      <div>
+        <li>
+          <Link to="/mypage">프로필</Link>
+        </li>
+        <li>
+          <Link to="/mypage/myproject">프로젝트</Link>
+        </li>
+      </div>
       {user.profile && user.profile.profilePicture && (
         <img
           src={user.profile.profilePicture}
@@ -89,7 +104,7 @@ const MyProfile = () => {
       <br />
       이메일 : {user.emails[0].address}
       <br />
-      <button>프로필 편집</button>
+      <button onClick={profilePage}>프로필 편집</button>
       <hr />
       <h3>기술스택</h3>
       자주 사용하는 기술스택을 최대 5개로 설정해 주세요{" "}

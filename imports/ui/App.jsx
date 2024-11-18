@@ -3,15 +3,18 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Home.jsx";
 import NotFound from "./NotFound.jsx";
+
 import Nav from "./Nav.jsx";
 import LoginForm from "./login/LoginForm.jsx";
 import LoginIdFind from "./login/LoginIdFind.jsx";
 import LoginFwFind from "./login/LoginPwFind.jsx";
 import LoginMain from "./login/LoginMain.jsx";
+
 import UploadStudy from "./uploadstudy/UploadStudy";
 import DetailStudy from "./uploadstudy/DetailStudy";
-
-import MyPageNav from "./mypage/MyPageNav";
+import MyProfile from "./mypage/MyProfile";
+import EditProfile from "./mypage/EditProfile";
+import MyProject from "./mypage/MyProject";
 
 export const App = () => (
   <Router>
@@ -26,9 +29,11 @@ export const App = () => (
       </Route>
       <Route path="*" element={<NotFound />} />
 
-      <Route path="/mypage/*" element={<MyPageNav />} />
       <Route path="/study/:id" element={<DetailStudy />} />
       <Route path="/uploadStudy" element={<UploadStudy />} />
+      <Route path="/mypage" element={<MyProfile />} />
+      <Route path="/mypage/myproject" element={<MyProject />} />
+      <Route path="/mypage/editProfile" element={<EditProfile />} />
     </Routes>
   </Router>
 );
