@@ -4,10 +4,6 @@ import { Meteor } from "meteor/meteor";
 Meteor.methods({
   //스터디 모집글 작성
   insert: function (uploadData) {
-    if (!this.userId) {
-      throw new Meteor.Error("notLogin", "로그인이 필요합니다");
-    }
-
     const validationMessage = {
       roles: "모집 분야를 선택해 주세요",
       onOffline: "모임 형태를 선택해 주세요",
@@ -20,6 +16,7 @@ Meteor.methods({
       content: "내용을 입력해 주세요",
     };
 
+    //validationMessage의 각 속성에 대해 [키, 값] 형태의 배열이 요소인 배열 반환
     for (const [field, message] of Object.entries(validationMessage)) {
       if (field === "techStack") {
         if (!uploadData[field] || uploadData[field].length === 0) {
@@ -30,21 +27,24 @@ Meteor.methods({
           throw new Meteor.Error("validationError", message);
         }
       } else if (field === "location") {
-        if (uploadData.onOffline === "오프라인" && !uploadData.location) {
-          throw new Meteor.Error("validationError", message);
+        if (
+          uploadData.onOffline === "오프라인" ||
+          uploadData.onOffline === "온/오프라인"
+        ) {
+          if (!uploadData.location.city) {
+            throw new Meteor.Error("validationError", message);
+          }
+          if (
+            uploadData.location.city === "서울" &&
+            !uploadData.location.gubun
+          ) {
+            throw new Meteor.Error("validationError", "구를 선택해 주세요");
+          }
         }
       } else if (!uploadData[field]) {
         throw new Meteor.Error("validationError", message);
       }
     }
-
-    // const writeCount = Study.findOne({ userId: this.userId });
-    // if (writeCount) {
-    //   throw new Meteor.Error(
-    //     "noWrite",
-    //     "스터디 모집글은 1개만 작성 가능합니다"
-    //   );
-    // }
 
     const data = {
       userId: this.userId,
@@ -67,12 +67,9 @@ Meteor.methods({
     return true;
   },
 
-  //스터디 모집글이 1개 있는지 확인한 후 모집글 작성 허용/거부
-  // canWrite: function () {
-  //   if (!this.userId) {
-  //     throw new Meteor.Error("notLogin", "로그인이 필요합니다");
-  //   }
-  //   const writeCount = Study.findOne({ userId: this.userId });
-  //   return writeCount ? true : false;
-  // },
+  saveTechStack: function (stackList) {
+    return Meteor.users.update(this.userId, {
+      $set: { "profile.techStack": stackList },
+    });
+  },
 });

@@ -161,7 +161,10 @@ const UploadStudy = () => {
       const uploadData = {
         roles: formData.get("roles"), //모집분야(프론트/백)
         onOffline: studyType, //모집형태(온/오프라인)
-        location: formData.get("location"),
+        location: {
+          city: city,
+          gubun: city === "서울" ? gubun : null,
+        },
         studyCount: formData.get("studyCount"), //모집인원
         techStack: stackList, //기술스택
         studyClose: date,
@@ -169,6 +172,7 @@ const UploadStudy = () => {
         title: titleRef.current.value,
         content: contentRef.current.value,
       };
+      console.log("uploadData: ", uploadData);
 
       Meteor.call("insert", uploadData, (err, detailId) => {
         if (err) {
