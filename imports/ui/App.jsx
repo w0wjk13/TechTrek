@@ -10,14 +10,18 @@ import { Meteor } from "meteor/meteor";
 
 import Home from "./Home.jsx";
 import NotFound from "./NotFound.jsx";
+
 import Nav from "./Nav.jsx";
 import LoginForm from "./login/LoginForm.jsx";
 import LoginIdFind from "./login/LoginIdFind.jsx";
 import LoginFwFind from "./login/LoginPwFind.jsx";
 import LoginMain from "./login/LoginMain.jsx";
+
 import UploadStudy from "./uploadstudy/UploadStudy";
 import DetailStudy from "./uploadstudy/DetailStudy";
-import MyPageNav from "./mypage/MyPageNav";
+import MyProfile from "./mypage/MyProfile";
+import EditProfile from "./mypage/EditProfile";
+import MyProject from "./mypage/MyProject";
 
 export const App = () => {
   // 로그인 상태를 확인
@@ -43,7 +47,17 @@ export const App = () => {
         {/* 로그인하지 않은 사용자가 접근하려는 페이지는 로그인 페이지로 리디렉션 */}
         <Route
           path="/mypage/*"
-          element={user ? <MyPageNav /> : <Navigate to="/login/main" replace />}
+          element={user ? <MyProfile /> : <Navigate to="/login/main" replace />}
+        />
+        <Route
+          path="/mypage/myproject"
+          element={user ? <MyProject /> : <Navigate to="/login/main" replace />}
+        />
+        <Route
+          path="/mypage/editProfile"
+          element={
+            user ? <EditProfile /> : <Navigate to="/login/main" replace />
+          }
         />
         <Route
           path="/study/:id"
