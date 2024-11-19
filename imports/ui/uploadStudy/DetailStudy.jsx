@@ -114,7 +114,7 @@ const DetailStudy = () => {
           marginRight: "10px",
         }}
       />
-      작성자 : {username}
+      작성자 : {user.profile.nickname}
       <br />
       작성일 : {formatCreatedAt(new Date(study.createdAt))}
       <br />
