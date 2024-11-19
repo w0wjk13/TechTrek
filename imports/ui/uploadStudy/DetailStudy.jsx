@@ -48,13 +48,13 @@ const DetailStudy = () => {
   const navigate = useNavigate();
 
   const { study, username, profilePicture, isLoading } = useTracker(() => {
-    const user = Meteor.user();
     const study = Study.findOne(id);
+    const writer = study ? Meteor.users.findOne(study.userId) : null; //글 작성자 가져오기
 
     return {
       study: study,
-      username: user?.profile?.nickname,
-      profilePicture: user?.profile?.profilePicture,
+      username: writer?.profile?.nickname,
+      profilePicture: writer?.profile?.profilePicture,
       isLoading: !study,
     };
   });
@@ -78,6 +78,8 @@ const DetailStudy = () => {
     navigate("/");
   };
 
+  const isWriter = study?.userId === Meteor.userId(); //작성자
+
   const joinRequest = () => {
     const scoreData = {
       userScore: Meteor.user().profile.scores,
@@ -87,7 +89,9 @@ const DetailStudy = () => {
     Meteor.call("approveReject", scoreData, (err, rlt) => {
       if (err) {
         console.error("approveReject 실패: ", err);
+        console.log("에러 세부 정보: ", err.reason, err.details);
       } else {
+        console.log("approveReject 결과: ", rlt);
         if (rlt) {
           alert("참여 요청이 전송되었습니다");
         } else {
@@ -121,11 +125,14 @@ const DetailStudy = () => {
       모임형태 : {study.onOffline}
       <br />
       지역 :{" "}
-      {(study.onOffline === "오프라인" ||
-        study.onOffline === "온/오프라인") && (
+      {study.onOffline === "온라인" ? (
+        "없음"
+      ) : (
         <>
-          {study.location.city}{" "}
-          {study.location.gubun && `${study.location.gubun}`}
+          {study.location?.city || ""}
+          {study.location?.city === "서울" && study.location?.gubun
+            ? ` ${study.location.gubun}`
+            : ""}
         </>
       )}
       <br />
@@ -151,7 +158,7 @@ const DetailStudy = () => {
       프로젝트 참여자 목록 {username}
       <br />
       <button onClick={goMain}>목록</button>
-      <button onClick={joinRequest}>참여하기</button>
+      {!isWriter && <button onClick={joinRequest}>참여하기</button>}
     </>
   );
 };
