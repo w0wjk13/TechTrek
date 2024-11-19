@@ -101,14 +101,13 @@
 //     continue; // 중복된 이메일이 있으면 이 유저는 건너뜀
 //   }
 
-
 // avgScore에 랜덤 값 1~5를 할당
 const avgScore = {
-  manner: Math.floor(Math.random() * 5) + 1,        // 매너 (1 ~ 5 랜덤 값)
-  mentoring: Math.floor(Math.random() * 5) + 1,     // 재능기부 (1 ~ 5 랜덤 값)
-  passion: Math.floor(Math.random() * 5) + 1,       // 참여도 (1 ~ 5 랜덤 값)
+  manner: Math.floor(Math.random() * 5) + 1, // 매너 (1 ~ 5 랜덤 값)
+  mentoring: Math.floor(Math.random() * 5) + 1, // 재능기부 (1 ~ 5 랜덤 값)
+  passion: Math.floor(Math.random() * 5) + 1, // 참여도 (1 ~ 5 랜덤 값)
   communication: Math.floor(Math.random() * 5) + 1, // 소통 (1 ~ 5 랜덤 값)
-  time: Math.floor(Math.random() * 5) + 1           // 시간 준수 (1 ~ 5 랜덤 값)
+  time: Math.floor(Math.random() * 5) + 1, // 시간 준수 (1 ~ 5 랜덤 값)
 };
 
 Accounts.createUser({
@@ -123,11 +122,10 @@ Accounts.createUser({
     address: randomAddress(),
     techStack: randomTechStack(),
     position: randomPosition(),
-    avgScore: avgScore,  // 수정된 avgScore 할당
+    avgScore: avgScore, // 수정된 avgScore 할당
     createdAt: new Date(),
-  }
+  },
 });
-
 
 //   Accounts.createUser({
 //     name: name,
@@ -152,7 +150,6 @@ Accounts.createUser({
 //     },
 //   });
 // }
-
 
 // //스터디 모집글이 하나도 없다면
 // if (!Study.findOne()) {
