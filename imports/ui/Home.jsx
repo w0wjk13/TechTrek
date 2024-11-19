@@ -4,9 +4,26 @@ import { useNavigate } from "react-router-dom";
 
 // 기술 스택 및 포지션 목록
 const techStacks = [
-  "Java", "NodeJS", "Kotlin", "Mysql", "MongoDB", "Python", "Oracle",
-  "AWS", "Spring", "Azure", "NextJS", "Kubernetes", "Javascript",
-  "Flutter", "Docker", "Typescript", "Swift", "Django", "React", "ReactNative"
+  "Java",
+  "NodeJS",
+  "Kotlin",
+  "Mysql",
+  "MongoDB",
+  "Python",
+  "Oracle",
+  "AWS",
+  "Spring",
+  "Azure",
+  "NextJS",
+  "Kubernetes",
+  "Javascript",
+  "Flutter",
+  "Docker",
+  "Typescript",
+  "Swift",
+  "Django",
+  "React",
+  "ReactNative",
 ];
 
 const positions = ["백엔드", "프론트엔드", "풀스택"];
@@ -15,15 +32,37 @@ const regions = [
   {
     name: "서울",
     cities: [
-      "강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구",
-      "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구",
-      "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"
-    ]
+      "강남구",
+      "강동구",
+      "강북구",
+      "강서구",
+      "관악구",
+      "광진구",
+      "구로구",
+      "금천구",
+      "노원구",
+      "도봉구",
+      "동대문구",
+      "동작구",
+      "마포구",
+      "서대문구",
+      "서초구",
+      "성동구",
+      "성북구",
+      "송파구",
+      "양천구",
+      "영등포구",
+      "용산구",
+      "은평구",
+      "종로구",
+      "중구",
+      "중랑구",
+    ],
   },
   {
     name: "부산",
-    cities: ["해운대구", "수영구", "동래구", "사상구"]
-  }
+    cities: ["해운대구", "수영구", "동래구", "사상구"],
+  },
 ];
 
 // 모집 마감일 형식 함수
@@ -67,11 +106,11 @@ export default function Home() {
   const handleSearch = () => {
     // 검색 조건 객체 생성
     const filters = {
-      region: selectedRegion,          // 지역
-      city: selectedCity,             // 구
-      techStack: techStack,           // 기술 스택
-      position: position,             // 포지션
-      onlineOffline: onlineOffline    // 진행 방식
+      region: selectedRegion, // 지역
+      city: selectedCity, // 구
+      techStack: techStack, // 기술 스택
+      position: position, // 포지션
+      onlineOffline: onlineOffline, // 진행 방식
     };
 
     // 서버에서 검색 결과 가져오기
@@ -96,7 +135,11 @@ export default function Home() {
       {/* 지역, 시 선택 */}
       <div className="select-group">
         <label htmlFor="region">지역</label>
-        <select id="region" value={selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}>
+        <select
+          id="region"
+          value={selectedRegion}
+          onChange={(e) => setSelectedRegion(e.target.value)}
+        >
           <option value="">선택하세요</option>
           {regions.map((region, index) => (
             <option key={index} value={region.name}>
@@ -109,7 +152,11 @@ export default function Home() {
       {selectedRegion && (
         <div className="select-group">
           <label htmlFor="city">구</label>
-          <select id="city" value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)}>
+          <select
+            id="city"
+            value={selectedCity}
+            onChange={(e) => setSelectedCity(e.target.value)}
+          >
             <option value="">선택하세요</option>
             {regions
               .find((region) => region.name === selectedRegion)
@@ -155,7 +202,11 @@ export default function Home() {
       {/* 포지션 선택 */}
       <div className="select-group">
         <label htmlFor="position">포지션</label>
-        <select id="position" value={position} onChange={(e) => setPosition(e.target.value)}>
+        <select
+          id="position"
+          value={position}
+          onChange={(e) => setPosition(e.target.value)}
+        >
           <option value="">선택하세요</option>
           {positions.map((pos, index) => (
             <option key={index} value={pos}>
@@ -177,7 +228,9 @@ export default function Home() {
             onChange={(e) => {
               const value = e.target.value;
               setOnlineOffline((prev) =>
-                prev.includes(value) ? prev.filter(item => item !== value) : [...prev, value]
+                prev.includes(value)
+                  ? prev.filter((item) => item !== value)
+                  : [...prev, value]
               );
             }}
           />
@@ -192,7 +245,9 @@ export default function Home() {
             onChange={(e) => {
               const value = e.target.value;
               setOnlineOffline((prev) =>
-                prev.includes(value) ? prev.filter(item => item !== value) : [...prev, value]
+                prev.includes(value)
+                  ? prev.filter((item) => item !== value)
+                  : [...prev, value]
               );
             }}
           />
@@ -207,7 +262,9 @@ export default function Home() {
             onChange={(e) => {
               const value = e.target.value;
               setOnlineOffline((prev) =>
-                prev.includes(value) ? prev.filter(item => item !== value) : [...prev, value]
+                prev.includes(value)
+                  ? prev.filter((item) => item !== value)
+                  : [...prev, value]
               );
             }}
           />
@@ -215,33 +272,50 @@ export default function Home() {
         </div>
       </div>
 
-      <button onClick={handleSearch} className="search-button">검색하기</button>
+      <button onClick={handleSearch} className="search-button">
+        검색하기
+      </button>
 
       <div className="search-results">
         <h2>검색 결과</h2>
         {searchResults.length > 0 ? (
           <ul>
             {searchResults.map((result) => {
-              const user = Meteor.users.findOne(result.userId);  // 작성자 정보 가져오기
-              const username = user?.profile?.nickname || user?.username || "알 수 없음";  // 닉네임이나 기본 유저명
+              const user = Meteor.users.findOne(result.userId); // 작성자 정보 가져오기
+              const username =
+                user?.profile?.nickname || user?.username || "알 수 없음"; // 닉네임이나 기본 유저명
               return (
                 <li key={result._id}>
                   <p>마감일: {formatDDay(result.studyClose)}</p>
-                  <span>지역:{result.location}</span><br />
-                  <span>진행방식:{result.onOffline}</span><br />
-                  <strong>{result.title}</strong><br /><br />
-                  <span>포지션: {result.roles}</span><br />
+                  <span>지역:{JSON.stringify(result.location)}</span>
+                  <br />
+                  <span>진행방식:{result.onOffline}</span>
+                  <br />
+                  <strong>{result.title}</strong>
+                  <br />
+                  <br />
+                  <span>포지션: {result.roles}</span>
+                  <br />
 
-                  <span>기술 스택: {result.techStack && Array.isArray(result.techStack) ? result.techStack.join(", ") : "기술 스택 없음"}</span><br />
+                  <span>
+                    기술 스택:{" "}
+                    {result.techStack && Array.isArray(result.techStack)
+                      ? result.techStack.join(", ")
+                      : "기술 스택 없음"}
+                  </span>
+                  <br />
 
                   <span>작성자: {username}</span>
                   <button>상세보기</button>
 
-                  <span>기술 스택: {result.techStack.join(", ")}</span><br />
-                  <span>작성자: {username}</span><br />
+                  <span>기술 스택: {result.techStack.join(", ")}</span>
+                  <br />
+                  <span>작성자: {username}</span>
+                  <br />
                   <span>조회수:{result.views}</span>
-                  <button onClick={() => handleViewDetail(result._id)}>상세 보기</button>
-
+                  <button onClick={() => handleViewDetail(result._id)}>
+                    상세 보기
+                  </button>
                 </li>
               );
             })}
