@@ -6,6 +6,6 @@ import "./login/loginform.js";
 import "./login/loginpwfind.js";
 import "./studynotifications.js";
 import "./init.js";
-import "./uploadstudy/uploadstudy.js";
-import "./uploadstudy/detailstudy.js";
+import "./uploadstudy/uploadStudy.js";
+import "./uploadstudy/detailStudy.js";
 import "./home.js";
