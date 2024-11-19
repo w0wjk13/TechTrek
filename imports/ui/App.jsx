@@ -17,8 +17,8 @@ import LoginIdFind from "./login/LoginIdFind.jsx";
 import LoginFwFind from "./login/LoginPwFind.jsx";
 import LoginMain from "./login/LoginMain.jsx";
 
-import UploadStudy from "./uploadStudy/UploadStudy";
-import DetailStudy from "./uploadStudy/DetailStudy";
+import UploadStudy from "./uploadstudy/UploadStudy";
+import DetailStudy from "./uploadstudy/DetailStudy";
 import MyProfile from "./mypage/MyProfile";
 import EditProfile from "./mypage/EditProfile";
 import MyProject from "./mypage/MyProject";
