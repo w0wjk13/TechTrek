@@ -1,12 +1,28 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTracker } from "meteor/react-meteor-data";
+import { Meteor } from "meteor/meteor";
 
 export default () => {
   // 로그인 상태를 추적
   const { user } = useTracker(() => {
     return { user: Meteor.user() };
   });
+
+  // const navigate = useNavigate();
+
+  // const click = (e) => {
+  //   e.preventDefault();
+
+  //   Meteor.call("canWrite", (err, rlt) => {
+  //     if (err) {
+  //       console.log("uploadstudy 실패: ", err);
+  //     } else {
+  //       alert("스터디 모집글은 1개만 가능합니다");
+  //       navigate("/");
+  //     }
+  //   });
+  // };
 
   return (
     <>
@@ -51,8 +67,6 @@ export default () => {
                 </Link>
               </li>
             )}
-
-
           </ul>
         </nav>
       </header>

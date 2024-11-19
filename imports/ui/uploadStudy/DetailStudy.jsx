@@ -125,8 +125,13 @@ const DetailStudy = () => {
       모임형태 : {study.onOffline}
       <br />
       지역 :{" "}
-      {study.onOffline === "오프라인" ||
-        (study.onOffline === "온/오프라인" && study.location)}
+      {(study.onOffline === "오프라인" ||
+        study.onOffline === "온/오프라인") && (
+        <>
+          {study.location.city}{" "}
+          {study.location.gubun && `${study.location.gubun}`}
+        </>
+      )}
       <br />
       모집인원 : {study.studyCount}
       <br />
