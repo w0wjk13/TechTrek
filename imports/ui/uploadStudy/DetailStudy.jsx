@@ -48,17 +48,13 @@ const DetailStudy = () => {
   const navigate = useNavigate();
 
   const { study, username, profilePicture, isLoading } = useTracker(() => {
+    const user = Meteor.user();
     const study = Study.findOne(id);
-    const user =
-      study && study.userId ? Meteor.users.findOne(study.userId) : null;
-    const username = user?.username || "알 수 없음";
-    const profilePicture =
-      user?.profile?.profilePicture || "/default-profile.jpg"; //default-profile.jpg 기본 이미지로 변경해야
 
     return {
       study: study,
-      username: username,
-      profilePicture: profilePicture,
+      username: user?.profile?.nickname,
+      profilePicture: user?.profile?.profilePicture,
       isLoading: !study,
     };
   });
