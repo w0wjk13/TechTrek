@@ -22,6 +22,7 @@ import DetailStudy from "./uploadstudy/DetailStudy";
 import MyProfile from "./mypage/MyProfile";
 import EditProfile from "./mypage/EditProfile";
 import MyProject from "./mypage/MyProject";
+import InfoProject from "./mypage/InfoProject";
 
 export const App = () => {
   // 로그인 상태를 확인
@@ -59,6 +60,13 @@ export const App = () => {
             user ? <EditProfile /> : <Navigate to="/login/main" replace />
           }
         />
+        <Route
+          path="/mypage/info/*"
+          element={
+            user ? <InfoProject /> : <Navigate to="/login/main" replace />
+          }
+        />
+
         <Route
           path="/study/:id"
           element={

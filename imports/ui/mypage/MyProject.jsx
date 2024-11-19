@@ -5,14 +5,19 @@ import { Study } from "/imports/api/collections";
 
 const MyProject = () => {
   const navigate = useNavigate();
+
   const { user, createStudy } = useTracker(() => {
     const user = Meteor.user();
-    const createStudy = Study.find({ userId: user._id }).fetch();
+    const createStudy = Study.find({ userId: user._id }).fetch(); //사용자가 생성한 스터디
     return { user, createStudy };
   });
 
   const goMain = () => {
     navigate("/");
+  };
+
+  const goInfo = (studyId) => {
+    navigate(`/mypage/info/${studyId}`);
   };
 
   return (
@@ -32,6 +37,13 @@ const MyProject = () => {
       프로젝트 진행:
       <br />
       프로젝트 정보:
+      {createStudy.map((study) => (
+        <li key={study._id}>
+          <a href="#" onClick={() => goInfo(study._id)}>
+            {study.title} {study.techStack}
+          </a>
+        </li>
+      ))}
       <br />
     </div>
   );

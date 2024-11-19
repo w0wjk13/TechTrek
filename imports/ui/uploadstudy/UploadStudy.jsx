@@ -183,7 +183,7 @@ const UploadStudy = () => {
 
   return (
     <>
-      <h2>스터디 모집페이지</h2>
+      <h2>프로젝트 모집페이지</h2>
       <form onSubmit={handleSubmit} ref={formRef}>
         <h3>모집 분야</h3>
         <div>

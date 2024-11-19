@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTracker } from "meteor/react-meteor-data";
 import { Meteor } from "meteor/meteor";
 import { Study } from "/imports/api/collections";
+import "/lib/utils.js";
 
 //작성일 표시 형식
 const formatCreatedAt = (createdAt) => {
@@ -82,16 +83,14 @@ const DetailStudy = () => {
 
   const joinRequest = () => {
     const scoreData = {
-      userScore: Meteor.user().profile.scores,
+      userScore: Meteor.user().profile.avgScore,
       studyScore: study.score,
     };
 
     Meteor.call("approveReject", scoreData, (err, rlt) => {
       if (err) {
         console.error("approveReject 실패: ", err);
-        console.log("에러 세부 정보: ", err.reason, err.details);
       } else {
-        console.log("approveReject 결과: ", rlt);
         if (rlt) {
           alert("참여 요청이 전송되었습니다");
         } else {

@@ -1,49 +1,49 @@
-// import { Study, StudyUsers } from "/imports/api/collections";
-// import "/lib/utils.js";
+import { Study, StudyUsers } from "/imports/api/collections";
+import "/lib/utils.js";
 
-// // 유저 더미 데이터 생성
-// const randomEmail = (index) => `user${index}@example.com`;
+// 유저 더미 데이터 생성
+const randomEmail = (index) => `user${index}@example.com`;
 
-// const randomPhone = () => {
-//   const randomDigits = () => Math.floor(1000 + Math.random() * 9000);
-//   return `010-${randomDigits()}-${randomDigits()}`;
-// };
+const randomPhone = () => {
+  const randomDigits = () => Math.floor(1000 + Math.random() * 9000);
+  return `010-${randomDigits()}-${randomDigits()}`;
+};
 
-// const randomTechStack = () => {
-//   const techStacks = [
-//     "Java",
-//     "NodeJS",
-//     "Kotlin",
-//     "Mysql",
-//     "MongoDB",
-//     "Python",
-//     "Oracle",
-//     "AWS",
-//     "Spring",
-//     "Azure",
-//     "NextJS",
-//     "Kubernetes",
-//     "Javascript",
-//     "Flutter",
-//     "Docker",
-//     "Typescript",
-//     "Swift",
-//     "Django",
-//     "React",
-//     "ReactNative",
-//   ];
-//   const stack1 = techStacks[Math.floor(Math.random() * techStacks.length)];
-//   let stack2;
-//   do {
-//     stack2 = techStacks[Math.floor(Math.random() * techStacks.length)];
-//   } while (stack1 === stack2);
-//   return [stack1, stack2];
-// };
+const randomTechStack = () => {
+  const techStacks = [
+    "Java",
+    "NodeJS",
+    "Kotlin",
+    "Mysql",
+    "MongoDB",
+    "Python",
+    "Oracle",
+    "AWS",
+    "Spring",
+    "Azure",
+    "NextJS",
+    "Kubernetes",
+    "Javascript",
+    "Flutter",
+    "Docker",
+    "Typescript",
+    "Swift",
+    "Django",
+    "React",
+    "ReactNative",
+  ];
+  const stack1 = techStacks[Math.floor(Math.random() * techStacks.length)];
+  let stack2;
+  do {
+    stack2 = techStacks[Math.floor(Math.random() * techStacks.length)];
+  } while (stack1 === stack2);
+  return [stack1, stack2];
+};
 
-// const randomPosition = () => {
-//   const positions = ["백엔드", "프론트엔드", "풀스택"];
-//   return [positions[Math.floor(Math.random() * positions.length)]]; // 배열로 반환
-// };
+const randomPosition = () => {
+  const positions = ["백엔드", "프론트엔드", "풀스택"];
+  return [positions[Math.floor(Math.random() * positions.length)]]; // 배열로 반환
+};
 
 const randomAddress = () => {
   const districts = [
