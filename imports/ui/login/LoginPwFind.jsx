@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Meteor } from "meteor/meteor";
-
+import { useNavigate } from "react-router-dom";  // useNavigate로 변경
 
 export default function LoginFwFind() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const navigate = useNavigate(); // 페이지 이동을 위한 navigate 함수
 
   const handleFindPassword = (e) => {
     e.preventDefault();
@@ -13,11 +14,10 @@ export default function LoginFwFind() {
     // 서버 메서드 호출
     Meteor.call("findUserPassword", name, email, phone, (error, result) => {
       if (error) {
-        alert("에러가 발생했습니다: " + error.reason);
+        alert(`에러가 발생했습니다: ${error.reason}`); // 에러 메시지 alert로 띄우기
       } else if (result) {
-        alert("비밀번호는: " + result);
-      } else {
-        alert("해당 정보로 등록된 비밀번호가 없습니다.");
+        alert(result); // 이메일 전송 완료 메시지 alert로 띄우기
+        navigate("/login/main"); // 비밀번호 찾기 성공 후 로그인 페이지로 이동
       }
     });
   };
