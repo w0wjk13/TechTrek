@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Meteor } from "meteor/meteor";
+import { useNavigate } from "react-router-dom";
 
 // 기술 스택 및 포지션 목록
 const techStacks = [
@@ -47,8 +48,10 @@ export default function Home() {
   const [selectedCity, setSelectedCity] = useState("");
   const [techStack, setTechStack] = useState([]);
   const [position, setPosition] = useState("");
-  const [onlineOffline, setOnlineOffline] = useState("");
+  const [onlineOffline, setOnlineOffline] = useState(""); // 온라인/오프라인 상태 추가
   const [searchResults, setSearchResults] = useState([]);
+
+  const navigate = useNavigate(); // navigate 훅을 사용하여 페이지 이동
 
   // 페이지 로딩 시 모든 스터디 데이터를 가져오기
   useEffect(() => {
@@ -64,11 +67,11 @@ export default function Home() {
   const handleSearch = () => {
     // 검색 조건 객체 생성
     const filters = {
-      region: selectedRegion,
-      city: selectedCity,
-      techStack: techStack,
-      position: position,
-      onlineOffline: onlineOffline
+      region: selectedRegion,          // 지역
+      city: selectedCity,             // 구
+      techStack: techStack,           // 기술 스택
+      position: position,             // 포지션
+      onlineOffline: onlineOffline    // 진행 방식
     };
 
     // 서버에서 검색 결과 가져오기
@@ -81,9 +84,14 @@ export default function Home() {
     });
   };
 
+  const handleViewDetail = (studyId) => {
+    // 해당 studyId로 상세 페이지로 이동
+    navigate(`/study/${studyId}`);
+  };
+
   return (
     <div className="home-container">
-      <h1 className="title">This is Home.</h1>
+      <h1 className="title">스터디 검색</h1>
 
       {/* 지역, 시 선택 */}
       <div className="select-group">
@@ -158,29 +166,52 @@ export default function Home() {
       </div>
 
       {/* 온라인/오프라인 선택 */}
-      <div className="radio-group">
+      <div className="checkbox-group">
         <label>진행 방식</label>
-        <div>
+        <div className="checkbox-item">
           <input
-            type="radio"
+            type="checkbox"
             id="online"
-            name="onlineOffline"
             value="온라인"
-            checked={onlineOffline === "온라인"}
-            onChange={(e) => setOnlineOffline(e.target.value)}
+            checked={onlineOffline.includes("온라인")}
+            onChange={(e) => {
+              const value = e.target.value;
+              setOnlineOffline((prev) =>
+                prev.includes(value) ? prev.filter(item => item !== value) : [...prev, value]
+              );
+            }}
           />
           <label htmlFor="online">온라인</label>
         </div>
-        <div>
+        <div className="checkbox-item">
           <input
-            type="radio"
+            type="checkbox"
             id="offline"
-            name="onlineOffline"
             value="오프라인"
-            checked={onlineOffline === "오프라인"}
-            onChange={(e) => setOnlineOffline(e.target.value)}
+            checked={onlineOffline.includes("오프라인")}
+            onChange={(e) => {
+              const value = e.target.value;
+              setOnlineOffline((prev) =>
+                prev.includes(value) ? prev.filter(item => item !== value) : [...prev, value]
+              );
+            }}
           />
           <label htmlFor="offline">오프라인</label>
+        </div>
+        <div className="checkbox-item">
+          <input
+            type="checkbox"
+            id="onOffline"
+            value="온/오프라인"
+            checked={onlineOffline.includes("온/오프라인")}
+            onChange={(e) => {
+              const value = e.target.value;
+              setOnlineOffline((prev) =>
+                prev.includes(value) ? prev.filter(item => item !== value) : [...prev, value]
+              );
+            }}
+          />
+          <label htmlFor="onOffline">온/오프라인</label>
         </div>
       </div>
 
@@ -196,12 +227,21 @@ export default function Home() {
               return (
                 <li key={result._id}>
                   <p>마감일: {formatDDay(result.studyClose)}</p>
-                  <strong>{result.title}</strong><br />
+                  <span>지역:{result.location}</span><br />
+                  <span>진행방식:{result.onOffline}</span><br />
+                  <strong>{result.title}</strong><br /><br />
                   <span>포지션: {result.roles}</span><br />
+
                   <span>기술 스택: {result.techStack && Array.isArray(result.techStack) ? result.techStack.join(", ") : "기술 스택 없음"}</span><br />
 
                   <span>작성자: {username}</span>
                   <button>상세보기</button>
+
+                  <span>기술 스택: {result.techStack.join(", ")}</span><br />
+                  <span>작성자: {username}</span><br />
+                  <span>조회수:{result.views}</span>
+                  <button onClick={() => handleViewDetail(result._id)}>상세 보기</button>
+
                 </li>
               );
             })}

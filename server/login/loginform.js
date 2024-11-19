@@ -49,7 +49,7 @@ Meteor.methods({
         position,
         profilePicture,
         address,
-        averageScore: 3, // 초기 평균 점수 설정
+        averageScore: 0, // 초기 평균 점수 설정
       },
       createdAt: new Date(),
     });

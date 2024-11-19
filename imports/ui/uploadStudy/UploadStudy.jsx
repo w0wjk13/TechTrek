@@ -138,6 +138,9 @@ const UploadStudy = () => {
 
       Meteor.call("insert", uploadData, (err, detailId) => {
         if (err) {
+          if (err.error === "noWrite") {
+            alert(err.reason);
+          }
           console.error("insert 실패: ", err.reason);
           alert(err.reason);
         } else {
