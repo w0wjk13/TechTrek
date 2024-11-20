@@ -10,21 +10,31 @@ Meteor.methods({
   searchStudies(filters) {
     const query = {};
 
-    // 각 필터가 존재할 경우 쿼리에 조건을 추가
-    if (filters.region) {
-      query.region = filters.region;
-    }
+    // 필터에 따른 쿼리 추가
     if (filters.city) {
       query.city = filters.city;
+    }
+    if (filters.gubun) {
+      query.gubun = filters.gubun;
     }
     if (filters.techStack && filters.techStack.length > 0) {
       query.techStack = { $all: filters.techStack }; // 필터링한 기술 스택을 모두 포함하는 항목만
     }
-    if (filters.position) {
-      query.position = filters.position;
+
+    // 'roles' 필터 처리: "전체"로 선택되었을 때 모든 역할을 포함
+    if (filters.roles) {
+      if (filters.roles === "전체") {
+        // "전체"가 선택되었을 경우, 모든 역할을 포함하는 데이터를 반환
+        // roles 필터를 쿼리에서 제외
+      } else if (filters.roles.length > 0) {
+        // 선택된 역할로 필터링
+        query.roles = { $in: filters.roles };
+      }
     }
-    if (filters.onlineOffline) {
-      query.onlineOffline = filters.onlineOffline;
+
+    // 'onOffline' 필터 처리
+    if (filters.onOffline && filters.onOffline.length > 0) {
+      query.onOffline = { $in: filters.onOffline };
     }
 
     // MongoDB에서 쿼리 결과 가져오기
