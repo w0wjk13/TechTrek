@@ -122,21 +122,22 @@ export default function Home() {
         </select>
       </div>
 
-      {selectedCity && (
-        <div className="select-group">
-          <label htmlFor="gubun">구</label>
-          <select id="gubun" value={selectedGubun} onChange={(e) => setSelectedGubun(e.target.value)}>
-            <option value="">선택하세요</option>
-            {citys
+
+      <div className="select-group">
+        <label htmlFor="gubun">구</label>
+        <select id="gubun" value={selectedGubun} onChange={(e) => setSelectedGubun(e.target.value)}>
+          <option value="">선택하세요</option>
+          {selectedCity &&
+            citys
               .find((city) => city.name === selectedCity)
-              .gubuns.map((gubun, index) => (
+              ?.gubuns?.map((gubun, index) => (
                 <option key={index} value={gubun}>
                   {gubun}
                 </option>
               ))}
-          </select>
-        </div>
-      )}
+        </select>
+      </div>
+
 
       {/* 기술 스택 선택 */}
       <div className="checkbox-group">
