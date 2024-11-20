@@ -67,14 +67,9 @@ Meteor.methods({
     return true;
   },
 
-
   saveTechStack: function (stackList) {
     return Meteor.users.update(this.userId, {
       $set: { "profile.techStack": stackList },
     });
   },
-
-
-
 });
-
