@@ -31,6 +31,10 @@ Meteor.methods({
     if (filters.onOffline && filters.onOffline.length > 0) {
       query.onOffline = { $in: filters.onOffline };
     }
+    // 제목 검색 필터 추가 (제목에 두 글자 이상 포함된 경우만)
+    if (filters.title) {
+      query.title = { $regex: filters.title, $options: 'i' }; // 'i'는 대소문자 구분 없이 검색
+    }
 
     // MongoDB에서 쿼리 결과 가져오기
     const results = Study.find(query).fetch();

@@ -28,9 +28,9 @@ const citys = [
 
 // 모집 마감일 형식 함수
 const formatDDay = (studyClose) => {
+  if (!studyClose) return "정보 없음"; // null 또는 undefined 처리
   const today = new Date();
   const closeDay = new Date(studyClose);
-
   const timeDiff = closeDay.getTime() - today.getTime();
   const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 
@@ -47,11 +47,12 @@ export default function Home() {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedGubun, setSelectedGubun] = useState("");
   const [techStack, setTechStack] = useState([]);
-  const [rolesSelected, setRolesSelected] = useState([]);  // 역할을 배열로 관리
-  const [onOffline, setOnOffline] = useState([]); // 온라인/오프라인 상태를 배열로 처리
+  const [rolesSelected, setRolesSelected] = useState([]);
+  const [onOffline, setOnOffline] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
-  const navigate = useNavigate(); // navigate 훅을 사용하여 페이지 이동
+  const navigate = useNavigate();
 
   // 페이지 로딩 시 모든 스터디 데이터를 가져오기
   useEffect(() => {
@@ -65,17 +66,15 @@ export default function Home() {
   }, []); // 빈 배열을 넣어서 컴포넌트가 마운트 될 때 한 번만 호출되도록 함
 
   const handleSearch = () => {
-    // 역할이 백엔드와 프론트엔드 모두 선택되어 있으면 "전체"로 처리
-    // 검색 조건 객체 생성
     const filters = {
-      city: selectedCity,            // 구
-      gubun: selectedGubun,          // 구분 (기존의 gubun을 selectedGubun으로 바꿨습니다)
-      techStack: techStack,          // 기술 스택
-      roles: rolesSelected.length > 0 ? rolesSelected : undefined, // 역할 필터 (전체 혹은 선택된 역할)
-      onOffline: onOffline.length > 0 ? onOffline : undefined // 진행 방식 (배열이 비어있지 않으면 필터에 포함)
+      city: selectedCity,
+      gubun: selectedGubun,
+      techStack: techStack,
+      roles: rolesSelected.length > 0 ? rolesSelected : undefined,
+      onOffline: onOffline.length > 0 ? onOffline : undefined,
+      title: searchQuery.length > 1 ? searchQuery : undefined
     };
 
-    // 서버에서 검색 결과 가져오기
     Meteor.call("searchStudies", filters, (error, results) => {
       if (error) {
         console.error("검색 실패:", error);
@@ -86,8 +85,7 @@ export default function Home() {
   };
 
   const handleViewDetail = (studyId) => {
-    // 해당 studyId로 상세 페이지로 이동
-    navigate(`/study/${studyId}`); // 수정된 부분
+    navigate(`/study/${studyId}`);
   };
 
   const formatLocation = (location) => {
@@ -98,18 +96,16 @@ export default function Home() {
   };
 
   const formatOnOffline = (onOffline) => {
-    // onOffline이 배열일 경우 처리
     if (Array.isArray(onOffline)) {
-      return onOffline.join(", "); // 배열을 문자열로 결합
+      return onOffline.join(", ");
     }
-    return onOffline || "정보 없음"; // 객체가 아니면 그대로 반환
+    return onOffline || "정보 없음";
   };
 
   return (
     <div className="home-container">
       <h1 className="title">스터디 검색</h1>
 
-      {/* 지역, 시 선택 */}
       <div className="select-group">
         <label htmlFor="city">지역</label>
         <select id="city" value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)}>
@@ -121,7 +117,6 @@ export default function Home() {
           ))}
         </select>
       </div>
-
 
       <div className="select-group">
         <label htmlFor="gubun">구</label>
@@ -138,8 +133,6 @@ export default function Home() {
         </select>
       </div>
 
-
-      {/* 기술 스택 선택 */}
       <div className="checkbox-group">
         <label>기술 스택 (최대 5개)</label>
         <div className="checkbox-list">
@@ -169,57 +162,27 @@ export default function Home() {
         {techStack.length >= 5 && <p>최대 5개까지 선택 가능합니다.</p>}
       </div>
 
-      {/* 역할(포지션) 선택 - 체크박스 형식으로 변경 */}
       <div className="checkbox-group">
         <label>역할</label>
-        <div className="checkbox-item">
-          <input
-            type="checkbox"
-            id="backend"
-            value="백엔드"
-            checked={rolesSelected.includes("백엔드")}
-            onChange={(e) => {
-              const value = e.target.value;
-              setRolesSelected((prev) =>
-                prev.includes(value) ? prev.filter((role) => role !== value) : [...prev, value]
-              );
-            }}
-          />
-          <label htmlFor="backend">백엔드</label>
-        </div>
-        <div className="checkbox-item">
-          <input
-            type="checkbox"
-            id="frontend"
-            value="프론트엔드"
-            checked={rolesSelected.includes("프론트엔드")}
-            onChange={(e) => {
-              const value = e.target.value;
-              setRolesSelected((prev) =>
-                prev.includes(value) ? prev.filter((role) => role !== value) : [...prev, value]
-              );
-            }}
-          />
-          <label htmlFor="frontend">프론트엔드</label>
-        </div>
-        <div className="checkbox-item">
-          <input
-            type="checkbox"
-            id="fullstack"
-            value="풀스택"
-            checked={rolesSelected.includes("풀스택")}
-            onChange={(e) => {
-              const value = e.target.value;
-              setRolesSelected((prev) =>
-                prev.includes(value) ? prev.filter((role) => role !== value) : [...prev, value]
-              );
-            }}
-          />
-          <label htmlFor="fullstack">풀스택</label>
-        </div>
+        {roles.map((role, index) => (
+          <div key={index} className="checkbox-item">
+            <input
+              type="checkbox"
+              id={role}
+              value={role}
+              checked={rolesSelected.includes(role)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setRolesSelected((prev) =>
+                  prev.includes(value) ? prev.filter((role) => role !== value) : [...prev, value]
+                );
+              }}
+            />
+            <label htmlFor={role}>{role}</label>
+          </div>
+        ))}
       </div>
 
-      {/* 온라인/오프라인 선택 */}
       <div className="checkbox-group">
         <label>진행 방식</label>
         <div className="checkbox-item">
@@ -269,6 +232,16 @@ export default function Home() {
         </div>
       </div>
 
+      <div className="search-group">
+        <label htmlFor="titleSearch">제목 검색</label>
+        <input
+          type="text"
+          id="titleSearch"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="제목에 포함된 두 글자 이상 입력"
+        />
+      </div>
       <button onClick={handleSearch} className="search-button">검색하기</button>
 
       <div className="search-results">
@@ -276,8 +249,8 @@ export default function Home() {
         {searchResults.length > 0 ? (
           <ul>
             {searchResults.map((result) => {
-              const user = Meteor.users.findOne(result.userId);  // 작성자 정보 가져오기
-              const username = user?.profile?.nickname || user?.username || "알 수 없음";  // 닉네임이나 기본 유저명
+              const user = Meteor.users.findOne(result.userId);
+              const username = user?.profile?.nickname || user?.username || "알 수 없음";
               return (
                 <li key={result._id}>
                   <p>마감일: {formatDDay(result.studyClose)}</p>
