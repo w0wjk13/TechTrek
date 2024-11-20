@@ -48,7 +48,11 @@ export const App = () => {
 
         {/* 로그인하지 않은 사용자가 접근하려는 페이지는 로그인 페이지로 리디렉션 */}
         <Route
-          path="/mypage/*"
+          path="/mypage"
+          element={user ? <MyProfile /> : <Navigate to="/login/main" replace />}
+        />
+        <Route
+          path="/mypage/:userId"
           element={user ? <MyProfile /> : <Navigate to="/login/main" replace />}
         />
         <Route

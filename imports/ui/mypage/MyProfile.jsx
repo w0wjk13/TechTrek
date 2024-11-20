@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTracker } from "meteor/react-meteor-data";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Meteor } from "meteor/meteor";
 import { Link } from "react-router-dom";
 
@@ -31,9 +31,14 @@ const MyProfile = () => {
 
   const [stackList, setStackList] = useState([]);
   const [edit, setEdit] = useState(false);
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
+  const { userId } = useParams();
 
   const user = useTracker(() => Meteor.user());
+  const requestUser = userId ? Meteor.users.findOne(userId) : user;
+  console.log("req:", requestUser);
+  console.log("user:", user);
 
   useEffect(() => {
     if (user?.profile?.techStack) {
@@ -41,8 +46,11 @@ const MyProfile = () => {
     }
   }, []);
 
-  if (!user) {
+  if (!user && !requestUser) {
     return <div>로딩 중...</div>;
+  }
+  if (user && !requestUser) {
+    return <div>해당 사용자를 찾을 수 없습니다</div>;
   }
 
   const addStack = (e) => {
@@ -84,7 +92,9 @@ const MyProfile = () => {
 
   return (
     <>
-      <h2>내 프로필</h2>
+      <h2>
+        {userId ? `${requestUser.profile.nickname}의 프로필` : "내 프로필"}
+      </h2>
       <div>
         <li>
           <Link to="/mypage">프로필</Link>
@@ -93,21 +103,27 @@ const MyProfile = () => {
           <Link to="/mypage/myproject">프로젝트</Link>
         </li>
       </div>
-      {user.profile && user.profile.profilePicture && (
+      {(userId ? requestUser : user).profile.profilePicture && (
         <img
-          src={user.profile.profilePicture}
+          src={(userId ? requestUser : user).profile.profilePicture}
           style={{ width: "100px", height: "100px", borderRadius: "50%" }}
         />
       )}
-      닉네임 : {user.profile.nickname}
+      닉네임 : {(userId ? requestUser : user).profile.nickname}
       <br />
-      이메일 : {user.emails[0].address}
+      이메일 :
+      {(userId ? requestUser : user).emails &&
+        (userId ? requestUser : user).emails[0]?.address}
       <br />
-      <button onClick={profilePage}>프로필 편집</button>
+      {(userId ? requestUser : user)._id === user._id && (
+        <button onClick={profilePage}>프로필 편집</button>
+      )}
       <hr />
       <h3>기술스택</h3>
       자주 사용하는 기술스택을 최대 5개로 설정해 주세요{" "}
-      <button onClick={toggleEdit}>{edit ? "완료" : "수정"}</button>
+      {(userId ? requestUser : user)._id === user._id && (
+        <button onClick={toggleEdit}>{edit ? "완료" : "수정"}</button>
+      )}
       {edit && (
         <div>
           <select
