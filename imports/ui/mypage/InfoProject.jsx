@@ -5,10 +5,14 @@ import { Study } from "/imports/api/collections";
 
 const InfoProject = () => {
   const { studyId } = useParams();
-  const { study, isLoading } = useTracker(() => {
+  const navigate = useNavigate();
+
+  const { user, study, isLoading } = useTracker(() => {
+    const user = Meteor.user();
     const study = Study.findOne(studyId);
 
     return {
+      user: user,
       study: study,
       isLoading: study === undefined,
     };
@@ -20,6 +24,10 @@ const InfoProject = () => {
   if (study === null) {
     return <div>스터디를 찾을 수 없습니다</div>;
   }
+
+  const peopleList = () => {
+    navigate(`/mypage/peopleList/${study._id}`);
+  };
 
   return (
     <>
@@ -39,10 +47,11 @@ const InfoProject = () => {
       <br />
       <hr />
       <h3>팀원 정보</h3>
-      팀장: <br />
+      팀장: {user.profile.nickname}
+      <br />
       팀원:
       <br />
-      <button>팀원 추가</button>
+      <button onClick={peopleList}>팀원 추가</button>
     </>
   );
 };

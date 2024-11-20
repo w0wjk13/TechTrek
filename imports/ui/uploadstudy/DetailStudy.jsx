@@ -85,6 +85,7 @@ const DetailStudy = () => {
     const scoreData = {
       userScore: Meteor.user().profile.avgScore,
       studyScore: study.score,
+      studyId: study._id,
     };
 
     Meteor.call("approveReject", scoreData, (err, rlt) => {

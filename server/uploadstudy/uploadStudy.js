@@ -56,17 +56,6 @@ Meteor.methods({
     return Study.insert(data); //insert된 문서 id 반환
   },
 
-  //조회수 증가
-  viewCount: (id) => {
-    const result = Study.update({ _id: id }, { $inc: { views: 1 } });
-
-    if (result === 0) {
-      throw new Meteor.Error("notFound", "해당 게시물을 찾을 수 없습니다");
-    }
-
-    return true;
-  },
-
   saveTechStack: function (stackList) {
     return Meteor.users.update(this.userId, {
       $set: { "profile.techStack": stackList },
