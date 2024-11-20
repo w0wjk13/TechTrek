@@ -82,5 +82,4 @@ saveTechStack: function (stackList) {
     $set: { "profile.techStack": stackList },
   });
 },
-});
 
