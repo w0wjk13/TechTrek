@@ -34,7 +34,6 @@ const MyProfile = () => {
   const navigate = useNavigate();
 
   const user = useTracker(() => Meteor.user());
-  console.log("myProfile 유저: ", user);
 
   useEffect(() => {
     if (user?.profile?.techStack) {

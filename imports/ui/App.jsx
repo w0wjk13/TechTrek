@@ -22,6 +22,7 @@ import DetailStudy from "./uploadstudy/DetailStudy";
 import MyProfile from "./mypage/MyProfile";
 import EditProfile from "./mypage/EditProfile";
 import MyProject from "./mypage/MyProject";
+import InfoProject from "./mypage/InfoProject";
 
 export const App = () => {
   // 로그인 상태를 확인
@@ -47,9 +48,6 @@ export const App = () => {
         {/* 로그인하지 않은 사용자가 접근하려는 페이지는 로그인 페이지로 리디렉션 */}
         <Route
           path="/mypage/*"
-
-          element={user ? <MyPageNav /> : <Navigate to="/login/main" state={{ from: "/mypage" }} replace />}
-
           element={user ? <MyProfile /> : <Navigate to="/login/main" replace />}
         />
         <Route
@@ -61,17 +59,25 @@ export const App = () => {
           element={
             user ? <EditProfile /> : <Navigate to="/login/main" replace />
           }
-
         />
         <Route
-          path="/study/:id"
+          path="/mypage/info/*"
+          element={
+            user ? <InfoProject /> : <Navigate to="/login/main" replace />
+          }
+        />
 
-          element={user ? <DetailStudy /> : <Navigate to="/login/main" state={{ from: "/study/:id" }} replace />}
+        <Route
+          path="/study/:id"
+          element={
+            user ? <DetailStudy /> : <Navigate to="/login/main" replace />
+          }
         />
         <Route
           path="/uploadstudy/uploadstudy"
-          element={user ? <UploadStudy /> : <Navigate to="/login/main" state={{ from: "/uploadstudy/uploadstudy" }} replace />}
-
+          element={
+            user ? <UploadStudy /> : <Navigate to="/login/main" replace />
+          }
         />
 
         {/* 404 페이지 */}

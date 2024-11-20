@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTracker } from "meteor/react-meteor-data";
 import { Meteor } from "meteor/meteor";
 import { Study } from "/imports/api/collections";
+import "/lib/utils.js";
 
 //작성일 표시 형식
 const formatCreatedAt = (createdAt) => {
@@ -49,16 +50,12 @@ const DetailStudy = () => {
 
   const { study, username, profilePicture, isLoading } = useTracker(() => {
     const study = Study.findOne(id);
-    const user =
-      study && study.userId ? Meteor.users.findOne(study.userId) : null;
-    const username = user?.username || "알 수 없음";
-    const profilePicture =
-      user?.profile?.profilePicture || "/default-profile.jpg"; //default-profile.jpg 기본 이미지로 변경해야
+    const writer = study ? Meteor.users.findOne(study.userId) : null; //글 작성자 가져오기
 
     return {
       study: study,
-      username: username,
-      profilePicture: profilePicture,
+      username: writer?.profile?.nickname,
+      profilePicture: writer?.profile?.profilePicture,
       isLoading: !study,
     };
   });
@@ -82,9 +79,11 @@ const DetailStudy = () => {
     navigate("/");
   };
 
+  const isWriter = study?.userId === Meteor.userId(); //작성자
+
   const joinRequest = () => {
     const scoreData = {
-      userScore: Meteor.user().profile.scores,
+      userScore: Meteor.user().profile.avgScore,
       studyScore: study.score,
     };
 
@@ -125,11 +124,14 @@ const DetailStudy = () => {
       모임형태 : {study.onOffline}
       <br />
       지역 :{" "}
-      {(study.onOffline === "오프라인" ||
-        study.onOffline === "온/오프라인") && (
+      {study.onOffline === "온라인" ? (
+        "없음"
+      ) : (
         <>
-          {study.location.city}{" "}
-          {study.location.gubun && `${study.location.gubun}`}
+          {study.location?.city || ""}
+          {study.location?.city === "서울" && study.location?.gubun
+            ? ` ${study.location.gubun}`
+            : ""}
         </>
       )}
       <br />
@@ -155,7 +157,7 @@ const DetailStudy = () => {
       프로젝트 참여자 목록 {username}
       <br />
       <button onClick={goMain}>목록</button>
-      <button onClick={joinRequest}>참여하기</button>
+      {!isWriter && <button onClick={joinRequest}>참여하기</button>}
     </>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Meteor } from "meteor/meteor";
 import { useNavigate } from "react-router-dom";
+import { useTracker } from "meteor/react-meteor-data";
+import { Meteor } from "meteor/meteor";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
@@ -92,21 +93,10 @@ const UploadStudy = () => {
   const [city, setCity] = useState(""); //사용자가 선택한 지역
   const [gubun, setGubun] = useState("");
 
-  useEffect(() => {
-    const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
-    const loginUser = users.random();
-    console.log("user: ", loginUser);
-
-    if (loginUser) {
-      Meteor.loginWithPassword(loginUser.username, "1234", (err) => {
-        if (err) {
-          console.error("login error: ", err);
-        } else {
-          console.log("로그인 유저: ", loginUser.username);
-        }
-      });
-    }
-  }, []);
+  const { user } = useTracker(() => {
+    return { user: Meteor.user() };
+  });
+  console.log(Meteor.userId());
 
   const cityChange = (e) => {
     setCity(e.target.value);
@@ -193,7 +183,7 @@ const UploadStudy = () => {
 
   return (
     <>
-      <h2>스터디 모집페이지</h2>
+      <h2>프로젝트 모집페이지</h2>
       <form onSubmit={handleSubmit} ref={formRef}>
         <h3>모집 분야</h3>
         <div>
