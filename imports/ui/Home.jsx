@@ -69,7 +69,7 @@ export default function Home() {
     const filters = {
       city: selectedCity,
       gubun: selectedGubun,
-      techStack: techStack,
+      techStack: techStack.length > 0 ? techStack : undefined,
       roles: rolesSelected.length > 0 ? rolesSelected : undefined,
       onOffline: onOffline.length > 0 ? onOffline : undefined,
       title: searchQuery.length > 1 ? searchQuery : undefined
@@ -259,7 +259,8 @@ export default function Home() {
                   <strong>{result.title}</strong><br /><br />
                   <span>역할: {result.roles}</span><br />
                   <span>기술 스택: {result.techStack && Array.isArray(result.techStack) ? result.techStack.join(", ") : "기술 스택 없음"}</span><br />
-                  <span>작성자: {username}</span>
+                  <span>작성자: {username}</span><br />
+                  <span>조회수:{result.views}</span>
                   <button onClick={() => handleViewDetail(result._id)}>상세 보기</button>
                 </li>
               );

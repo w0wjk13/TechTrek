@@ -18,7 +18,7 @@ Meteor.methods({
       query["location.gubun"] = filters.gubun; // location.gubun으로 필터링
     }
     if (filters.techStack && filters.techStack.length > 0) {
-      query.techStack = { $all: filters.techStack }; // 필터링한 기술 스택을 모두 포함하는 항목만
+      query.techStack = { $in: filters.techStack }; // Matches any of the selected tech stacks
     }
 
 
