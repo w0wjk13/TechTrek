@@ -26,6 +26,10 @@ const PeopleList = () => {
     navigate(`/mypage/${userId}`);
   };
 
+  const approve = (userId) => {
+    Meteor.call("approve", userId);
+  };
+
   return (
     <>
       <h2>신청자 목록</h2>
@@ -43,7 +47,7 @@ const PeopleList = () => {
             />
             {user.profile?.nickname}
             <button onClick={() => goProfile(user._id)}>프로필</button>
-            <button>승인</button>
+            <button onClick={() => approve(user._id)}>승인</button>
             <button>거절</button>
           </li>
         ))}

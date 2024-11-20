@@ -41,10 +41,16 @@ const MyProfile = () => {
   console.log("user:", user);
 
   useEffect(() => {
-    if (user?.profile?.techStack) {
-      setStackList(user.profile.techStack);
+    if (userId) {
+      if (requestUser?.profile?.techStack) {
+        setStackList(requestUser.profile.techStack);
+      }
+    } else {
+      if (user?.profile?.techStack) {
+        setStackList(user.profile.techStack);
+      }
     }
-  }, []);
+  }, [userId]);
 
   if (!user && !requestUser) {
     return <div>로딩 중...</div>;
@@ -144,11 +150,13 @@ const MyProfile = () => {
       )}
       <br />
       {stackList.map((stack, index) => (
-        <span key={index}>
+        <span key={index} style={{ marginRight: "10px" }}>
           {stack}
-          <button type="button" onClick={() => removeStack(stack)}>
-            X
-          </button>
+          {(userId ? requestUser : user)._id === user._id && edit && (
+            <button type="button" onClick={() => removeStack(stack)}>
+              X
+            </button>
+          )}
         </span>
       ))}
       <hr />
