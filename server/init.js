@@ -105,7 +105,7 @@ if (!Meteor.users.findOne({ username: "admin" })) {
 
 //admin 외에 다른 사용자가 없다면
 if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 20; i++) {
     Accounts.createUser({
       password: "1234",
       email: `user${i}@example.com`,
@@ -132,19 +132,20 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
 
 //스터디 모집글이 없다면
 if (!Study.findOne()) {
-  for (let i = 0; i < 5; i++) {
-    const user = Meteor.users.findOne();
+  for (let i = 0; i < 10; i++) {
+    const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
+    const user = users.random();
 
-    const randomWeeks = [7, 14, 21, 28].random(); //7, 14, 21, 28일 랜덤 선택
-    const studyClose = new Date(); //모집마감일
     //Study문서 생성일을 기준으로 랜덤으로 1주~4주 후를 모집마감일로 설정
+    const randomWeeks = [7, 14, 21, 28].random();
+    const studyClose = new Date();
     studyClose.setDate(studyClose.getDate() + randomWeeks);
 
     const scoreFields = [
       "manner",
       "mentoring",
       "passion",
-      "communcation",
+      "communication",
       "time",
     ];
 
@@ -157,17 +158,12 @@ if (!Study.findOne()) {
       score[need] = [1, 2, 3, 4].random();
     });
 
+    //글 작성자는 항상 첫번째 팀원이 됨
     const teamMember = [user._id];
-
-    //팀원이 2명 이상이 되면 시작, 마감도 설정. 팀원이 1명(작성 시점)이면 모집중
-    let status = "모집중";
-    if (teamMember.length >= 2) {
-      status = ["모집중", "시작", "마감"].random();
-    }
 
     Study.insert({
       userId: user._id,
-      roles: user._id.roles,
+      roles: ["전체", "백엔드", "프론트엔드"].random(),
       onOffline: ["온라인", "오프라인", "온/오프라인"].random(),
       address: randomAddress(),
       studyCount: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].random(), //총 모집인원
@@ -178,7 +174,7 @@ if (!Study.findOne()) {
       content: "내용" + i,
       createdAt: new Date(),
       views: i,
-      status: status,
+      status: "모집중",
       teamMember: teamMember,
     });
   }
@@ -186,7 +182,7 @@ if (!Study.findOne()) {
 
 //스터디 신청자가 없다면
 if (!StudyUser.findOne()) {
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 6; i++) {
     const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
 
     //스터디가 요구하는 역량에 부합하는 사용자만 신청 가능하도록 설정
@@ -196,25 +192,29 @@ if (!StudyUser.findOne()) {
         const studyScore = study.score;
 
         let okUser = 0; //각 스터디에 승인된 유저를 카운트하기 위한 변수
-        console.log(
-          `스터디 제목: ${study.title}, 팀원 수: ${study.teamMember.length}, 스터디 모집 인원: ${study.studyCount}`
-        );
-
         users.forEach((user) => {
-          console.log(user);
           const userScore = user.profile.score;
 
-          let canJoin = true;
+          //특정 스터디에 이미 지원한 유저가 중복 지원할 수 없도록 설정
+          const isExist = StudyUser.findOne({
+            studyId: study._id,
+            userId: user._id,
+          });
+
+          if (isExist) {
+            return;
+          }
 
           //스터디에서 요구하는 역량/점수와 유저의 역량/점수 비교
-          for (let key in studyScore) {
+          let canJoin = true;
+          for (key in studyScore) {
             if (userScore[key] < studyScore[key]) {
               canJoin = false;
               break;
             }
           }
 
-          //스터디에 신청 가능 && 모집인원(studyCount) 수만큼 승인된 유저(okUser)를 모으지 않았다면
+          //스터디에 신청 가능한 okUser의 수가 스터디 모집인원(studyCount)을 넘지 않았다면
           if (canJoin && okUser < study.studyCount - 1) {
             const status = ["대기중", "승인됨", "거절됨"].random();
 
@@ -224,7 +224,7 @@ if (!StudyUser.findOne()) {
               status: status,
             });
 
-            //승인된 유저는 Study의 팀원 목록에 올라감
+            //승인된 유저는 Study의 팀원(teamMember) 목록에 올라감
             if (status === "승인됨") {
               Study.update(
                 { _id: study._id },
@@ -232,16 +232,20 @@ if (!StudyUser.findOne()) {
               );
               okUser++;
               console.log(
-                `유저 ${user.username} 추가됨, 승인된 유저 수: ${okUser}`
+                `Study: ${study.title} - 승인유저: ${user.profile.name}`
               );
             }
           }
         });
 
-        const updatedStudy = Study.findOne(study._id);
-        console.log(
-          `스터디 ${study.title}의 최종 teamMember: ${updatedStudy.teamMember.length}`
-        );
+        //팀원(teamMember) 수가 1이면 무조건 status는 모집중이지만 2 이상이면 시작, 마감, 모집중 중에 하나를 가짐
+        const statusChange = Study.findOne(study._id);
+        if (statusChange.teamMember.length >= 2) {
+          Study.update(
+            { _id: study._id },
+            { $set: { status: ["모집중", "시작", "마감"].random() } }
+          );
+        }
       });
   }
 }
