@@ -260,7 +260,6 @@ export default function Home() {
       <div className="search-results">
         <h2>검색 결과</h2>
         <div className="select-group">
-
           <select
             id="sortOption"
             value={sortOption}
@@ -271,62 +270,65 @@ export default function Home() {
             <option value="deadline">마감일 순</option>
           </select>
         </div>
+
         {searchResults.length > 0 ? (
-          <ul>
-            {searchResults.map((result) => {
-              const user = Meteor.users.findOne(result.userId);
-              const username = user?.profile?.nickname || user?.username || "알 수 없음";
-              return (
-                <li key={result._id}>
-                  <p>마감일: {formatDDay(result.studyClose)}</p>
-                  <span>지역: {formatLocation(result.location)}</span><br />
-                  <span>진행방식: {formatOnOffline(result.onOffline)}</span><br />
-                  <strong>{result.title}</strong><br /><br />
-                  <span>역할: {result.roles}</span><br />
-                  <span>기술 스택: {result.techStack && Array.isArray(result.techStack) ? result.techStack.join(", ") : "기술 스택 없음"}</span><br />
-                  <span>작성자: {username}</span><br />
-                  <span>조회수:{result.views}</span>
-                  <button onClick={() => handleViewDetail(result._id)}>상세 보기</button>
-                </li>
-              );
-            })}
-          </ul>
+          <>
+            <ul>
+              {searchResults.map((result) => {
+                const user = Meteor.users.findOne(result.userId);
+                const username = user?.profile?.nickname || user?.username || "알 수 없음";
+                return (
+                  <li key={result._id}>
+                    <p>마감일: {formatDDay(result.studyClose)}</p>
+                    <span>지역: {formatLocation(result.location)}</span><br />
+                    <span>진행방식: {formatOnOffline(result.onOffline)}</span><br />
+                    <strong>{result.title}</strong><br /><br />
+                    <span>역할: {result.roles}</span><br />
+                    <span>기술 스택: {result.techStack && Array.isArray(result.techStack) ? result.techStack.join(", ") : "기술 스택 없음"}</span><br />
+                    <span>작성자: {username}</span><br />
+                    <span>조회수: {result.views}</span>
+                    <button onClick={() => handleViewDetail(result._id)}>상세 보기</button>
+                  </li>
+                );
+              })}
+            </ul>
+
+            {/* Pagination Controls */}
+            <div className="pagination">
+              {/* Previous Link */}
+              <a
+                href="#"
+                onClick={() => handlePageChange(currentPage - 1)}
+                className={currentPage === 1 ? "disabled" : ""}
+              >
+                이전
+              </a>
+              &nbsp;
+              {/* Page Numbers */}
+              {[...Array(totalPages)].map((_, index) => (
+                <a
+                  key={index + 1}
+                  href="#"
+                  onClick={() => handlePageChange(index + 1)}
+                  className={index + 1 === currentPage ? "active" : ""}
+                >
+                  {index + 1}&nbsp;
+                </a>
+              ))}
+              &nbsp;
+              {/* Next Link */}
+              <a
+                href="#"
+                onClick={() => handlePageChange(currentPage + 1)}
+                className={currentPage === totalPages ? "disabled" : ""}
+              >
+                다음
+              </a>
+            </div>
+          </>
         ) : (
           <p>검색 결과가 없습니다.</p>
         )}
-      </div>
-
-      {/* Pagination Controls */}
-      <div className="pagination">
-        {/* Previous Link */}
-        <a
-          href="#"
-          onClick={() => handlePageChange(currentPage - 1)}
-          className={currentPage === 1 ? "disabled" : ""}
-        >
-          이전
-        </a>
-        &nbsp;
-        {/* Page Numbers */}
-        {[...Array(totalPages)].map((_, index) => (
-          <a
-            key={index + 1}
-            href="#"
-            onClick={() => handlePageChange(index + 1)}
-            className={index + 1 === currentPage ? "active" : ""}
-          >
-            {index + 1}&nbsp;
-          </a>
-        ))}
-        &nbsp;
-        {/* Next Link */}
-        <a
-          href="#"
-          onClick={() => handlePageChange(currentPage + 1)}
-          className={currentPage === totalPages ? "disabled" : ""}
-        >
-          다음
-        </a>
       </div>
     </div>
   );
