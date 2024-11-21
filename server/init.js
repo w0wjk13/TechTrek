@@ -92,6 +92,9 @@ const randomNumber = () => {
   return [0, 1, 2, 3, 4, 5, 6, 7, 9].random(4).join("");
 };
 
+Study.remove({});
+StudyUser.remove({});
+
 //admin 생성
 if (!Meteor.users.findOne({ username: "admin" })) {
   Accounts.createUser({
@@ -102,7 +105,7 @@ if (!Meteor.users.findOne({ username: "admin" })) {
 
 //admin 외에 다른 사용자가 없다면
 if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
-  for (let i = 1; i <= 50; i++) {
+  for (let i = 1; i <= 10; i++) {
     Accounts.createUser({
       password: "1234",
       email: `user${i}@example.com`,
@@ -129,7 +132,7 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
 
 //스터디 모집글이 없다면
 if (!Study.findOne()) {
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 5; i++) {
     const user = Meteor.users.findOne();
 
     const randomWeeks = [7, 14, 21, 28].random(); //7, 14, 21, 28일 랜덤 선택
@@ -181,9 +184,9 @@ if (!Study.findOne()) {
   }
 }
 
-// //스터디 신청자가 없다면
+//스터디 신청자가 없다면
 if (!StudyUser.findOne()) {
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 3; i++) {
     const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
 
     //스터디가 요구하는 역량에 부합하는 사용자만 신청 가능하도록 설정
@@ -193,8 +196,12 @@ if (!StudyUser.findOne()) {
         const studyScore = study.score;
 
         let okUser = 0; //각 스터디에 승인된 유저를 카운트하기 위한 변수
+        console.log(
+          `스터디 제목: ${study.title}, 팀원 수: ${study.teamMember.length}, 스터디 모집 인원: ${study.studyCount}`
+        );
 
         users.forEach((user) => {
+          console.log(user);
           const userScore = user.profile.score;
 
           let canJoin = true;
@@ -224,9 +231,17 @@ if (!StudyUser.findOne()) {
                 { $addToSet: { teamMember: user._id } }
               );
               okUser++;
+              console.log(
+                `유저 ${user.username} 추가됨, 승인된 유저 수: ${okUser}`
+              );
             }
           }
         });
+
+        const updatedStudy = Study.findOne(study._id);
+        console.log(
+          `스터디 ${study.title}의 최종 teamMember: ${updatedStudy.teamMember.length}`
+        );
       });
   }
 }
