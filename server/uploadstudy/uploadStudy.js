@@ -1,5 +1,6 @@
 import { Study } from "/imports/api/collections";
 import { Meteor } from "meteor/meteor";
+import { StudyGroup } from "/imports/api/collections";
 
 Meteor.methods({
   //스터디 모집글 작성
@@ -52,19 +53,17 @@ Meteor.methods({
       createdAt: new Date(),
       views: 0,
     };
+    const studyId = Study.insert(data); //insert된 문서 id 반환
 
-    return Study.insert(data); //insert된 문서 id 반환
-  },
+    StudyGroup.insert({
+      studyId: studyId,
+      teamMember: [this.userId],
+      status: "모집중",
+      startDate: null,
+      endDate: null,
+    });
 
-  //조회수 증가
-  viewCount: (id) => {
-    const result = Study.update({ _id: id }, { $inc: { views: 1 } });
-
-    if (result === 0) {
-      throw new Meteor.Error("notFound", "해당 게시물을 찾을 수 없습니다");
-    }
-
-    return true;
+    return studyId;
   },
 
   saveTechStack: function (stackList) {

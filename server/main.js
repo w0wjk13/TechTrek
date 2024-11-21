@@ -9,3 +9,5 @@ import "./init.js";
 import "./uploadstudy/uploadStudy.js";
 import "./uploadstudy/detailStudy.js";
 import "./home.js";
+import "./mypage/myProfile.js";
+import "./mypage/peopleList.js";

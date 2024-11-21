@@ -23,6 +23,7 @@ import MyProfile from "./mypage/MyProfile";
 import EditProfile from "./mypage/EditProfile";
 import MyProject from "./mypage/MyProject";
 import InfoProject from "./mypage/InfoProject";
+import PeopleList from "./mypage/PeopleList";
 
 export const App = () => {
   // 로그인 상태를 확인
@@ -47,7 +48,11 @@ export const App = () => {
 
         {/* 로그인하지 않은 사용자가 접근하려는 페이지는 로그인 페이지로 리디렉션 */}
         <Route
-          path="/mypage/*"
+          path="/mypage"
+          element={user ? <MyProfile /> : <Navigate to="/login/main" replace />}
+        />
+        <Route
+          path="/mypage/:userId"
           element={user ? <MyProfile /> : <Navigate to="/login/main" replace />}
         />
         <Route
@@ -61,9 +66,15 @@ export const App = () => {
           }
         />
         <Route
-          path="/mypage/info/*"
+          path="/mypage/info/:studyId"
           element={
             user ? <InfoProject /> : <Navigate to="/login/main" replace />
+          }
+        />
+        <Route
+          path="/mypage/peopleList/:studyId"
+          element={
+            user ? <PeopleList /> : <Navigate to="/login/main" replace />
           }
         />
 
