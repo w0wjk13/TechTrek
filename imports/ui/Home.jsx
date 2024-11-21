@@ -28,7 +28,7 @@ const citys = [
 
 // 모집 마감일 형식 함수
 const formatDDay = (studyClose) => {
-  if (!studyClose) return "정보 없음"; // null 또는 undefined 처리
+  if (!studyClose) return "정보 없음";
   const today = new Date();
   const closeDay = new Date(studyClose);
   const timeDiff = closeDay.getTime() - today.getTime();
@@ -51,21 +51,18 @@ export default function Home() {
   const [onOffline, setOnOffline] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-
+  const [totalPages, setTotalPages] = useState(1); // Track total pages
+  const [currentPage, setCurrentPage] = useState(1); // Track current page
+  const [totalResults, setTotalResults] = useState(0); // Track total results
+  const [sortOption, setSortOption] = useState("recent");
   const navigate = useNavigate();
 
   // 페이지 로딩 시 모든 스터디 데이터를 가져오기
   useEffect(() => {
-    Meteor.call("getAllStudies", (error, results) => {
-      if (error) {
-        console.error("모든 데이터 로드 실패:", error);
-      } else {
-        setSearchResults(results);
-      }
-    });
-  }, []); // 빈 배열을 넣어서 컴포넌트가 마운트 될 때 한 번만 호출되도록 함
+    fetchSearchResults(currentPage, sortOption);
+  }, [currentPage, sortOption]); // Add sortOption as a dependency
 
-  const handleSearch = () => {
+  const fetchSearchResults = (page, sortBy) => {
     const filters = {
       city: selectedCity,
       gubun: selectedGubun,
@@ -75,13 +72,29 @@ export default function Home() {
       title: searchQuery.length > 1 ? searchQuery : undefined
     };
 
-    Meteor.call("searchStudies", filters, (error, results) => {
+    Meteor.call("searchStudies", filters, page, 5, sortBy, (error, results) => {
       if (error) {
         console.error("검색 실패:", error);
       } else {
-        setSearchResults(results);
+        setSearchResults(results.results);
+        setTotalResults(results.total);
+        setTotalPages(results.totalPages);
       }
     });
+  };
+
+  const handleSearch = () => {
+    setCurrentPage(1); // Reset to first page on new search
+    fetchSearchResults(1, sortOption); // Fetch results for page 1
+  };
+  const handleSortChange = (e) => {
+    setSortOption(e.target.value); // Update sorting option
+  };
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
   const handleViewDetail = (studyId) => {
@@ -239,13 +252,25 @@ export default function Home() {
           id="titleSearch"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="제목에 포함된 두 글자 이상 입력"
+          placeholder="제목을 입력해보세요"
         />
       </div>
       <button onClick={handleSearch} className="search-button">검색하기</button>
 
       <div className="search-results">
         <h2>검색 결과</h2>
+        <div className="select-group">
+
+          <select
+            id="sortOption"
+            value={sortOption}
+            onChange={handleSortChange}
+          >
+            <option value="recent">최근 등록순</option>
+            <option value="views">조회순</option>
+            <option value="deadline">마감일 순</option>
+          </select>
+        </div>
         {searchResults.length > 0 ? (
           <ul>
             {searchResults.map((result) => {
@@ -269,6 +294,39 @@ export default function Home() {
         ) : (
           <p>검색 결과가 없습니다.</p>
         )}
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="pagination">
+        {/* Previous Link */}
+        <a
+          href="#"
+          onClick={() => handlePageChange(currentPage - 1)}
+          className={currentPage === 1 ? "disabled" : ""}
+        >
+          이전
+        </a>
+        &nbsp;
+        {/* Page Numbers */}
+        {[...Array(totalPages)].map((_, index) => (
+          <a
+            key={index + 1}
+            href="#"
+            onClick={() => handlePageChange(index + 1)}
+            className={index + 1 === currentPage ? "active" : ""}
+          >
+            {index + 1}&nbsp;
+          </a>
+        ))}
+        &nbsp;
+        {/* Next Link */}
+        <a
+          href="#"
+          onClick={() => handlePageChange(currentPage + 1)}
+          className={currentPage === totalPages ? "disabled" : ""}
+        >
+          다음
+        </a>
       </div>
     </div>
   );
