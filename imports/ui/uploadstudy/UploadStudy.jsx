@@ -149,9 +149,9 @@ const UploadStudy = () => {
     if (Meteor.userId()) {
       console.log(Meteor.userId());
       const uploadData = {
-        roles: formData.get("roles"), //모집분야(프론트/백)
+        position: formData.get("position"), //모집분야(프론트/백)
         onOffline: studyType, //모집형태(온/오프라인)
-        location: {
+        address: {
           city: city,
           gubun: city === "서울" ? gubun : null,
         },
@@ -191,18 +191,23 @@ const UploadStudy = () => {
             <input
               type="radio"
               id="all"
-              name="roles"
+              name="position"
               value="풀스택"
               defaultChecked
             />
             <label htmlFor="all">풀스택</label>
           </div>
           <div>
-            <input type="radio" id="frontend" name="roles" value="프론트엔드" />
+            <input
+              type="radio"
+              id="frontend"
+              name="position"
+              value="프론트엔드"
+            />
             <label htmlFor="frontend">프론트엔드</label>
           </div>
           <div>
-            <input type="radio" id="backend" name="roles" value="백엔드" />
+            <input type="radio" id="backend" name="position" value="백엔드" />
             <label htmlFor="backend">백엔드</label>
           </div>
         </div>
@@ -245,7 +250,7 @@ const UploadStudy = () => {
 
           {(studyType === "오프라인" || studyType === "온/오프라인") && (
             <>
-              <select name="location" value={city} onChange={cityChange}>
+              <select name="address" value={city} onChange={cityChange}>
                 <option value="" disabled>
                   지역 선택
                 </option>
