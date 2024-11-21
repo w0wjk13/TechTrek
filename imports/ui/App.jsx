@@ -25,17 +25,15 @@ import MyProject from "./mypage/MyProject";
 import InfoProject from "./mypage/InfoProject";
 import PeopleList from "./mypage/PeopleList";
 
-export const App = () => {
-  // 로그인 상태를 확인
-  const { user } = useTracker(() => ({
+const App = () => {
+  const { loggingIn, user } = useTracker(() => ({
+    loggingIn: Meteor.loggingIn(),
     user: Meteor.user(),
   }));
-
   return (
     <Router>
       <Nav />
       <Routes>
-        {/* 홈 페이지는 로그인하지 않은 사용자도 접근 가능 */}
         <Route path="/" element={<Home />} />
 
         {/* 로그인 페이지들 */}
@@ -46,50 +44,32 @@ export const App = () => {
           <Route path="fwfind" element={<LoginFwFind />} />
         </Route>
 
-        {/* 로그인하지 않은 사용자가 접근하려는 페이지는 로그인 페이지로 리디렉션 */}
-        <Route
-          path="/mypage"
-          element={user ? <MyProfile /> : <Navigate to="/login/main" replace />}
-        />
-        <Route
-          path="/mypage/:userId"
-          element={user ? <MyProfile /> : <Navigate to="/login/main" replace />}
-        />
-        <Route
-          path="/mypage/myproject"
-          element={user ? <MyProject /> : <Navigate to="/login/main" replace />}
-        />
-        <Route
-          path="/mypage/editProfile"
-          element={
-            user ? <EditProfile /> : <Navigate to="/login/main" replace />
-          }
-        />
-        <Route
-          path="/mypage/info/:studyId"
-          element={
-            user ? <InfoProject /> : <Navigate to="/login/main" replace />
-          }
-        />
-        <Route
-          path="/mypage/peopleList/:studyId"
-          element={
-            user ? <PeopleList /> : <Navigate to="/login/main" replace />
-          }
-        />
-
-        <Route
-          path="/study/:id"
-          element={
-            user ? <DetailStudy /> : <Navigate to="/login/main" replace />
-          }
-        />
-        <Route
-          path="/uploadstudy/uploadstudy"
-          element={
-            user ? <UploadStudy /> : <Navigate to="/login/main" replace />
-          }
-        />
+        {/* 로그인하지 않은 사용자에게만 리디렉션 처리 */}
+        {!user ? (
+          <>
+            <Route path="/mypage" element={<MyProfile />} />
+            <Route path="/mypage/:userId" element={<MyProfile />} />
+            <Route path="/mypage/myproject" element={<MyProject />} />
+            <Route path="/mypage/editProfile" element={<EditProfile />} />
+            <Route path="/mypage/info/:studyId" element={<InfoProject />} />
+            <Route path="/mypage/peopleList/:studyId" element={<PeopleList />} />
+            <Route path="/study/:id" element={<DetailStudy />} />
+            <Route path="/uploadstudy/uploadstudy" element={<UploadStudy />} />
+            <Route path="*" element={<Navigate to="/login/main" replace />} />
+          </>
+        ) : (
+          <>
+            {/* 로그인된 사용자에게만 접근 가능한 페이지들 */}
+            <Route path="/mypage" element={<MyProfile />} />
+            <Route path="/mypage/:userId" element={<MyProfile />} />
+            <Route path="/mypage/myproject" element={<MyProject />} />
+            <Route path="/mypage/editProfile" element={<EditProfile />} />
+            <Route path="/mypage/info/:studyId" element={<InfoProject />} />
+            <Route path="/mypage/peopleList/:studyId" element={<PeopleList />} />
+            <Route path="/study/:id" element={<DetailStudy />} />
+            <Route path="/uploadstudy/uploadstudy" element={<UploadStudy />} />
+          </>
+        )}
 
         {/* 404 페이지 */}
         <Route path="*" element={<NotFound />} />
@@ -97,3 +77,5 @@ export const App = () => {
     </Router>
   );
 };
+
+export default App;
