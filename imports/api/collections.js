@@ -6,7 +6,7 @@ export const Study = new Mongo.Collection("studys");
 export const StudyNotifications = new Mongo.Collection("studyNotifications");
 //export const StandBy = new Mongo.Collection("standbys");
 //export const StudyGroup = new Mongo.Collection("studyGroups");
-export const Applicant = new Mongo.Collection("applicants");
+export const StudyUser = new Mongo.Collection("studyUsers");
 
 export const Files = new FilesCollection({
   //FilesCollection 파일 업로드 기능을 제공하는 컬렉션

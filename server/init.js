@@ -1,6 +1,5 @@
 import { Study } from "/imports/api/collections";
-import { Applicant } from "/imports/api/collections";
-
+import { StudyUser } from "/imports/api/collections";
 import "/lib/utils.js";
 
 //시/도 목록
@@ -103,7 +102,7 @@ if (!Meteor.users.findOne({ username: "admin" })) {
 
 //admin 외에 다른 사용자가 없다면
 if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
-  for (let i = 1; i <= 200; i++) {
+  for (let i = 1; i <= 50; i++) {
     Accounts.createUser({
       password: "1234",
       email: `user${i}@example.com`,
@@ -130,7 +129,7 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
 
 //스터디 모집글이 없다면
 if (!Study.findOne()) {
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 30; i++) {
     const user = Meteor.users.findOne();
 
     const randomWeeks = [7, 14, 21, 28].random(); //7, 14, 21, 28일 랜덤 선택
@@ -183,8 +182,8 @@ if (!Study.findOne()) {
 }
 
 // //스터디 신청자가 없다면
-if (!Applicant.findOne()) {
-  for (let i = 0; i < 50; i++) {
+if (!StudyUser.findOne()) {
+  for (let i = 0; i < 15; i++) {
     const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
 
     //스터디가 요구하는 역량에 부합하는 사용자만 신청 가능하도록 설정
@@ -193,47 +192,38 @@ if (!Applicant.findOne()) {
       .forEach((study) => {
         const studyScore = study.score;
 
+        let okUser = 0; //각 스터디에 승인된 유저를 카운트하기 위한 변수
+
         users.forEach((user) => {
           const userScore = user.profile.score;
 
-          let canJoin = false;
+          let canJoin = true;
 
           //스터디에서 요구하는 역량/점수와 유저의 역량/점수 비교
           for (let key in studyScore) {
-            if (userScore[key] >= studyScore[key]) {
-              canJoin = true;
+            if (userScore[key] < studyScore[key]) {
+              canJoin = false;
               break;
             }
           }
 
-          //스터디에 신청이 가능하다면
-          if (canJoin) {
-            //승인된 유저의 수는 studyCount-1을 넘을 수 없음
-            const okUser = Applicant.find({
+          //스터디에 신청 가능 && 모집인원(studyCount) 수만큼 승인된 유저(okUser)를 모으지 않았다면
+          if (canJoin && okUser < study.studyCount - 1) {
+            const status = ["대기중", "승인됨", "거절됨"].random();
+
+            StudyUser.insert({
               studyId: study._id,
-              status: "승인됨",
-            }).count();
+              userId: user._id,
+              status: status,
+            });
 
-            if (okUser < study.studycount - 1) {
-              const status = ["대기중", "승인됨", "거절됨"].random();
-
-              try {
-                Applicant.insert({
-                  studyId: study._id,
-                  userId: user._id,
-                  status: status,
-                });
-              } catch (error) {
-                console.error("Applicant error: ", error);
-              }
-
-              //승인된 유저는 Study의 팀원 목록에 올라감
-              if (status === "승인됨") {
-                Study.update(
-                  { _id: study._id },
-                  { $addToSet: { teamMember: user._id } }
-                );
-              }
+            //승인된 유저는 Study의 팀원 목록에 올라감
+            if (status === "승인됨") {
+              Study.update(
+                { _id: study._id },
+                { $addToSet: { teamMember: user._id } }
+              );
+              okUser++;
             }
           }
         });
