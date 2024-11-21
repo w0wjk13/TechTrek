@@ -60,7 +60,7 @@ export default function Home() {
   // 페이지 로딩 시 모든 스터디 데이터를 가져오기
   useEffect(() => {
     fetchSearchResults(currentPage, sortOption);
-  }, [currentPage, sortOption]); // Add sortOption as a dependency
+  }, [currentPage, sortOption]);
 
   const fetchSearchResults = (page, sortBy) => {
     const filters = {
