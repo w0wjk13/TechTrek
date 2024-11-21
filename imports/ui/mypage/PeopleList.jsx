@@ -27,7 +27,13 @@ const PeopleList = () => {
   };
 
   const approve = (userId) => {
-    Meteor.call("approve", userId);
+    Meteor.call("approve", studyId, userId, (err, rlt) => {
+      if (err) {
+        console.error("approve 중 오류 발생: ", err);
+      } else {
+        alert("승인되었습니다");
+      }
+    });
   };
 
   return (
