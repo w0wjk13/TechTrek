@@ -48,17 +48,26 @@ const DetailStudy = () => {
   const { id } = useParams(); //insert id
   const navigate = useNavigate();
 
-  const { study, username, profilePicture, isLoading } = useTracker(() => {
-    const study = Study.findOne(id);
-    const writer = study ? Meteor.users.findOne(study.userId) : null; //글 작성자 가져오기
+  const { study, username, profilePicture, teamMembers, isLoading } =
+    useTracker(() => {
+      const study = Study.findOne(id);
+      const writer = study ? Meteor.users.findOne(study.userId) : null; //글 작성자 가져오기
+      let teamMembers = [];
 
-    return {
-      study: study,
-      username: writer?.profile?.nickname,
-      profilePicture: writer?.profile?.profilePicture,
-      isLoading: !study,
-    };
-  });
+      if (study && study.teamMember) {
+        teamMembers = Meteor.users
+          .find({ _id: { $in: study.teamMember } })
+          .fetch();
+      }
+
+      return {
+        study: study,
+        username: writer?.profile?.nickname,
+        profilePicture: writer?.profile?.profilePicture,
+        teamMembers: teamMembers,
+        isLoading: !study || !study.teamMember,
+      };
+    });
 
   useEffect(() => {
     console.log(Meteor.userId());
@@ -71,7 +80,7 @@ const DetailStudy = () => {
     }
   }, []);
 
-  if (isLoading) {
+  if (isLoading || !study || !study.teamMember) {
     return <div>로딩 중</div>;
   }
 
@@ -156,7 +165,10 @@ const DetailStudy = () => {
       <hr />
       내용 : {study.content}
       <hr />
-      프로젝트 참여자 목록 {username}
+      프로젝트 참여자 목록{" "}
+      {teamMembers.map((member) => (
+        <li key={member._id}>{member.profile.nickname}</li>
+      ))}
       <br />
       <button onClick={goMain}>목록</button>
       {!isWriter && <button onClick={joinRequest}>참여하기</button>}
