@@ -35,7 +35,7 @@ Meteor.methods({
           if (!uploadData.address.city) {
             throw new Meteor.Error("validationError", message);
           }
-          if (uploadData.address.city === "서울" && !uploadData.address.gubun) {
+          if (!uploadData.address.gubun) {
             throw new Meteor.Error("validationError", "구를 선택해 주세요");
           }
         }
@@ -50,16 +50,9 @@ Meteor.methods({
       createdAt: new Date(),
       views: 0,
       status: "모집중",
+      teamMember: [this.userId],
     };
     const studyId = Study.insert(data); //insert된 문서 id 반환
-
-    StudyUser.insert({
-      studyId: studyId,
-      teamMember: [this.userId],
-      status: "모집중",
-      startDate: null,
-      endDate: null,
-    });
 
     return studyId;
   },
