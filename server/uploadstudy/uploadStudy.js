@@ -6,9 +6,9 @@ Meteor.methods({
   //스터디 모집글 작성
   insert: function (uploadData) {
     const validationMessage = {
-      roles: "모집 분야를 선택해 주세요",
+      position: "모집 분야를 선택해 주세요",
       onOffline: "모임 형태를 선택해 주세요",
-      location: "지역을 선택해 주세요",
+      address: "지역을 선택해 주세요",
       studyCount: "모집 인원을 선택해 주세요",
       techStack: "기술스택을 최소 1개 선택해 주세요",
       studyClose: "모집마감일을 선택해 주세요",
@@ -27,18 +27,15 @@ Meteor.methods({
         if (!uploadData[field] || Object.keys(uploadData[field]).length === 0) {
           throw new Meteor.Error("validationError", message);
         }
-      } else if (field === "location") {
+      } else if (field === "address") {
         if (
           uploadData.onOffline === "오프라인" ||
           uploadData.onOffline === "온/오프라인"
         ) {
-          if (!uploadData.location.city) {
+          if (!uploadData.address.city) {
             throw new Meteor.Error("validationError", message);
           }
-          if (
-            uploadData.location.city === "서울" &&
-            !uploadData.location.gubun
-          ) {
+          if (uploadData.address.city === "서울" && !uploadData.address.gubun) {
             throw new Meteor.Error("validationError", "구를 선택해 주세요");
           }
         }
