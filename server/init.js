@@ -163,7 +163,7 @@ if (!Study.findOne()) {
 
     Study.insert({
       userId: user._id,
-      roles: ["전체", "백엔드", "프론트엔드"].random(),
+      roles: ["풀스택", "백엔드", "프론트엔드"].random(),
       onOffline: ["온라인", "오프라인", "온/오프라인"].random(),
       address: randomAddress(),
       studyCount: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].random(), //총 모집인원
