@@ -10,7 +10,6 @@ import { Meteor } from "meteor/meteor";
 
 import Home from "./Home.jsx";
 import NotFound from "./NotFound.jsx";
-
 import Nav from "./Nav.jsx";
 import LoginForm from "./login/LoginForm.jsx";
 import LoginIdFind from "./login/LoginIdFind.jsx";
@@ -25,17 +24,22 @@ import MyProject from "./mypage/MyProject";
 import InfoProject from "./mypage/InfoProject";
 import PeopleList from "./mypage/PeopleList";
 
-export const App = () => {
-  // 로그인 상태를 확인
-  const { user } = useTracker(() => ({
-    user: Meteor.user(),
-  }));
+// PrivateRoute 컴포넌트: 로그인 여부에 따라 보호된 경로에 접근을 제어
+const PrivateRoute = ({ element }) => {
+  const userId = Meteor.userId(); // 로그인된 사용자의 ID
+  if (!userId) {
+    // 로그인하지 않은 사용자는 로그인 페이지로 리디렉션
+    return <Navigate to="/login/main" replace />;
+  }
+  return element; // 로그인한 사용자는 해당 컴포넌트를 렌더링
+};
 
+export const App = () => {
   return (
     <Router>
       <Nav />
       <Routes>
-        {/* 홈 페이지는 로그인하지 않은 사용자도 접근 가능 */}
+        {/* 홈 페이지는 로그인 여부와 상관없이 접근 가능 */}
         <Route path="/" element={<Home />} />
 
         {/* 로그인 페이지들 */}
@@ -46,50 +50,15 @@ export const App = () => {
           <Route path="fwfind" element={<LoginFwFind />} />
         </Route>
 
-        {/* 로그인하지 않은 사용자가 접근하려는 페이지는 로그인 페이지로 리디렉션 */}
-        <Route
-          path="/mypage"
-          element={user ? <MyProfile /> : <Navigate to="/login/main" replace />}
-        />
-        <Route
-          path="/mypage/:userId"
-          element={user ? <MyProfile /> : <Navigate to="/login/main" replace />}
-        />
-        <Route
-          path="/mypage/myproject"
-          element={user ? <MyProject /> : <Navigate to="/login/main" replace />}
-        />
-        <Route
-          path="/mypage/editProfile"
-          element={
-            user ? <EditProfile /> : <Navigate to="/login/main" replace />
-          }
-        />
-        <Route
-          path="/mypage/info/:studyId"
-          element={
-            user ? <InfoProject /> : <Navigate to="/login/main" replace />
-          }
-        />
-        <Route
-          path="/mypage/peopleList/:studyId"
-          element={
-            user ? <PeopleList /> : <Navigate to="/login/main" replace />
-          }
-        />
-
-        <Route
-          path="/study/:id"
-          element={
-            user ? <DetailStudy /> : <Navigate to="/login/main" replace />
-          }
-        />
-        <Route
-          path="/uploadstudy/uploadstudy"
-          element={
-            user ? <UploadStudy /> : <Navigate to="/login/main" replace />
-          }
-        />
+        {/* 보호된 페이지들 */}
+        <Route path="/mypage" element={<PrivateRoute element={<MyProfile />} />} />
+        <Route path="/mypage/:userId" element={<PrivateRoute element={<MyProfile />} />} />
+        <Route path="/mypage/myproject" element={<PrivateRoute element={<MyProject />} />} />
+        <Route path="/mypage/editProfile" element={<PrivateRoute element={<EditProfile />} />} />
+        <Route path="/mypage/info/:studyId" element={<PrivateRoute element={<InfoProject />} />} />
+        <Route path="/mypage/peopleList/:studyId" element={<PrivateRoute element={<PeopleList />} />} />
+        <Route path="/study/:id" element={<PrivateRoute element={<DetailStudy />} />} />
+        <Route path="/uploadstudy/uploadstudy" element={<PrivateRoute element={<UploadStudy />} />} />
 
         {/* 404 페이지 */}
         <Route path="*" element={<NotFound />} />

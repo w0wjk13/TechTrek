@@ -191,11 +191,11 @@ const UploadStudy = () => {
             <input
               type="radio"
               id="all"
-              name="position"
+              name="roles"
               value="풀스택"
               defaultChecked
             />
-            <label htmlFor="all">풀스택</label>
+            <label htmlFor="fullstack">풀스택</label>
           </div>
           <div>
             <input

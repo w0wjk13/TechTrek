@@ -1,41 +1,51 @@
-import { Meteor } from 'meteor/meteor';
-import { Study } from '/imports/api/collections';  // Study 컬렉션을 import
+import { Mongo } from 'meteor/mongo';
+import { Study } from '/imports/api/collections';
 
-Meteor.startup(() => {
-  // 서버 시작 시 작업 (필요한 초기화 등)
-});
-
-// 서버 메서드 정의
 Meteor.methods({
-  searchStudies(filters) {
+  searchStudies(filters, page = 1, limit = 5, sortBy = "recent") {
     const query = {};
 
-    // 각 필터가 존재할 경우 쿼리에 조건을 추가
-    if (filters.region) {
-      query.region = filters.region;
-    }
+    // Apply filters
     if (filters.city) {
-      query.city = filters.city;
+      query["location.city"] = filters.city;
+    }
+    if (filters.gubun) {
+      query["location.gubun"] = filters.gubun;
     }
     if (filters.techStack && filters.techStack.length > 0) {
-      query.techStack = { $all: filters.techStack }; // 필터링한 기술 스택을 모두 포함하는 항목만
+      query.techStack = { $in: filters.techStack };
     }
-    if (filters.position) {
-      query.position = filters.position;
+    if (filters.roles && filters.roles.length > 0) {
+      query.roles = { $in: filters.roles };
     }
-    if (filters.onlineOffline) {
-      query.onlineOffline = filters.onlineOffline;
+    if (filters.onOffline && filters.onOffline.length > 0) {
+      query.onOffline = { $in: filters.onOffline };
+    }
+    if (filters.title) {
+      query.title = { $regex: filters.title, $options: 'i' };
     }
 
-    // MongoDB에서 쿼리 결과 가져오기
-    const results = Study.find(query).fetch();
+    const skip = (page - 1) * limit;
 
-    // 결과 반환
-    return results;
+    let sortOptions = {};
+
+    // Sorting based on the selected option
+    if (sortBy === "recent") {
+      sortOptions = { createdAt: -1 };  // Sort by creation date (descending)
+    } else if (sortBy === "views") {
+      sortOptions = { views: -1 };  // Sort by views (descending)
+    } else if (sortBy === "deadline") {
+      sortOptions = { studyClose: 1 };  // Sort by study close date (ascending)
+    }
+
+    const results = Study.find(query, { skip, limit, sort: sortOptions }).fetch();
+    const total = Study.find(query).count();
+    const totalPages = Math.ceil(total / limit); // Calculate total pages
+
+    return { results, total, totalPages };
   },
 
   getAllStudies() {
-    // 모든 Study 데이터를 가져오기
     return Study.find().fetch();
   }
 });
