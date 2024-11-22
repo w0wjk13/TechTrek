@@ -248,8 +248,4 @@ if (!StudyUser.findOne()) {
         }
       });
   }
-
 }
-
-
-
