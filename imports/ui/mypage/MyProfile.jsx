@@ -37,30 +37,20 @@ const MyProfile = () => {
 
   const user = useTracker(() => {
     Meteor.subscribe("allUsers");
-    return Meteor.user();
+    const user = userId ? Meteor.users.findOne(userId) : Meteor.user();
+    console.log("useTracker user: ", user);
+    return user;
   });
 
-  const requestUser = userId ? Meteor.users.findOne(userId) : user;
-  console.log("req:", requestUser);
-  console.log("user:", user);
-
   useEffect(() => {
-    if (userId) {
-      if (requestUser?.profile?.techStack) {
-        setStackList(requestUser.profile.techStack);
-      }
-    } else {
-      if (user?.profile?.techStack) {
-        setStackList(user.profile.techStack);
-      }
+    //console.log("useEffect 진입: ", user);
+    if (user.profile.techStack) {
+      setStackList(user.profile.techStack);
     }
   }, [userId]);
 
-  if (!user && !requestUser) {
+  if (!user) {
     return <div>로딩 중...</div>;
-  }
-  if (user && !requestUser) {
-    return <div>해당 사용자를 찾을 수 없습니다</div>;
   }
 
   const addStack = (e) => {
@@ -102,9 +92,7 @@ const MyProfile = () => {
 
   return (
     <>
-      <h2>
-        {userId ? `${requestUser.profile.nickname}의 프로필` : "내 프로필"}
-      </h2>
+      <h2>{userId ? `${user.profile.nickname}의 프로필` : "내 프로필"}</h2>
       <div>
         <li>
           <Link to="/mypage">프로필</Link>
@@ -113,25 +101,23 @@ const MyProfile = () => {
           <Link to="/mypage/myproject">프로젝트</Link>
         </li>
       </div>
-      {(userId ? requestUser : user).profile.profilePicture && (
+      {user.profile.profilePicture && (
         <img
-          src={(userId ? requestUser : user).profile.profilePicture}
+          src={user.profile.profilePicture}
           style={{ width: "100px", height: "100px", borderRadius: "50%" }}
         />
       )}
-      닉네임 : {(userId ? requestUser : user).profile.nickname}
+      닉네임 : {user.profile.nickname}
       <br />
-      이메일 :
-      {(userId ? requestUser : user).emails &&
-        (userId ? requestUser : user).emails[0]?.address}
+      이메일 :{user.emails && user.emails[0]?.address}
       <br />
-      {(userId ? requestUser : user)._id === user._id && (
+      {user._id === Meteor.userId() && (
         <button onClick={profilePage}>프로필 편집</button>
       )}
       <hr />
       <h3>기술스택</h3>
       자주 사용하는 기술스택을 최대 5개로 설정해 주세요{" "}
-      {(userId ? requestUser : user)._id === user._id && (
+      {user._id === Meteor.userId() && (
         <button onClick={toggleEdit}>{edit ? "완료" : "수정"}</button>
       )}
       {edit && (
@@ -156,7 +142,7 @@ const MyProfile = () => {
       {stackList.map((stack, index) => (
         <span key={index} style={{ marginRight: "10px" }}>
           {stack}
-          {(userId ? requestUser : user)._id === user._id && edit && (
+          {Meteor.userId() === user._id && edit && (
             <button type="button" onClick={() => removeStack(stack)}>
               X
             </button>

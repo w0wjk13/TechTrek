@@ -119,6 +119,8 @@ const DetailStudy = () => {
       작성일 : {formatCreatedAt(new Date(study.createdAt))}
       <br />
       조회수 {study.views || 0}
+      <br />
+      프로젝트 진행 : {study.status}
       <hr />
       모집분야 : {study.roles}
       <br />
