@@ -92,8 +92,8 @@ const randomNumber = () => {
   return [0, 1, 2, 3, 4, 5, 6, 7, 9].random(4).join("");
 };
 
-Study.remove({});
-StudyUser.remove({});
+//Study.remove({});
+//StudyUser.remove({});
 
 //admin 생성
 if (!Meteor.users.findOne({ username: "admin" })) {
