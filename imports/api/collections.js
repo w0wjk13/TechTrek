@@ -4,8 +4,6 @@ import { FilesCollection } from "meteor/ostrio:files";
 // export const LinksCollection = new Mongo.Collection('links');
 export const Study = new Mongo.Collection("studys");
 export const StudyNotifications = new Mongo.Collection("studyNotifications");
-//export const StandBy = new Mongo.Collection("standbys");
-//export const StudyGroup = new Mongo.Collection("studyGroups");
 export const StudyUser = new Mongo.Collection("studyUsers");
 
 export const Files = new FilesCollection({

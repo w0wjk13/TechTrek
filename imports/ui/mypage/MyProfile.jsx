@@ -37,10 +37,9 @@ const MyProfile = () => {
 
   const user = useTracker(() => {
     Meteor.subscribe("allUsers");
-    const user = Meteor.user();
-    Meteor.users.findOne(userId);
-    return user;
+    return Meteor.user();
   });
+
   const requestUser = userId ? Meteor.users.findOne(userId) : user;
   console.log("req:", requestUser);
   console.log("user:", user);

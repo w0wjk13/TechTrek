@@ -83,7 +83,7 @@ const DetailStudy = () => {
 
   const joinRequest = () => {
     const scoreData = {
-      userScore: Meteor.user().profile.avgScore,
+      userScore: Meteor.user().profile.score,
       studyScore: study.score,
       studyId: study._id,
     };
@@ -129,10 +129,9 @@ const DetailStudy = () => {
         "없음"
       ) : (
         <>
-          {study.location?.city || ""}
-          {study.location?.city === "서울" && study.location?.gubun
-            ? ` ${study.location.gubun}`
-            : ""}
+          {study.address.city && study.address.gubun
+            ? `${study.address.city} ${study.address.gubun}`
+            : study.address.city}
         </>
       )}
       <br />
