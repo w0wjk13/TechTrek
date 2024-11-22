@@ -1,12 +1,12 @@
 import { Study } from "/imports/api/collections";
 import { Meteor } from "meteor/meteor";
-import { StudyGroup } from "/imports/api/collections";
+import { StudyUser } from "/imports/api/collections";
 
 Meteor.methods({
   //스터디 모집글 작성
   insert: function (uploadData) {
     const validationMessage = {
-      position: "모집 분야를 선택해 주세요",
+      roles: "모집 분야를 선택해 주세요",
       onOffline: "모임 형태를 선택해 주세요",
       address: "지역을 선택해 주세요",
       studyCount: "모집 인원을 선택해 주세요",
@@ -35,7 +35,7 @@ Meteor.methods({
           if (!uploadData.address.city) {
             throw new Meteor.Error("validationError", message);
           }
-          if (uploadData.address.city === "서울" && !uploadData.address.gubun) {
+          if (!uploadData.address.gubun) {
             throw new Meteor.Error("validationError", "구를 선택해 주세요");
           }
         }
@@ -49,16 +49,10 @@ Meteor.methods({
       ...uploadData,
       createdAt: new Date(),
       views: 0,
+      status: "모집중",
+      teamMember: [this.userId],
     };
     const studyId = Study.insert(data); //insert된 문서 id 반환
-
-    StudyGroup.insert({
-      studyId: studyId,
-      teamMember: [this.userId],
-      status: "모집중",
-      startDate: null,
-      endDate: null,
-    });
 
     return studyId;
   },
