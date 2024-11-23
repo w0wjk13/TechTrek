@@ -99,7 +99,7 @@ const DetailStudy = () => {
 
     Meteor.call("approveReject", scoreData, (err, rlt) => {
       if (err) {
-        console.error("approveReject 실패: ", err);
+        alert(err.reason);
       } else {
         if (rlt) {
           alert("참여 요청이 전송되었습니다");
@@ -134,12 +134,9 @@ const DetailStudy = () => {
       모집분야 : {study.roles}
       <br />
       모임형태 : {study.onOffline}
-      <br />
-      지역 :{" "}
-      {study.onOffline === "온라인" ? (
-        "없음"
-      ) : (
+      {study.onOffline !== "온라인" && (
         <>
+          {" "}
           {study.address.city && study.address.gubun
             ? `${study.address.city} ${study.address.gubun}`
             : study.address.city}

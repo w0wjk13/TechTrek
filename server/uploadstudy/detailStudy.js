@@ -12,6 +12,20 @@ Meteor.methods({
     }
 
     const { userScore, studyScore, studyId } = scoreData;
+    const study = Study.findOne({ _id: studyId });
+
+    if (study.status !== "모집중") {
+      throw new Meteor.Error("impossibleJoin", "모집 중인 스터디가 아닙니다");
+    }
+
+    const alreadyRequest = StudyUser.findOne({
+      studyId: studyId,
+      userId: user._id,
+    });
+    if (alreadyRequest) {
+      throw new Meteor.Error("alreadyRequest", "이미 신청한 스터디입니다");
+    }
+
     let canJoin = true;
     for (key in studyScore) {
       //작성자가 요구하는 역량보다 유저 역량이 같거나 더 크다면 합격
