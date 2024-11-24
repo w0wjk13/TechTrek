@@ -60,13 +60,20 @@ Meteor.methods({
   //작성글 삭제
   delete: (studyId) => {
     const study = Study.findOne({ _id: studyId });
+
+    Study.remove({ _id: studyId });
+  },
+
+  //작성글이 모집중인지 아닌지 확인
+  checkStatus: (studyId) => {
+    const study = Study.findOne({ _id: studyId });
+
     if (study.status !== "모집중") {
       throw new Meteor.Error(
         "NoDeleteStatus",
         "이미 시작하거나 마감된 스터디는 삭제할 수 없습니다"
       );
     }
-
-    Study.remove({ _id: studyId });
+    return true;
   },
 });

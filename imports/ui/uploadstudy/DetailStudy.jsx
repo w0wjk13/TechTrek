@@ -139,17 +139,23 @@ const DetailStudy = () => {
   };
 
   const deleteUploadStudy = () => {
-    if (window.confirm("정말로 이 글을 삭제하시겠습니까?")) {
-      Meteor.call("delete", id, (err) => {
-        if (err) {
-          alert(err.reason);
-          console.error("delete 실패: ", err);
-        } else {
-          alert("작성글이 삭제되었습니다");
-          navigate("/");
+    Meteor.call("checkStatus", id, (err, isRecruit) => {
+      if (err) {
+        alert(err.reason);
+        console.error("checkStatus 실패: ", err);
+      } else {
+        if (window.confirm("정말로 이 글을 삭제하시겠습니까?")) {
+          Meteor.call("delete", id, (err) => {
+            if (err) {
+              console.error("delete 실패: ", err);
+            } else {
+              alert("작성글이 삭제되었습니다");
+              navigate("/");
+            }
+          });
         }
-      });
-    }
+      }
+    });
   };
 
   return (
