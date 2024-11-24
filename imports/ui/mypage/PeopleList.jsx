@@ -11,7 +11,7 @@ const PeopleList = () => {
     const user = Meteor.user();
     const userIds = StudyUser.find({
       studyId: studyId,
-      status: { $ne: "거절됨" },
+      status: { $ne: "거절됨", $ne: "승인됨" },
     }).map((doc) => doc.userId);
     const standByUsers = Meteor.users.find({ _id: { $in: userIds } }).fetch();
 

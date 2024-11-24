@@ -359,6 +359,8 @@ if (!Study.findOne()) {
       createdAt: new Date(),
       views: i,
       status: "모집중",
+      startDate: null, //스터디 시작날짜
+      endDate: null, //스터디 마감날짜
       teamMember: teamMember,
     });
   }
@@ -418,12 +420,23 @@ if (!StudyUser.findOne()) {
         }
       });
 
-      //팀원(teamMember) 수가 1이면 무조건 status는 모집중이지만 2 이상이면 시작, 마감, 모집중 중에 하나를 가짐
+      //팀원(teamMember) 수가 1이면 무조건 status는 모집중이지만 2 이상이면 시작, 종료, 모집중 중에 하나를 가짐
       const statusChange = Study.findOne(study._id);
       if (statusChange.teamMember.length >= 2) {
+        let startDate = null;
+        let endDate = null;
+
+        const status = ["모집중", "시작", "종료"].random();
+
+        if (status === "시작" || status === "마감") {
+          const randomMonths = [1, 2, 3, 4, 5, 6].random();
+          startDate = new Date();
+          endDate.setMonth(startDate.getMonth() + randomMonths);
+        }
+
         Study.update(
           { _id: study._id },
-          { $set: { status: ["모집중", "시작", "마감"].random() } }
+          { $set: { status: status, startDate: startDate, endDate: endDate } }
         );
       }
     });

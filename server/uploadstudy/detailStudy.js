@@ -15,8 +15,8 @@ Meteor.methods({
     let canJoin = true;
     for (key in studyScore) {
       //작성자가 요구하는 역량보다 유저 역량이 같거나 더 크다면 합격
-      if (studyScore[key] <= userScore[key]) {
-        canJoin = true;
+      if (userScore[key] < studyScore[key]) {
+        canJoin = false;
         break;
       }
     }
@@ -24,7 +24,7 @@ Meteor.methods({
     if (canJoin) {
       StudyUser.insert({
         studyId: studyId,
-        userId: this.userId,
+        userId: Meteor.userId(),
         status: "대기중",
         date: new Date(),
       });
@@ -51,16 +51,17 @@ Meteor.methods({
     return true;
   },
 
-  //이미 참여 요청한 사람은 참여하기 -> 참여 취소하가 버튼으로 바뀜
-  alreadyRequest: (studyId) => {
+  //이미 참여 요청한 사람은 참여하기 -> 참여 취소하기 버튼으로 바뀜
+  alreadyRequest(studyId, userId) {
     //문서가 있다면(!=null) true, 문서가 없다면 false
-    return StudyUser.findOne({ studyId: studyId, userId: this.userId }) != null;
+    return StudyUser.findOne({ studyId: studyId, userId: userId }) != null;
   },
 
   //작성글 삭제
   delete: (studyId) => {
     const study = Study.findOne({ _id: studyId });
 
+    StudyUser.remove({ studyId: studyId });
     Study.remove({ _id: studyId });
   },
 

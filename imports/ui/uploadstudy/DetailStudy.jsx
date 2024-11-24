@@ -74,7 +74,7 @@ const DetailStudy = () => {
 
   useEffect(() => {
     if (study && study._id) {
-      Meteor.call("alreadyRequest", study._id, (err, rlt) => {
+      Meteor.call("alreadyRequest", study._id, Meteor.userId(), (err, rlt) => {
         if (err) {
           console.error("alreadyRequest 실패: ", err);
         } else {
