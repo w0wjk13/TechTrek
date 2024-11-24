@@ -398,7 +398,7 @@ if (!StudyUser.findOne()) {
         }
 
         //스터디에 신청 가능한 okUser의 수가 스터디 모집인원(studyCount)을 넘지 않았다면
-        if (canJoin && okUser < study.studyCount) {
+        if (canJoin && okUser < study.studyCount + 1) {
           const status = ["대기중", "승인됨", "거절됨"].random();
 
           StudyUser.insert({

@@ -3,27 +3,13 @@ import { Meteor } from "meteor/meteor";
 import { StudyUser } from "/imports/api/collections";
 
 Meteor.methods({
-  //참여하기 버튼 클릭 시 작성자가 요구하는 역량에 부합하는지 확인
-  approveReject: function (scoreData) {
-    //참여 버튼을 누른 유저의 로그인 정보 가져오기
-    const user = Meteor.user();
-    if (!this.userId) {
-      throw new Meteor.Error("notLogin", "로그인이 필요합니다");
-    }
-
+  //참여하기
+  approveReject: (scoreData) => {
     const { userScore, studyScore, studyId } = scoreData;
     const study = Study.findOne({ _id: studyId });
 
     if (study.status !== "모집중") {
       throw new Meteor.Error("impossibleJoin", "모집 중인 스터디가 아닙니다");
-    }
-
-    const alreadyRequest = StudyUser.findOne({
-      studyId: studyId,
-      userId: user._id,
-    });
-    if (alreadyRequest) {
-      throw new Meteor.Error("alreadyRequest", "이미 신청한 스터디입니다");
     }
 
     let canJoin = true;
@@ -38,16 +24,10 @@ Meteor.methods({
     if (canJoin) {
       StudyUser.insert({
         studyId: studyId,
-        userId: user._id,
+        userId: this.userId,
         status: "대기중",
         date: new Date(),
       });
-
-      const insertOk = StudyUser.findOne({
-        studyId: studyId,
-        userId: user._id,
-      });
-      console.log("inserOk:", insertOk);
     }
 
     return canJoin;
@@ -62,5 +42,31 @@ Meteor.methods({
     }
 
     return true;
+  },
+
+  //참여 취소
+  cancelRequest: (studyId) => {
+    StudyUser.remove({ studyId: studyId, userId: this.userId });
+
+    return true;
+  },
+
+  //이미 참여 요청한 사람은 참여하기 -> 참여 취소하가 버튼으로 바뀜
+  alreadyRequest: (studyId) => {
+    //문서가 있다면(!=null) true, 문서가 없다면 false
+    return StudyUser.findOne({ studyId: studyId, userId: this.userId }) != null;
+  },
+
+  //작성글 삭제
+  delete: (studyId) => {
+    const study = Study.findOne({ _id: studyId });
+    if (study.status !== "모집중") {
+      throw new Meteor.Error(
+        "NoDeleteStatus",
+        "이미 시작하거나 마감된 스터디는 삭제할 수 없습니다"
+      );
+    }
+
+    Study.remove({ _id: studyId });
   },
 });

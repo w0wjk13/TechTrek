@@ -9,21 +9,6 @@ export default () => {
     return { user: Meteor.user() };
   });
 
-  // const navigate = useNavigate();
-
-  // const click = (e) => {
-  //   e.preventDefault();
-
-  //   Meteor.call("canWrite", (err, rlt) => {
-  //     if (err) {
-  //       console.log("uploadstudy 실패: ", err);
-  //     } else {
-  //       alert("스터디 모집글은 1개만 가능합니다");
-  //       navigate("/");
-  //     }
-  //   });
-  // };
-
   return (
     <>
       <header>
@@ -35,7 +20,7 @@ export default () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link to="/uploadstudy/uploadstudy" className="nav-link">
+              <Link to="/uploadstudy" className="nav-link">
                 스터디 생성
               </Link>
             </li>

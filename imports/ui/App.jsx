@@ -51,14 +51,42 @@ export const App = () => {
         </Route>
 
         {/* 보호된 페이지들 */}
-        <Route path="/mypage" element={<PrivateRoute element={<MyProfile />} />} />
-        <Route path="/mypage/:userId" element={<PrivateRoute element={<MyProfile />} />} />
-        <Route path="/mypage/myproject" element={<PrivateRoute element={<MyProject />} />} />
-        <Route path="/mypage/editProfile" element={<PrivateRoute element={<EditProfile />} />} />
-        <Route path="/mypage/info/:studyId" element={<PrivateRoute element={<InfoProject />} />} />
-        <Route path="/mypage/peopleList/:studyId" element={<PrivateRoute element={<PeopleList />} />} />
-        <Route path="/study/:id" element={<PrivateRoute element={<DetailStudy />} />} />
-        <Route path="/uploadstudy/uploadstudy" element={<PrivateRoute element={<UploadStudy />} />} />
+        <Route
+          path="/mypage"
+          element={<PrivateRoute element={<MyProfile />} />}
+        />
+        <Route
+          path="/mypage/:userId"
+          element={<PrivateRoute element={<MyProfile />} />}
+        />
+        <Route
+          path="/mypage/myproject"
+          element={<PrivateRoute element={<MyProject />} />}
+        />
+        <Route
+          path="/mypage/editProfile"
+          element={<PrivateRoute element={<EditProfile />} />}
+        />
+        <Route
+          path="/mypage/info/:studyId"
+          element={<PrivateRoute element={<InfoProject />} />}
+        />
+        <Route
+          path="/mypage/peopleList/:studyId"
+          element={<PrivateRoute element={<PeopleList />} />}
+        />
+        <Route
+          path="/study/:id"
+          element={<PrivateRoute element={<DetailStudy />} />}
+        />
+        <Route
+          path="/uploadstudy"
+          element={<PrivateRoute element={<UploadStudy />} />}
+        />
+        <Route
+          path="/uploadstudy/:id"
+          element={<PrivateRoute element={<UploadStudy />} />}
+        />
 
         {/* 404 페이지 */}
         <Route path="*" element={<NotFound />} />

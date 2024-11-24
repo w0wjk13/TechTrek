@@ -1,11 +1,10 @@
 import { Meteor } from "meteor/meteor";
 
 Meteor.methods({
-  getEmail: (userId) => {
-    const user = Meteor.users.findOne(userId);
-    if (user) {
-      return user.emails[0]?.address;
-    }
-    throw new Meteor.Error("email 찾을 수 없음");
+  //변경한 기술스택 저장
+  saveTechStack: function (stackList) {
+    return Meteor.users.update(this.userId, {
+      $set: { "profile.techStack": stackList },
+    });
   },
 });
