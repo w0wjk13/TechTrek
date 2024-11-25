@@ -119,6 +119,10 @@ const InfoProject = () => {
     setEditMode(false);
   };
 
+  const goReport = (memberId) => {
+    navigate(`/mypage/report/${memberId}`);
+  };
+
   return (
     <>
       <li>
@@ -163,7 +167,7 @@ const InfoProject = () => {
       <br />
       프로젝트일정:
       {startDate ? `시작 ${startDate}` : "프로젝트 일정이 등록되지 않았습니다"}
-      {endDate ? `종료 ${endDate}` : ""}
+      {endDate ? ` 종료 ${endDate}` : ""}
       <br />
       <hr />
       <h3>팀원 정보</h3>
@@ -185,6 +189,9 @@ const InfoProject = () => {
                 }}
               />
               {member.profile.nickname} {member.profile.roles}
+              {study.status === "종료" && study.endDate && (
+                <button onClick={() => goReport(member._id)}>평가하기</button>
+              )}
             </li>
           ))}
       </ul>

@@ -1,5 +1,6 @@
 import { Study } from "/imports/api/collections";
 import { StudyUser } from "/imports/api/collections";
+import { Report } from "/imports/api/collections";
 import "/lib/utils.js";
 
 //시/도 목록
@@ -289,7 +290,7 @@ if (!Meteor.users.findOne({ username: "admin" })) {
 
 //admin 외에 다른 사용자가 없다면
 if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
-  for (let i = 1; i <= 30; i++) {
+  for (let i = 1; i <= 50; i++) {
     Accounts.createUser({
       password: "1234",
       email: `user${i}@example.com`,
@@ -299,7 +300,7 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
         phone: `010-${randomNumber()}-${randomNumber()}`,
         profilePicture: "https://example.com/profile.jpg",
         address: randomAddress(),
-        techStack: techStacks.random(1, 5),
+        techStack: techStacks.random(1, 5), //1~5
         roles: ["백엔드", "프론트엔드", "풀스택"].random(),
         score: {
           manner: [0, 1, 2, 3, 4, 5].random(), //매너(친절)
@@ -316,14 +317,19 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
 
 //스터디 모집글이 없다면
 if (!Study.findOne()) {
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 30; i++) {
     const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
     const user = users.random();
 
-    //Study문서 생성일을 기준으로 랜덤으로 1주~4주 후를 모집마감일로 설정
-    const randomWeeks = [7, 14, 21, 28].random();
-    const studyClose = new Date();
-    studyClose.setDate(studyClose.getDate() + randomWeeks);
+    //한 명의 유저가 종료 제외, 대기중/시작인 모집글이 3개라면 더 이상 작성할 수 없게 설정
+    const writeThree = Study.find({
+      userId: user._id,
+      $or: [{ startDate: null }, { endDate: null }],
+    }).count();
+
+    if (writeThree >= 3) {
+      continue;
+    }
 
     const scoreFields = [
       "manner",
@@ -339,29 +345,51 @@ if (!Study.findOne()) {
     //요구하는 역량에 랜덤으로 점수 할당
     const score = {};
     needScore.forEach((need) => {
-      score[need] = [1, 2, 3, 4].random();
+      score[need] = [1, 2, 3].random();
     });
 
-    //글 작성자는 항상 첫번째 팀원이 됨
-    const teamMember = [user._id];
+    let startDate = null;
+    let endDate = null;
 
-    Study.insert({
+    //모집중(둘 다 null), 시작(endDate만 null), 종료(둘 다 날짜 값이 있음)
+    const randomMonths = [1, 2, 3, 4, 5, 6].random();
+    const dataCase = [1, 2, 3].random();
+
+    if (dataCase === 1) {
+      //모집중
+      startDate = null;
+      endDate = null;
+    } else if (dataCase === 2) {
+      //시작
+      startDate = new Date();
+      startDate.setMonth(startDate.getMonth() + randomMonths);
+    } else {
+      //종료
+      startDate = new Date();
+      endDate = new Date(startDate);
+      endDate.setMonth(startDate.getMonth() + randomMonths);
+    }
+
+    const studyId = Study.insert({
       userId: user._id,
       roles: ["풀스택", "백엔드", "프론트엔드"].random(),
       onOffline: ["온라인", "오프라인", "온/오프라인"].random(),
       address: randomAddress(),
-      studyCount: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].random(), //총 모집인원
+      studyCount: [2, 3, 4, 5, 6, 7, 8, 9, 10].random(), //총 모집인원(나 포함)
       techStack: techStacks.random(1, 5),
-      studyClose: studyClose,
       score: score,
       title: "제목" + i,
       content: "내용" + i,
-      createdAt: new Date(),
       views: i,
-      status: "모집중",
-      startDate: null, //스터디 시작날짜
-      endDate: null, //스터디 마감날짜
-      teamMember: teamMember,
+      startDate: startDate, //스터디 시작날짜
+      endDate: endDate, //스터디 마감날짜
+    });
+
+    //작성자를 StudyUsers에 승인된 상태로 insert
+    StudyUser.insert({
+      studyId: studyId,
+      userId: user._id,
+      status: "승인",
     });
   }
 }
@@ -376,9 +404,28 @@ if (!StudyUser.findOne()) {
     .forEach((study) => {
       const studyScore = study.score;
 
-      let okUser = study.teamMember.length; //작성자 포함 팀원 수
+      //승인된 유저 수가 모집인원과 같아지면 더 이상 참여를 받지 않음
+      const okUserNum = StudyUser.find({
+        studyId: study._id,
+        status: "승인",
+      }).count();
+
+      if (okUserNum >= study.studyCount) {
+        return;
+      }
+
       users.forEach((user) => {
         const userScore = user.profile.score;
+
+        //유저 한 명당 참여 후 승인된 상태는 최대 5번으로 제한
+        const joinRequestNum = StudyUser.find({
+          userId: user._id,
+          status: "승인",
+        }).count();
+
+        if (joinRequestNum >= 5) {
+          return;
+        }
 
         //특정 스터디에 이미 지원한 유저가 중복 지원할 수 없도록 설정
         const isExist = StudyUser.findOne({
@@ -399,45 +446,16 @@ if (!StudyUser.findOne()) {
           }
         }
 
-        //스터디에 신청 가능한 okUser의 수가 스터디 모집인원(studyCount)을 넘지 않았다면
-        if (canJoin && okUser < study.studyCount + 1) {
-          const status = ["대기중", "승인됨", "거절됨"].random();
-
+        //승인된 유저 수가 아직 스터디 모집인원을 만족하지 않았다면 계속 참여 신청 가능
+        if (canJoin && okUserNum < study.studyCount) {
           StudyUser.insert({
             studyId: study._id,
             userId: user._id,
-            status: status,
+            status: ["대기", "승인", "거절"].random(),
           });
-
-          //승인된 유저는 Study의 팀원(teamMember) 목록에 올라감
-          if (status === "승인됨") {
-            Study.update(
-              { _id: study._id },
-              { $addToSet: { teamMember: user._id } }
-            );
-            okUser++;
-          }
         }
       });
-
-      //팀원(teamMember) 수가 1이면 무조건 status는 모집중이지만 2 이상이면 시작, 종료, 모집중 중에 하나를 가짐
-      const statusChange = Study.findOne(study._id);
-      if (statusChange.teamMember.length >= 2) {
-        let startDate = null;
-        let endDate = null;
-
-        const status = ["모집중", "시작", "종료"].random();
-
-        if (status === "시작" || status === "마감") {
-          const randomMonths = [1, 2, 3, 4, 5, 6].random();
-          startDate = new Date();
-          endDate.setMonth(startDate.getMonth() + randomMonths);
-        }
-
-        Study.update(
-          { _id: study._id },
-          { $set: { status: status, startDate: startDate, endDate: endDate } }
-        );
-      }
     });
 }
+
+//평가 점수가 없다면

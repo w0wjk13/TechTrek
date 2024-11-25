@@ -5,6 +5,7 @@ import { FilesCollection } from "meteor/ostrio:files";
 export const Study = new Mongo.Collection("studys");
 export const StudyNotifications = new Mongo.Collection("studyNotifications");
 export const StudyUser = new Mongo.Collection("studyUsers");
+export const Report = new Mongo.Collection("reports");
 
 export const Files = new FilesCollection({
   //FilesCollection 파일 업로드 기능을 제공하는 컬렉션

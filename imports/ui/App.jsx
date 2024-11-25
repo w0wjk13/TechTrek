@@ -23,6 +23,7 @@ import EditProfile from "./mypage/EditProfile";
 import MyProject from "./mypage/MyProject";
 import InfoProject from "./mypage/InfoProject";
 import PeopleList from "./mypage/PeopleList";
+import ReportMember from "./mypage/ReportMember";
 
 // PrivateRoute 컴포넌트: 로그인 여부에 따라 보호된 경로에 접근을 제어
 const PrivateRoute = ({ element }) => {
@@ -74,6 +75,10 @@ export const App = () => {
         <Route
           path="/mypage/peopleList/:studyId"
           element={<PrivateRoute element={<PeopleList />} />}
+        />
+        <Route
+          path="/mypage/report/:memberId"
+          element={<PrivateRoute element={<ReportMember />} />}
         />
         <Route
           path="/study/:id"
