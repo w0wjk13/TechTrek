@@ -10,8 +10,11 @@ const randomAddress = () => {
   // 해당 도시에서 랜덤으로 구 선택
   const gubun = city.gubuns[Math.floor(Math.random() * city.gubuns.length)];  // 선택된 도시에서 gubuns 배열을 이용해 랜덤으로 구를 선택
 
-  // 주소 반환
-  return `${city.name} ${gubun}`;  // 도시와 구를 결합하여 주소 반환
+  // 주소를 객체 형태로 반환
+  return {
+    city: city.name,
+    gubun: gubun,
+  };
 };
 
 // 핸드폰 중간, 뒷번호 4자리 만들기

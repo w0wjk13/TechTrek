@@ -86,8 +86,11 @@ export default function Home() {
   };
 
   const formatAddress = (address) => {
+    if (typeof address === 'string') {
+      return address; // 만약 address가 문자열이라면 그대로 반환
+    }
     if (address && address.city && address.gubun) {
-      return `${address.city} - ${address.gubun}`;
+      return `${address.city} ${address.gubun}`;
     }
     if (address && address.city) {
       return address.city;
@@ -97,7 +100,6 @@ export default function Home() {
     }
     return "위치 정보 없음";
   };
-
 
   const formatOnOffline = (onOffline) => {
     if (Array.isArray(onOffline)) {
