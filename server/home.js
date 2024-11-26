@@ -24,7 +24,7 @@ Meteor.methods({
     if (filters.title) {
       query.title = { $regex: filters.title, $options: 'i' };
     }
-
+    query.status = "모집중";
     const skip = (page - 1) * limit;
 
     let sortOptions = {};

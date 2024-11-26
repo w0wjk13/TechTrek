@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Meteor } from "meteor/meteor";
 import { useNavigate } from "react-router-dom";
-import { citys } from "./city/City.jsx";
+import citys from "./city";
 
 // 기술 스택 목록
 const techStacks = [
@@ -57,7 +57,8 @@ export default function Home() {
       techStack: techStack.length > 0 ? techStack : undefined,
       roles: rolesSelected.length > 0 ? rolesSelected : undefined,
       onOffline: onOffline.length > 0 ? onOffline : undefined,
-      title: searchQuery.length > 0 ? searchQuery : undefined
+      title: searchQuery.length > 0 ? searchQuery : undefined,
+      status: "모집중",
     };
 
     Meteor.call("searchStudies", filters, page, 5, sortBy, (error, results) => {
@@ -89,11 +90,11 @@ export default function Home() {
     navigate(`/study/${studyId}`);
   };
 
-  const formatLocation = (address) => {
+  const formatAddress = (address) => {
     if (address && address.city && address.gubun) {
       return `${address.city} - ${address.gubun}`;
     }
-    return location ? location.city || location.gubun : "위치 정보 없음";
+    return address ? address.city || address.gubun : "위치 정보 없음";
   };
 
   const formatOnOffline = (onOffline) => {
@@ -102,6 +103,25 @@ export default function Home() {
     }
     return onOffline || "정보 없음";
   };
+
+  const formatScore = (score) => {
+    if (score) {
+      const scores = [];
+      const gifts = ["manner", "mentoring", "passion", "communication", "time"];
+
+      // Check each score and add to the array if available
+      gifts.forEach((gift) => {
+        if (score[gift]) {
+          scores.push(`${gift}: ${score[gift]}`);
+        }
+      });
+
+      // If there are available scores, return them joined by commas
+      return scores.length > 0 ? scores.join(", ") : "점수 정보 없음";
+    }
+    return "점수 정보 없음";
+  };
+
 
   return (
     <div className="home-container">
@@ -246,7 +266,8 @@ export default function Home() {
       <button onClick={handleSearch} className="search-button">검색하기</button>
 
       <div className="search-results">
-        <h2>검색 결과</h2>
+        <h2>전체</h2>
+
         <div className="select-group">
           <select
             id="sortOption"
@@ -268,13 +289,15 @@ export default function Home() {
                 return (
                   <li key={result._id}>
                     <p>마감일: {formatDDay(result.studyClose)}</p>
-                    <span>지역: {formatLocation(result.address)}</span><br />
+                    <span>모집상태:{result.status}</span><br />
+                    <span>지역: {formatAddress(result.address)}</span><br />
                     <span>진행방식: {formatOnOffline(result.onOffline)}</span><br />
                     <strong>{result.title}</strong><br /><br />
                     <span>역할: {result.roles}</span><br />
                     <span>기술 스택: {result.techStack && Array.isArray(result.techStack) ? result.techStack.join(", ") : "기술 스택 없음"}</span><br />
                     <span>작성자: {username}</span><br />
                     <span>조회수: {result.views}</span>
+                    <div>점수: {formatScore(result.score)}</div>
                     <button onClick={() => handleViewDetail(result._id)}>상세 보기</button>
                   </li>
                 );
