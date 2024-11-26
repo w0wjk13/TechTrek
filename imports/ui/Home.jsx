@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Meteor } from "meteor/meteor";
 import { useNavigate } from "react-router-dom";
-import citys from "../ui/city/City.jsx";
+import { citys } from "./city/City.jsx";
 
 // 기술 스택 목록
 const techStacks = [
