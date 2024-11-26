@@ -23,6 +23,7 @@ import EditProfile from "./mypage/EditProfile";
 import MyProject from "./mypage/MyProject";
 import InfoProject from "./mypage/InfoProject";
 import PeopleList from "./mypage/PeopleList";
+import ReportMember from "./mypage/ReportMember";
 
 // PrivateRoute 컴포넌트: 로그인 여부에 따라 보호된 경로에 접근을 제어
 const PrivateRoute = ({ element }) => {
@@ -51,14 +52,46 @@ export const App = () => {
         </Route>
 
         {/* 보호된 페이지들 */}
-        <Route path="/mypage" element={<PrivateRoute element={<MyProfile />} />} />
-        <Route path="/mypage/:userId" element={<PrivateRoute element={<MyProfile />} />} />
-        <Route path="/mypage/myproject" element={<PrivateRoute element={<MyProject />} />} />
-        <Route path="/mypage/editProfile" element={<PrivateRoute element={<EditProfile />} />} />
-        <Route path="/mypage/info/:studyId" element={<PrivateRoute element={<InfoProject />} />} />
-        <Route path="/mypage/peopleList/:studyId" element={<PrivateRoute element={<PeopleList />} />} />
-        <Route path="/study/:id" element={<PrivateRoute element={<DetailStudy />} />} />
-        <Route path="/uploadstudy/uploadstudy" element={<PrivateRoute element={<UploadStudy />} />} />
+        <Route
+          path="/mypage"
+          element={<PrivateRoute element={<MyProfile />} />}
+        />
+        <Route
+          path="/mypage/:userId"
+          element={<PrivateRoute element={<MyProfile />} />}
+        />
+        <Route
+          path="/mypage/myproject"
+          element={<PrivateRoute element={<MyProject />} />}
+        />
+        <Route
+          path="/mypage/editProfile"
+          element={<PrivateRoute element={<EditProfile />} />}
+        />
+        <Route
+          path="/mypage/info/:studyId"
+          element={<PrivateRoute element={<InfoProject />} />}
+        />
+        <Route
+          path="/mypage/peopleList/:studyId"
+          element={<PrivateRoute element={<PeopleList />} />}
+        />
+        <Route
+          path="/mypage/report/:memberId"
+          element={<PrivateRoute element={<ReportMember />} />}
+        />
+        <Route
+          path="/study/:id"
+          element={<PrivateRoute element={<DetailStudy />} />}
+        />
+        <Route
+          path="/uploadstudy"
+          element={<PrivateRoute element={<UploadStudy />} />}
+        />
+        <Route
+          path="/uploadstudy/:id"
+          element={<PrivateRoute element={<UploadStudy />} />}
+        />
 
         {/* 404 페이지 */}
         <Route path="*" element={<NotFound />} />

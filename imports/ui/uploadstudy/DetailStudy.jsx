@@ -47,21 +47,44 @@ const formatDDay = (studyClose) => {
 const DetailStudy = () => {
   const { id } = useParams(); //insert id
   const navigate = useNavigate();
+  const [cancel, setCancel] = useState(false);
 
-  const { study, username, profilePicture, isLoading } = useTracker(() => {
-    const study = Study.findOne(id);
-    const writer = study ? Meteor.users.findOne(study.userId) : null; //글 작성자 가져오기
+  const { study, username, profilePicture, teamMembers, isLoading } =
+    useTracker(() => {
+      const study = Study.findOne(id);
+      const writer = study ? Meteor.users.findOne(study.userId) : null; //글 작성자 가져오기
+      let teamMembers = [];
 
-    return {
-      study: study,
-      username: writer?.profile?.nickname,
-      profilePicture: writer?.profile?.profilePicture,
-      isLoading: !study,
-    };
-  });
+      if (study && study.teamMember) {
+        teamMembers = Meteor.users
+          .find({ _id: { $in: study.teamMember } })
+          .fetch();
+      }
+
+      return {
+        study: study,
+        username: writer?.profile?.nickname,
+        profilePicture: writer?.profile?.profilePicture,
+        teamMembers: teamMembers,
+        isLoading: !study || !study.teamMember,
+      };
+    });
+
+  const isWriter = study?.userId === Meteor.userId(); //작성자
 
   useEffect(() => {
-    console.log(Meteor.userId());
+    if (study && study._id) {
+      Meteor.call("alreadyRequest", study._id, Meteor.userId(), (err, rlt) => {
+        if (err) {
+          console.error("alreadyRequest 실패: ", err);
+        } else {
+          setCancel(rlt);
+        }
+      });
+    }
+  }, [study]);
+
+  useEffect(() => {
     if (id) {
       Meteor.call("viewCount", id, (err) => {
         if (err) {
@@ -71,7 +94,7 @@ const DetailStudy = () => {
     }
   }, []);
 
-  if (isLoading) {
+  if (isLoading || !study || !study.teamMember) {
     return <div>로딩 중</div>;
   }
 
@@ -79,23 +102,57 @@ const DetailStudy = () => {
     navigate("/");
   };
 
-  const isWriter = study?.userId === Meteor.userId(); //작성자
-
   const joinRequest = () => {
-    const scoreData = {
-      userScore: Meteor.user().profile.score,
-      studyScore: study.score,
-      studyId: study._id,
-    };
-
-    Meteor.call("approveReject", scoreData, (err, rlt) => {
-      if (err) {
-        console.error("approveReject 실패: ", err);
-      } else {
-        if (rlt) {
-          alert("참여 요청이 전송되었습니다");
+    if (cancel) {
+      Meteor.call("cancelRequest", study._id, (err, rlt) => {
+        if (err) {
+          console.error("cancelRequest 실패: ", err);
         } else {
-          alert("작성자가 요구하는 역량보다 부족합니다");
+          alert("참여 신청이 취소되었습니다");
+          setCancel(false);
+        }
+      });
+    } else {
+      const scoreData = {
+        userScore: Meteor.user().profile.score,
+        studyScore: study.score,
+        studyId: study._id,
+      };
+
+      Meteor.call("approveReject", scoreData, (err, rlt) => {
+        if (err) {
+          alert(err.reason);
+        } else {
+          if (rlt) {
+            alert("참여 요청이 전송되었습니다");
+            setCancel(true);
+          } else {
+            alert("작성자가 요구하는 역량보다 부족합니다");
+          }
+        }
+      });
+    }
+  };
+
+  const editUploadStudy = () => {
+    navigate(`/uploadstudy/${study._id}`);
+  };
+
+  const deleteUploadStudy = () => {
+    Meteor.call("checkStatus", id, (err, isRecruit) => {
+      if (err) {
+        alert(err.reason);
+        console.error("checkStatus 실패: ", err);
+      } else {
+        if (window.confirm("정말로 이 글을 삭제하시겠습니까?")) {
+          Meteor.call("delete", id, (err) => {
+            if (err) {
+              console.error("delete 실패: ", err);
+            } else {
+              alert("작성글이 삭제되었습니다");
+              navigate("/");
+            }
+          });
         }
       }
     });
@@ -119,16 +176,15 @@ const DetailStudy = () => {
       작성일 : {formatCreatedAt(new Date(study.createdAt))}
       <br />
       조회수 {study.views || 0}
+      <br />
+      프로젝트 진행 : {study.status}
       <hr />
       모집분야 : {study.roles}
       <br />
       모임형태 : {study.onOffline}
-      <br />
-      지역 :{" "}
-      {study.onOffline === "온라인" ? (
-        "없음"
-      ) : (
+      {study.onOffline !== "온라인" && (
         <>
+          {" "}
           {study.address.city && study.address.gubun
             ? `${study.address.city} ${study.address.gubun}`
             : study.address.city}
@@ -154,10 +210,23 @@ const DetailStudy = () => {
       <hr />
       내용 : {study.content}
       <hr />
-      프로젝트 참여자 목록 {username}
+      프로젝트 참여자 목록{" "}
+      {teamMembers.map((member) => (
+        <li key={member._id}>{member.profile.nickname}</li>
+      ))}
       <br />
       <button onClick={goMain}>목록</button>
-      {!isWriter && <button onClick={joinRequest}>참여하기</button>}
+      {isWriter && (
+        <>
+          <button onClick={editUploadStudy}>수정</button>
+          <button onClick={deleteUploadStudy}>삭제</button>
+        </>
+      )}
+      {!isWriter && (
+        <button onClick={joinRequest}>
+          {cancel ? "참여 취소하기" : "참여하기"}
+        </button>
+      )}
     </>
   );
 };

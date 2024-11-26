@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTracker } from "meteor/react-meteor-data";
 import { Meteor } from "meteor/meteor";
 import DatePicker from "react-datepicker";
@@ -275,11 +275,7 @@ const UploadStudy = () => {
     제주: ["제주시", "서귀포시"],
   };
 
-  //유저(주소) 스터디모집(지역) 만들기
-  //시/도 랜덤 선택
   const regions = Object.keys(regionData); //시/도 목록을 배열로 반환
-  //구/군 랜덤 선택
-  //const gubunList = regionData[city];
 
   const [stackList, setStackList] = useState([]); //선택한 기술스택 목록
   const [date, setDate] = useState(null); //모집마감일
@@ -291,11 +287,40 @@ const UploadStudy = () => {
   const navigate = useNavigate();
   const [city, setCity] = useState(""); //사용자가 선택한 지역
   const [gubun, setGubun] = useState("");
+  const { id } = useParams();
 
   const { user } = useTracker(() => {
     return { user: Meteor.user() };
   });
-  console.log(Meteor.userId());
+
+  useEffect(() => {
+    if (id) {
+      Meteor.call("getStudy", id, (err, rlt) => {
+        if (err) {
+          console.error("getStudy 에러: ", err);
+        } else {
+          if (formRef.current) {
+            formRef.current.elements.roles.value = rlt.roles;
+            formRef.current.elements.studyCount.value = rlt.studyCount;
+          }
+
+          setStudyType(rlt.onOffline);
+          setCity(rlt.city);
+          setGubun(rlt.gubun);
+          setStackList(rlt.techStack);
+          setDate(rlt.studyClose);
+          setGiftScore(rlt.score);
+
+          if (titleRef.current) {
+            titleRef.current.value = rlt.title;
+          }
+          if (contentRef.current) {
+            contentRef.current.value = rlt.content;
+          }
+        }
+      });
+    }
+  }, [id]);
 
   const cityChange = (e) => {
     setCity(e.target.value);
@@ -348,7 +373,6 @@ const UploadStudy = () => {
     const formData = new FormData(formRef.current);
 
     if (Meteor.userId()) {
-      console.log(Meteor.userId());
       const uploadData = {
         roles: formData.get("roles"), //모집분야(프론트/백)
         onOffline: studyType, //모집형태(온/오프라인)
@@ -363,20 +387,30 @@ const UploadStudy = () => {
         title: titleRef.current.value,
         content: contentRef.current.value,
       };
-      console.log("uploadData: ", uploadData);
 
-      Meteor.call("insert", uploadData, (err, detailId) => {
-        if (err) {
-          if (err.error === "noWrite") {
+      const isEditMode = Boolean(id); //id가 있으면 true(수정) id가 없으면 false(새 글)
+
+      if (isEditMode) {
+        Meteor.call("update", id, uploadData, (err, id) => {
+          if (err) {
+            console.error("update 실패: ", err);
             alert(err.reason);
+          } else {
+            console.log("update 성공");
+            navigate(`/study/${id}`);
           }
-          console.error("insert 실패: ", err.reason);
-          alert(err.reason);
-        } else {
-          console.log("uploadStudy insert call 성공");
-          navigate(`/study/${detailId}`); //insert id
-        }
-      });
+        });
+      } else {
+        Meteor.call("insert", uploadData, (err, studyId) => {
+          if (err) {
+            console.error("insert 실패: ", err.reason);
+            alert(err.reason);
+          } else {
+            console.log("uploadStudy insert call 성공");
+            navigate(`/study/${studyId}`); //insert id
+          }
+        });
+      }
     } else {
       console.error("유저가 로그인하지 않았음");
     }
@@ -416,6 +450,7 @@ const UploadStudy = () => {
               id="online"
               name="studyType"
               value="온라인"
+              checked={studyType === "온라인"}
               onChange={(e) => setStudyType(e.target.value)}
             />
             <label htmlFor="online">온라인</label>
@@ -427,6 +462,7 @@ const UploadStudy = () => {
               id="offline"
               name="studyType"
               value="오프라인"
+              checked={studyType === "오프라인"}
               onChange={(e) => setStudyType(e.target.value)}
             />
             <label htmlFor="offline">오프라인</label>
@@ -438,8 +474,8 @@ const UploadStudy = () => {
               id="onOffline"
               name="studyType"
               value="온/오프라인"
+              checked={studyType === "온/오프라인"}
               onChange={(e) => setStudyType(e.target.value)}
-              defaultChecked
             />
             <label htmlFor="onOffline">온/오프라인</label>
           </div>
