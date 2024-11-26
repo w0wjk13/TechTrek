@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { useNavigate } from 'react-router-dom';
 import Data from "../Data";
@@ -24,21 +24,49 @@ const StudyForm = () => {
   });
 
   const navigate = useNavigate();
-
+  const isInitialized = useRef(false);
   // 사용자 주소 정보 가져오기
   const currentUser = Meteor.user(); // Get logged-in user info
   const userCity = currentUser?.profile?.address?.split(" ")[0] || ''; // Extract city from the address
   const userGubun = currentUser?.profile?.address?.split(" ")[1] || '';
-
+  const userTechStack = currentUser?.profile?.techStack || [];
+  const userRoles = currentUser?.profile?.roles || [];
+  const userScores = currentUser?.profile?.score || {};
+  
   useEffect(() => {
-    // 사용자가 로그인되어 있으면 해당 주소를 초기 값으로 설정
-    if (userCity && !selectedCity) {
-      setSelectedCity(userCity);
+    if (!isInitialized.current) {
+      // Set the state with user data only if it's not initialized yet
+      if (userCity && !selectedCity) {
+        setSelectedCity(userCity); // 상태가 비어 있을 때만 업데이트
+      }
+      if (userGubun && !selectedGubun) {
+        setSelectedGubun(userGubun); // 상태가 비어 있을 때만 업데이트
+      }
+      if (userTechStack.length > 0) {
+        setTechStack(userTechStack); // Set user's pre-selected tech stack
+      }
+      if (userRoles.length > 0) {
+        setRoles(userRoles); // 사용자 역할 정보로 초기화
+      }
+      if (userScores) {
+        setScore({
+          manner: userScores.manner || 0,
+          mentoring: userScores.mentoring || 0,
+          passion: userScores.passion || 0,
+          communication: userScores.communication || 0,
+          time: userScores.time || 0
+        });
+      }
+
+      const today = new Date();
+      today.setDate(today.getDate() + 3); // Set to 3 days later
+      setStudyClose(today.toISOString().split('T')[0]);
+
+      isInitialized.current = true; // Mark as initialized
     }
-    if (userGubun && !selectedGubun) {
-      setSelectedGubun(userGubun);
-    }
-  }, [userCity, userGubun, selectedCity, selectedGubun]);
+  }, [userCity, userGubun, userTechStack, userRoles, userScores, selectedCity, selectedGubun, techStack]);
+  
+  
 
   const getMinDate = () => {
     const today = new Date();
@@ -67,13 +95,21 @@ const StudyForm = () => {
     setRoles([value]); // 라디오 버튼은 하나의 값만 선택 가능
   };
 
+  const scoreCategories = [
+    { key: 'manner', label: '매너 점수' },
+    { key: 'mentoring', label: '멘토링 점수' },
+    { key: 'passion', label: '열정 점수' },
+    { key: 'communication', label: '소통 점수' },
+    { key: 'time', label: '시간 관리 점수' },
+  ];
+
   const handleScoreChange = (key, value) => {
     const numValue = parseInt(value, 10);
 
-    if (numValue >= 0 && numValue <= 4) {
+    if (numValue >= 0 && numValue <= 5) {
       setScore(prevScore => ({ ...prevScore, [key]: numValue }));
     } else {
-      alert("점수는 0부터 4 사이의 값만 입력할 수 있습니다.");
+      alert("점수는 0부터 5 사이의 값만 입력할 수 있습니다.");
     }
   };
 
@@ -86,8 +122,8 @@ const StudyForm = () => {
 
     // Ensure only one score is filled
     const filledScores = Object.values(score).filter(s => s !== '');
-    if (filledScores.length !== 1) {
-      alert("요구하는 점수는 하나만 입력해주세요.");
+    if (filledScores.length !== 5) {
+      alert("요구하는 점수는 모두 입력해주세요.");
       return;
     }
 
@@ -191,7 +227,19 @@ const StudyForm = () => {
           ))}
         </div>
       </div>
-
+      {/* Display Selected Tech Stacks */}
+    <div>
+      <label>선택된 기술 스택</label>
+      {techStack.length > 0 ? (
+        <ul>
+          {techStack.map((tech, index) => (
+            <li key={index}>{tech}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>선택된 기술 스택이 없습니다.</p>
+      )}
+    </div>
       {/* On/Offline Selection */}
       <div>
         <label>진행 방식</label>
@@ -268,19 +316,30 @@ const StudyForm = () => {
 
       {/* Scores */}
       <div>
-        <label>요구하는 점수</label>
-        {scoreCategories.map((category) => (
-          <div key={category.key}>
-            <label>{category.label}</label>
-            <input
-              type="number"
-              value={score[category.key] || ''}
-              onChange={(e) => handleScoreChange(category.key, e.target.value)}
-              placeholder={category.label}
-            />
-          </div>
+  <label>요구하는 점수</label>
+  {scoreCategories.map((category) => (
+    <div key={category.key}>
+      <label>{category.label}</label>
+      <div style={{ display: 'flex', gap: '5px' }}>
+        {[1, 2, 3, 4, 5].map((scoreValue) => (
+          <span
+            key={scoreValue}
+            onClick={() => handleScoreChange(category.key, scoreValue)}
+            style={{
+              cursor: 'pointer',
+              fontSize: '24px',
+              color: score[category.key] >= scoreValue ? '#FFD700' : '#D3D3D3', // Gold for selected, gray for unselected
+            }}
+          >
+            ★
+          </span>
         ))}
       </div>
+    </div>
+  ))}
+</div>
+
+
 
       {/* Title and Content */}
       <div>

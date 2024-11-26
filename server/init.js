@@ -43,11 +43,11 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
         techStack: techStacks.sort(() => Math.random() - 0.5).slice(0, 5),  // 랜덤으로 기술 스택 선택
         roles: ["백엔드", "프론트엔드", "풀스택"].sort(() => Math.random() - 0.5).slice(0, 1),  // 랜덤으로 역할 선택
         score: {
-          manner: Math.floor(Math.random() * 6),  // 0~5 매너
-          mentoring: Math.floor(Math.random() * 6),  // 0~5 멘토링
-          passion: Math.floor(Math.random() * 6),  // 0~5 열정
-          communication: Math.floor(Math.random() * 6),  // 0~5 의사소통
-          time: Math.floor(Math.random() * 6),  // 0~5 시간 준수
+          manner: Math.floor(Math.random() * 5) + 1,  // 1~5 매너
+          mentoring: Math.floor(Math.random() * 5) + 1,  // 1~5 멘토링
+          passion: Math.floor(Math.random() * 5) + 1,  // 1~5 열정
+          communication: Math.floor(Math.random() * 5) + 1,  // 1~5 의사소통
+          time: Math.floor(Math.random() * 5) + 1,  // 1~5 시간 준수
         },
       },
       createdAt: new Date(),
@@ -69,12 +69,12 @@ if (!Study.findOne()) {
     const scoreFields = ["manner", "mentoring", "passion", "communication", "time"];
 
     // 스터디 모집글 작성자가 요구하는 역량
-    const needScore = scoreFields.sort(() => Math.random() - 0.5).slice(0, Math.floor(Math.random() * 5) + 1);  // 요구하는 역량 선택
+    const needScore = scoreFields;
 
     // 요구하는 역량에 랜덤으로 점수 할당
     const score = {};
     needScore.forEach((need) => {
-      score[need] = Math.floor(Math.random() * 4) + 1;  // 1~4 사이의 랜덤 점수
+      score[need] = Math.floor(Math.random() * 5) + 1;  // 1~4 사이의 랜덤 점수
     });
 
     // 스터디 모집글 삽입
@@ -87,8 +87,8 @@ if (!Study.findOne()) {
       techStack: techStacks.sort(() => Math.random() - 0.5).slice(0, Math.floor(Math.random() * 5) + 1),  // 랜덤 기술 스택
       studyClose: studyClose,
       score: score,
-      title: "제목" + i,
-      content: "내용" + i,
+      title: "제목" + (i+1),
+      content: "내용" + (i+1),
       createdAt: new Date(),
       views: i,
       status: "모집중",

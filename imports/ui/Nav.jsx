@@ -29,7 +29,7 @@ export default () => {
             <li className="nav-item">
 
               <Link to="/mypage" className="nav-link">
-                Mypage
+                마이페이지
               </Link>
 
             </li>

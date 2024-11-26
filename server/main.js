@@ -4,6 +4,7 @@ import "./login/loginmain.js";
 import "./login/loginidfind.js";
 import "./login/loginform.js";
 import "./login/loginpwfind.js";
+import "./study/studyform.js";
 import "./init.js";
 import "./home.js";
 
