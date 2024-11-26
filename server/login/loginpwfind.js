@@ -4,7 +4,7 @@ import { Random } from 'meteor/random';
 import { Accounts } from 'meteor/accounts-base';
 
 Meteor.startup(() => {
-  process.env.MAIL_URL = 'smtps://yy55kj@gmail.com:hoqeoasizysmcufc@smtp.gmail.com:465'; // Gmail SMTP 설정
+  process.env.MAIL_URL = 'smtps://yy55kj@gmail.com:wfymoheaspzyisbs@smtp.gmail.com:465'; // Gmail SMTP 설정
 });
 
 Meteor.methods({

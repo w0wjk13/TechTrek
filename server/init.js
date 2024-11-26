@@ -1,101 +1,26 @@
 import { Study } from "/imports/api/collections";
-import { StudyUser } from "/imports/api/collections";
-import "/lib/utils.js";
+import Data from "../imports/ui/Data.jsx";
 
-//시/도 목록
-const regions = [
-  "서울",
-  "경기",
-  "인천",
-  "대구",
-  "대전",
-  "세종",
-  "경남",
-  "전남",
-  "충남",
-  "제주",
-  "부산",
-  "광주",
-  "울산",
-  "강원",
-  "경북",
-  "전북",
-  "충북",
-];
+const { citys, techStacks } = Data;
 
-//서울일 경우 구 목록
-const districts = [
-  "강남구",
-  "강동구",
-  "강서구",
-  "강북구",
-  "광진구",
-  "구로구",
-  "금천구",
-  "노원구",
-  "도봉구",
-  "동대문구",
-  "동작구",
-  "마포구",
-  "서대문구",
-  "서초구",
-  "성동구",
-  "성북구",
-  "송파구",
-  "양천구",
-  "영등포구",
-  "용산구",
-  "은평구",
-  "종로구",
-  "중구",
-  "중랑구",
-];
-
-//유저(주소) 스터디모집(지역) 만들기
+// citys 배열에서 랜덤으로 도시와 구를 선택하여 주소를 생성하는 함수
 const randomAddress = () => {
-  const region = regions.random();
+  // 랜덤으로 도시 선택
+  const city = citys[Math.floor(Math.random() * citys.length)];  // citys 배열에서 랜덤으로 도시를 선택
+  // 해당 도시에서 랜덤으로 구 선택
+  const gubun = city.gubuns[Math.floor(Math.random() * city.gubuns.length)];  // 선택된 도시에서 gubuns 배열을 이용해 랜덤으로 구를 선택
 
-  if (region === "서울") {
-    const district = districts.random();
-    return { city: "서울", gubun: district };
-  } else {
-    return { city: region, gubun: null };
-  }
+  // 주소 반환
+  return `${city.name} ${gubun}`;  // 도시와 구를 결합하여 주소 반환
 };
 
-//기술스택 목록
-const techStacks = [
-  "Java",
-  "NodeJS",
-  "Kotlin",
-  "Mysql",
-  "MongoDB",
-  "Python",
-  "Oracle",
-  "AWS",
-  "Spring",
-  "Azure",
-  "NextJS",
-  "Kubernetes",
-  "Javascript",
-  "Flutter",
-  "Docker",
-  "Typescript",
-  "Swift",
-  "Django",
-  "React",
-  "ReactNative",
-];
-
-//핸드폰 중간, 뒷번호 4자리 만들기
+// 핸드폰 중간, 뒷번호 4자리 만들기
 const randomNumber = () => {
-  return [0, 1, 2, 3, 4, 5, 6, 7, 9].random(4).join("");
+  const digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  return Array.from({ length: 4 }, () => digits[Math.floor(Math.random() * digits.length)]).join('');
 };
 
-//Study.remove({});
-//StudyUser.remove({});
-
-//admin 생성
+// admin 생성
 if (!Meteor.users.findOne({ username: "admin" })) {
   Accounts.createUser({
     username: "admin",
@@ -103,7 +28,7 @@ if (!Meteor.users.findOne({ username: "admin" })) {
   });
 }
 
-//admin 외에 다른 사용자가 없다면
+// admin 외에 다른 사용자가 없다면
 if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
   for (let i = 1; i <= 20; i++) {
     Accounts.createUser({
@@ -115,14 +40,14 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
         phone: `010-${randomNumber()}-${randomNumber()}`,
         profilePicture: "https://example.com/profile.jpg",
         address: randomAddress(),
-        techStack: techStacks.random(1, 5),
-        roles: ["백엔드", "프론트엔드", "풀스택"].random(),
+        techStack: techStacks.sort(() => Math.random() - 0.5).slice(0, 5),  // 랜덤으로 기술 스택 선택
+        roles: ["백엔드", "프론트엔드", "풀스택"].sort(() => Math.random() - 0.5).slice(0, 1),  // 랜덤으로 역할 선택
         score: {
-          manner: [0, 1, 2, 3, 4, 5].random(), //매너(친절)
-          mentoring: [0, 1, 2, 3, 4, 5].random(), //다른 사람 도와주기(지식 공유)
-          passion: [0, 1, 2, 3, 4, 5].random(), //열정(참여도)
-          communication: [0, 1, 2, 3, 4, 5].random(), //의사소통
-          time: [0, 1, 2, 3, 4, 5].random(), //시간준수
+          manner: Math.floor(Math.random() * 6),  // 0~5 매너
+          mentoring: Math.floor(Math.random() * 6),  // 0~5 멘토링
+          passion: Math.floor(Math.random() * 6),  // 0~5 열정
+          communication: Math.floor(Math.random() * 6),  // 0~5 의사소통
+          time: Math.floor(Math.random() * 6),  // 0~5 시간 준수
         },
       },
       createdAt: new Date(),
@@ -130,44 +55,36 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
   }
 }
 
-//스터디 모집글이 없다면
+// 스터디 모집글이 없다면
 if (!Study.findOne()) {
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 30; i++) {
     const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
-    const user = users.random();
+    const user = users[Math.floor(Math.random() * users.length)];  // 랜덤 사용자 선택
 
-    //Study문서 생성일을 기준으로 랜덤으로 1주~4주 후를 모집마감일로 설정
-    const randomWeeks = [7, 14, 21, 28].random();
+    // 현재 날짜에 1~30일 사이의 랜덤 값을 더해주어 한 달 내의 날짜를 설정
+    const randomDays = Math.floor(Math.random() * 30) + 1;
     const studyClose = new Date();
-    studyClose.setDate(studyClose.getDate() + randomWeeks);
+    studyClose.setDate(studyClose.getDate() + randomDays);  // 현재 날짜에 랜덤 일수를 더함
 
-    const scoreFields = [
-      "manner",
-      "mentoring",
-      "passion",
-      "communication",
-      "time",
-    ];
+    const scoreFields = ["manner", "mentoring", "passion", "communication", "time"];
 
-    //스터디모집글 작성자가 요구하는 역량
-    const needScore = scoreFields.random(1, 5);
+    // 스터디 모집글 작성자가 요구하는 역량
+    const needScore = scoreFields.sort(() => Math.random() - 0.5).slice(0, Math.floor(Math.random() * 5) + 1);  // 요구하는 역량 선택
 
-    //요구하는 역량에 랜덤으로 점수 할당
+    // 요구하는 역량에 랜덤으로 점수 할당
     const score = {};
     needScore.forEach((need) => {
-      score[need] = [1, 2, 3, 4].random();
+      score[need] = Math.floor(Math.random() * 4) + 1;  // 1~4 사이의 랜덤 점수
     });
 
-    //글 작성자는 항상 첫번째 팀원이 됨
-    const teamMember = [user._id];
-
+    // 스터디 모집글 삽입
     Study.insert({
       userId: user._id,
-      roles: ["풀스택", "백엔드", "프론트엔드"].random(),
-      onOffline: ["온라인", "오프라인", "온/오프라인"].random(),
+      roles: ["풀스택", "백엔드", "프론트엔드"].sort(() => Math.random() - 0.5).slice(0, 1),  // 랜덤 역할 선택
+      onOffline: ["온라인", "오프라인", "온/오프라인"].sort(() => Math.random() - 0.5).slice(0, 1),  // 랜덤 진행 방식
       address: randomAddress(),
-      studyCount: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].random(), //총 모집인원
-      techStack: techStacks.random(1, 5),
+      studyCount: Math.floor(Math.random() * 10) + 1,  // 총 모집인원 (1~10명)
+      techStack: techStacks.sort(() => Math.random() - 0.5).slice(0, Math.floor(Math.random() * 5) + 1),  // 랜덤 기술 스택
       studyClose: studyClose,
       score: score,
       title: "제목" + i,
@@ -175,77 +92,6 @@ if (!Study.findOne()) {
       createdAt: new Date(),
       views: i,
       status: "모집중",
-      teamMember: teamMember,
     });
-  }
-}
-
-//스터디 신청자가 없다면
-if (!StudyUser.findOne()) {
-  for (let i = 0; i < 6; i++) {
-    const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
-
-    //스터디가 요구하는 역량에 부합하는 사용자만 신청 가능하도록 설정
-    Study.find()
-      .fetch()
-      .forEach((study) => {
-        const studyScore = study.score;
-
-        let okUser = 0; //각 스터디에 승인된 유저를 카운트하기 위한 변수
-        users.forEach((user) => {
-          const userScore = user.profile.score;
-
-          //특정 스터디에 이미 지원한 유저가 중복 지원할 수 없도록 설정
-          const isExist = StudyUser.findOne({
-            studyId: study._id,
-            userId: user._id,
-          });
-
-          if (isExist) {
-            return;
-          }
-
-          //스터디에서 요구하는 역량/점수와 유저의 역량/점수 비교
-          let canJoin = true;
-          for (key in studyScore) {
-            if (userScore[key] < studyScore[key]) {
-              canJoin = false;
-              break;
-            }
-          }
-
-          //스터디에 신청 가능한 okUser의 수가 스터디 모집인원(studyCount)을 넘지 않았다면
-          if (canJoin && okUser < study.studyCount - 1) {
-            const status = ["대기중", "승인됨", "거절됨"].random();
-
-            StudyUser.insert({
-              studyId: study._id,
-              userId: user._id,
-              status: status,
-            });
-
-            //승인된 유저는 Study의 팀원(teamMember) 목록에 올라감
-            if (status === "승인됨") {
-              Study.update(
-                { _id: study._id },
-                { $addToSet: { teamMember: user._id } }
-              );
-              okUser++;
-              console.log(
-                `Study: ${study.title} - 승인유저: ${user.profile.name}`
-              );
-            }
-          }
-        });
-
-        //팀원(teamMember) 수가 1이면 무조건 status는 모집중이지만 2 이상이면 시작, 마감, 모집중 중에 하나를 가짐
-        const statusChange = Study.findOne(study._id);
-        if (statusChange.teamMember.length >= 2) {
-          Study.update(
-            { _id: study._id },
-            { $set: { status: ["모집중", "시작", "마감"].random() } }
-          );
-        }
-      });
   }
 }

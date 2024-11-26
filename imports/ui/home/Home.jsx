@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Meteor } from "meteor/meteor";
 import { useNavigate } from "react-router-dom";
-import citys from "./city";
+import Data from "./../Data";
 
-// 기술 스택 목록
-const techStacks = [
-  "Java", "NodeJS", "Kotlin", "Mysql", "MongoDB", "Python", "Oracle",
-  "AWS", "Spring", "Azure", "NextJS", "Kubernetes", "Javascript",
-  "Flutter", "Docker", "Typescript", "Swift", "Django", "React", "ReactNative"
-];
+const { citys, techStacks } = Data;
 
 const roles = ["백엔드", "프론트엔드", "풀스택"];
 
@@ -94,8 +89,15 @@ export default function Home() {
     if (address && address.city && address.gubun) {
       return `${address.city} - ${address.gubun}`;
     }
-    return address ? address.city || address.gubun : "위치 정보 없음";
+    if (address && address.city) {
+      return address.city;
+    }
+    if (address && address.gubun) {
+      return address.gubun;
+    }
+    return "위치 정보 없음";
   };
+
 
   const formatOnOffline = (onOffline) => {
     if (Array.isArray(onOffline)) {
