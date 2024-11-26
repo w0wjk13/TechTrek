@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Meteor } from "meteor/meteor";
 import { useNavigate } from "react-router-dom";
+import citys from "../ui/city/City.jsx";
 
 // 기술 스택 목록
 const techStacks = [
@@ -11,20 +12,7 @@ const techStacks = [
 
 const roles = ["백엔드", "프론트엔드", "풀스택"];
 
-const citys = [
-  {
-    name: "서울",
-    gubuns: [
-      "강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구",
-      "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구",
-      "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"
-    ]
-  },
-  {
-    name: "부산",
-    gubuns: ["해운대구", "수영구", "동래구", "사상구"]
-  }
-];
+
 
 // 모집 마감일 형식 함수
 const formatDDay = (studyClose) => {
@@ -69,7 +57,7 @@ export default function Home() {
       techStack: techStack.length > 0 ? techStack : undefined,
       roles: rolesSelected.length > 0 ? rolesSelected : undefined,
       onOffline: onOffline.length > 0 ? onOffline : undefined,
-      title: searchQuery.length > 1 ? searchQuery : undefined
+      title: searchQuery.length > 0 ? searchQuery : undefined
     };
 
     Meteor.call("searchStudies", filters, page, 5, sortBy, (error, results) => {
@@ -101,9 +89,9 @@ export default function Home() {
     navigate(`/study/${studyId}`);
   };
 
-  const formatLocation = (location) => {
-    if (location && location.city && location.gubun) {
-      return `${location.city} - ${location.gubun}`;
+  const formatLocation = (address) => {
+    if (address && address.city && address.gubun) {
+      return `${address.city} - ${address.gubun}`;
     }
     return location ? location.city || location.gubun : "위치 정보 없음";
   };
@@ -280,7 +268,7 @@ export default function Home() {
                 return (
                   <li key={result._id}>
                     <p>마감일: {formatDDay(result.studyClose)}</p>
-                    <span>지역: {formatLocation(result.location)}</span><br />
+                    <span>지역: {formatLocation(result.address)}</span><br />
                     <span>진행방식: {formatOnOffline(result.onOffline)}</span><br />
                     <strong>{result.title}</strong><br /><br />
                     <span>역할: {result.roles}</span><br />

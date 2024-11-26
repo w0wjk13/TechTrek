@@ -7,10 +7,10 @@ Meteor.methods({
 
     // Apply filters
     if (filters.city) {
-      query["location.city"] = filters.city;
+      query["address.city"] = filters.city;
     }
     if (filters.gubun) {
-      query["location.gubun"] = filters.gubun;
+      query["address.gubun"] = filters.gubun;
     }
     if (filters.techStack && filters.techStack.length > 0) {
       query.techStack = { $in: filters.techStack };

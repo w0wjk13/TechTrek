@@ -1,0 +1,2 @@
+$env:MONGO_URL='mongodb://cosmos-codecrew:azSbJGDVmEgHRanIVeWZKETVIcbfmHTBfuBv1Tgql8mZQ2q7w8y5CmcjsOqFUfiBcfHn5pVQHsMhACDb34WY0g==@cosmos-codecrew.mongo.cosmos.azure.com:10255/codecrewdb?ssl=true&replicaSet=globaldb&retrywrites=false'
+npm start
