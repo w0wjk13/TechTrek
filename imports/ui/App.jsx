@@ -17,6 +17,7 @@ import LoginFwFind from "./login/LoginPwFind.jsx";
 import LoginMain from "./login/LoginMain.jsx";
 import StudyForm from "./study/StudyForm.jsx";
 import StudyDetail from "./study/StudyDetail.jsx";
+import MypageMain from "./mypage/MypageMain.jsx";
 
 
 
@@ -50,9 +51,10 @@ export const App = () => {
         <Route path="/study">
           <Route path="form" element={<PrivateRoute element={<StudyForm />} />} />
           <Route path="detail/:id" element={<PrivateRoute element={<StudyDetail />} />} />
-
         </Route>
-
+        <Route path="/mypage">
+        <Route path="main" element={<PrivateRoute element={<MypageMain/>} />} />
+        </Route>
 
         {/* 404 페이지 */}
         <Route path="*" element={<NotFound />} />

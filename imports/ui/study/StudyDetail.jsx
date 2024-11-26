@@ -34,9 +34,7 @@ const StudyDetail = () => {
     Meteor.call('study.incrementViews', id, (error, result) => {
       if (error) {
         console.error('조회수 증가 실패:', error);
-      } else {
-        console.log('조회수 증가 성공');
-      }
+      } 
     });
   }, [id]);  // id가 변경될 때마다 실행
 
@@ -51,7 +49,7 @@ const StudyDetail = () => {
       if (error) {
         console.error('댓글 작성 실패:', error);
       } else {
-        setCommentContent('');
+        setCommentContent(''); 
         // 댓글 추가 후 UI에 반영
         setComments((prevComments) => [
           ...prevComments,
@@ -149,6 +147,9 @@ const StudyDetail = () => {
         <button>신청하기</button>
       )}
 
+      {/* 스터디 리스트 버튼을 댓글 섹션 위로 이동 */}
+      <button onClick={() => navigate('/')}>스터디 리스트</button>
+
       <div>
         <h3>댓글</h3>
         <textarea
@@ -167,8 +168,6 @@ const StudyDetail = () => {
           ))}
         </ul>
       </div>
-
-      <button onClick={() => navigate('/')}>스터디 리스트</button>
     </div>
   );
 };

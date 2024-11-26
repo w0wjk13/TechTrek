@@ -28,7 +28,7 @@ export default () => {
 
             <li className="nav-item">
 
-              <Link to="/mypage" className="nav-link">
+              <Link to="/mypage/main" className="nav-link">
                 마이페이지
               </Link>
 
