@@ -81,8 +81,8 @@ export default function Home() {
     }
   };
 
-  const handleViewDetail = (studyId) => {
-    navigate(`/study/${studyId}`);
+  const handleViewDetail = (id) => {
+    navigate(`/study/detail/${id}`); // id가 포함된 상세 페이지로 이동
   };
 
   const formatAddress = (address) => {

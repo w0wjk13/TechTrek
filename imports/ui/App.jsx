@@ -16,6 +16,7 @@ import LoginIdFind from "./login/LoginIdFind.jsx";
 import LoginFwFind from "./login/LoginPwFind.jsx";
 import LoginMain from "./login/LoginMain.jsx";
 import StudyForm from "./study/StudyForm.jsx";
+import StudyDetail from "./study/StudyDetail.jsx";
 
 
 
@@ -47,8 +48,8 @@ export const App = () => {
 
         {/* 보호된 페이지들  */}
         <Route path="/study">
-          <Route
-            path="form" element={<PrivateRoute element={<StudyForm />} />} />
+          <Route path="form" element={<PrivateRoute element={<StudyForm />} />} />
+          <Route path="detail/:id" element={<PrivateRoute element={<StudyDetail />} />} />
 
         </Route>
 
