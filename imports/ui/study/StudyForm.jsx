@@ -27,12 +27,30 @@ const StudyForm = () => {
   const isInitialized = useRef(false);
   // 사용자 주소 정보 가져오기
   const currentUser = Meteor.user(); // Get logged-in user info
-  const userCity = currentUser?.profile?.address?.split(" ")[0] || ''; // Extract city from the address
-  const userGubun = currentUser?.profile?.address?.split(" ")[1] || '';
-  const userTechStack = currentUser?.profile?.techStack || [];
-  const userRoles = currentUser?.profile?.roles || [];
-  const userScores = currentUser?.profile?.score || {};
-  
+
+  // Check if address is a string before calling split
+  const userCity = typeof currentUser?.profile?.address === 'string'
+    ? currentUser.profile.address.split(" ")[0]
+    : ''; // Extract city if address is a string, otherwise use an empty string
+
+  const userGubun = typeof currentUser?.profile?.address === 'string'
+    ? currentUser.profile.address.split(" ")[1]
+    : ''; // Extract gubun if address is a string, otherwise use an empty string
+
+  // Use default values if techStack, roles, or score are undefined
+  const userTechStack = Array.isArray(currentUser?.profile?.techStack)
+    ? currentUser.profile.techStack
+    : []; // Use an empty array if techStack is not an array
+
+  const userRoles = Array.isArray(currentUser?.profile?.roles)
+    ? currentUser.profile.roles
+    : []; // Use an empty array if roles is not an array
+
+  const userScores = currentUser?.profile?.score && typeof currentUser.profile.score === 'object'
+    ? currentUser.profile.score
+    : {}; // Use an empty object if score is not an object
+
+
   useEffect(() => {
     if (!isInitialized.current) {
       // Set the state with user data only if it's not initialized yet
@@ -65,8 +83,8 @@ const StudyForm = () => {
       isInitialized.current = true; // Mark as initialized
     }
   }, [userCity, userGubun, userTechStack, userRoles, userScores, selectedCity, selectedGubun, techStack]);
-  
-  
+
+
 
   const getMinDate = () => {
     const today = new Date();
@@ -228,18 +246,18 @@ const StudyForm = () => {
         </div>
       </div>
       {/* Display Selected Tech Stacks */}
-    <div>
-      <label>선택된 기술 스택</label>
-      {techStack.length > 0 ? (
-        <ul>
-          {techStack.map((tech, index) => (
-            <li key={index}>{tech}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>선택된 기술 스택이 없습니다.</p>
-      )}
-    </div>
+      <div>
+        <label>선택된 기술 스택</label>
+        {techStack.length > 0 ? (
+          <ul>
+            {techStack.map((tech, index) => (
+              <li key={index}>{tech}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>선택된 기술 스택이 없습니다.</p>
+        )}
+      </div>
       {/* On/Offline Selection */}
       <div>
         <label>진행 방식</label>
@@ -316,28 +334,28 @@ const StudyForm = () => {
 
       {/* Scores */}
       <div>
-  <label>요구하는 점수</label>
-  {scoreCategories.map((category) => (
-    <div key={category.key}>
-      <label>{category.label}</label>
-      <div style={{ display: 'flex', gap: '5px' }}>
-        {[1, 2, 3, 4, 5].map((scoreValue) => (
-          <span
-            key={scoreValue}
-            onClick={() => handleScoreChange(category.key, scoreValue)}
-            style={{
-              cursor: 'pointer',
-              fontSize: '24px',
-              color: score[category.key] >= scoreValue ? '#FFD700' : '#D3D3D3', // Gold for selected, gray for unselected
-            }}
-          >
-            ★
-          </span>
+        <label>요구하는 점수</label>
+        {scoreCategories.map((category) => (
+          <div key={category.key}>
+            <label>{category.label}</label>
+            <div style={{ display: 'flex', gap: '5px' }}>
+              {[1, 2, 3, 4, 5].map((scoreValue) => (
+                <span
+                  key={scoreValue}
+                  onClick={() => handleScoreChange(category.key, scoreValue)}
+                  style={{
+                    cursor: 'pointer',
+                    fontSize: '24px',
+                    color: score[category.key] >= scoreValue ? '#FFD700' : '#D3D3D3', // Gold for selected, gray for unselected
+                  }}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
-    </div>
-  ))}
-</div>
 
 
 
