@@ -64,6 +64,28 @@ const StudyDetail = () => {
     });
   }, [id]);  // id가 변경될 때마다 실행
 
+  // 모집 마감일이 지나면 모집 상태를 '모집마감'으로 변경
+  useEffect(() => {
+    if (studyData && studyData.studyClose) {
+      const studyCloseDate = new Date(studyData.studyClose);
+      const currentDate = new Date();
+
+      if (currentDate > studyCloseDate && studyData.status !== '모집마감') {
+        // 마감일이 지나면 상태를 '모집마감'으로 변경
+        Meteor.call('study.updateStatus', id, '모집마감', (error) => {
+          if (error) {
+            console.error('모집 상태 변경 실패:', error);
+          } else {
+            setStudyData(prevState => ({
+              ...prevState,
+              status: '모집마감',
+            }));
+          }
+        });
+      }
+    }
+  }, [studyData]);  // studyData가 변경될 때마다 실행
+
   // 댓글 입력 처리
   const handleCommentSubmit = () => {
     if (!commentContent.trim()) {
@@ -170,19 +192,30 @@ const StudyDetail = () => {
     });
   };
 
-  // 모집 상태 '모집완료'로 변경
   const handleStartStudy = () => {
-    Meteor.call('study.updateStatus', id, '모집완료', (error, result) => {
-      if (error) {
-        console.error('모집 상태 변경 실패:', error);
-      } else {
-        // 스터디 상태가 '모집완료'로 변경되었으면 화면 갱신
-        setStudyData((prevState) => ({
-          ...prevState,
-          status: '모집완료',
-        }));
-      }
-    });
+    // 수락된 신청자 + 작성자
+    const acceptedApplicants = applications.reduce((acc, app) => {
+      const accepted = app.applicants.filter((applicant) => applicant.state === '수락됨');
+      return [...acc, ...accepted];
+    }, []);
+
+    // 작성자를 포함하여 총 인원 수 체크
+    const totalParticipants = acceptedApplicants.length + (currentUserId === studyData.userId ? 1 : 0);
+
+    if (totalParticipants < 2) {
+      alert('수락된 신청자와 작성자가 2명 이상이어야 스터디를 시작할 수 있습니다.');
+    } else {
+      Meteor.call('study.updateStatus', id, '모집완료', (error) => {
+        if (error) {
+          console.error('모집 상태 변경 실패:', error);
+        } else {
+          setStudyData(prevState => ({
+            ...prevState,
+            status: '모집완료',
+          }));
+        }
+      });
+    }
   };
 
   if (loading) {

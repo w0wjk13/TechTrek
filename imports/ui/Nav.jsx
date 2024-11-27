@@ -10,6 +10,15 @@ export default () => {
     return { user: Meteor.user() };
   });
 
+  const navigate = useNavigate();  // useNavigate 훅을 사용하여 리디렉션
+
+  const handleLogout = () => {
+    Meteor.logout(() => {
+      // 로그아웃 후 로그인 페이지로 리디렉션
+      navigate('/login/main');  // 로그인 페이지 경로로 리디렉션
+    });
+  };
+
   return (
     <>
       <header>
@@ -27,18 +36,17 @@ export default () => {
             </li>
 
             <li className="nav-item">
-
               <Link to="/mypage/main" className="nav-link">
                 마이페이지
               </Link>
-
             </li>
+
             {/* 로그인 상태에 따라 메뉴 변경 */}
             {user ? (
               <li className="nav-item">
                 <button
                   className="nav-link logout-button"
-                  onClick={() => Meteor.logout()}
+                  onClick={handleLogout} // 로그아웃 처리
                 >
                   Logout
                 </button>

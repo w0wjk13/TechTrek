@@ -161,6 +161,19 @@ if (Meteor.isServer) {
         throw new Meteor.Error('not-authorized', '작성자만 상태를 변경할 수 있습니다.');
       }
 
+      // 수락된 신청자 + 작성자 포함 인원 계산
+      const acceptedApplicants = Application.find({ studyId, state: '수락됨' }).fetch();
+      const totalParticipants = acceptedApplicants.length + (study.userId === userId ? 1 : 0);
+
+      if (totalParticipants < 2) {
+        throw new Meteor.Error('insufficient-participants', '수락된 신청자와 작성자 포함 2명 이상이어야 스터디를 시작할 수 있습니다.');
+      }
+
+      // 모집 마감일이 지난 경우 자동으로 '모집마감' 상태로 변경
+      if (study.studyClose && new Date() > new Date(study.studyClose)) {
+        newStatus = '모집마감';
+      }
+
       Study.update(studyId, { $set: { status: newStatus } });
       return true;
     },
