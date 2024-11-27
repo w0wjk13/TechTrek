@@ -40,12 +40,22 @@ const StudyDetail = () => {
 
       // 스터디에 신청한 사용자들 가져오기 (Application 컬렉션에서)
       const studyApplications = Application.find({ studyId: id }).fetch();
-      setApplications(studyApplications);
+
+      // 신청자 상태 및 정보를 합친 배열 생성
+      const applicants = studyApplications.map(app => ({
+        ...app,
+        applicants: app.userIds.map((userId, index) => ({
+          userId,
+          state: app.states[index], // 신청 상태
+          user: Meteor.users.findOne(userId), // 사용자 정보
+        }))
+      }));
+
+      setApplications(applicants);
 
       // 데이터 로딩 완료
       setLoading(false);
     });
-
     // 페이지가 로드될 때 조회수 증가
     Meteor.call('study.incrementViews', id, (error, result) => {
       if (error) {
@@ -82,8 +92,7 @@ const StudyDetail = () => {
 
   // 신청하기 버튼 클릭 처리
   const handleApply = () => {
-    // 이미 신청한 경우 처리
-    if (applications.some((app) => app.userId === currentUserId)) {
+    if (applications.some((app) => app.applicants.some((applicant) => applicant.userId === currentUserId))) {
       alert('이미 신청한 상태입니다.');
       return;
     }
@@ -92,10 +101,17 @@ const StudyDetail = () => {
       if (error) {
         console.error('스터디 신청 실패:', error);
       } else {
-        // 신청 후 UI에 반영
         setApplications((prevApplications) => [
           ...prevApplications,
-          { userId: currentUserId, state: '신청됨' },  // state로 변경
+          {
+            applicants: [
+              {
+                userId: currentUserId,
+                state: '신청됨',
+                user: Meteor.users.findOne(currentUserId), // 신청한 유저 정보
+              },
+            ],
+          },
         ]);
       }
     });
@@ -103,13 +119,29 @@ const StudyDetail = () => {
 
   // 신청 상태 수락 처리
   const handleAccept = (applicantId) => {
+    const application = Application.findOne({ studyId: id, 'userIds': applicantId });
+
+    if (!application) {
+      alert('해당 신청자가 없습니다.');
+      return;
+    }
+
     Meteor.call('study.acceptApplication', id, applicantId, (error, result) => {
       if (error) {
         console.error('수락 실패:', error);
       } else {
         setApplications((prevApplications) =>
           prevApplications.map((app) =>
-            app.userId === applicantId ? { ...app, state: '수락됨' } : app  // state로 변경
+            app.applicants.some((applicant) => applicant.userId === applicantId)
+              ? {
+                ...app,
+                applicants: app.applicants.map((applicant) =>
+                  applicant.userId === applicantId
+                    ? { ...applicant, state: '수락됨' }  // 상태를 '수락됨'으로 변경
+                    : applicant
+                ),
+              }
+              : app
           )
         );
       }
@@ -118,13 +150,37 @@ const StudyDetail = () => {
 
   // 신청 상태 거절 처리
   const handleReject = (applicantId) => {
+    const application = Application.findOne({ studyId: id, 'userIds': applicantId });
+
+    if (!application) {
+      alert('해당 신청자가 없습니다.');
+      return;
+    }
     Meteor.call('study.rejectApplication', id, applicantId, (error, result) => {
       if (error) {
         console.error('거절 실패:', error);
       } else {
         setApplications((prevApplications) =>
-          prevApplications.filter((app) => app.userId !== applicantId)
+          prevApplications.map((app) => ({
+            ...app,
+            applicants: app.applicants.filter((applicant) => applicant.userId !== applicantId), // 신청자 제거
+          }))
         );
+      }
+    });
+  };
+
+  // 모집 상태 '모집완료'로 변경
+  const handleStartStudy = () => {
+    Meteor.call('study.updateStatus', id, '모집완료', (error, result) => {
+      if (error) {
+        console.error('모집 상태 변경 실패:', error);
+      } else {
+        // 스터디 상태가 '모집완료'로 변경되었으면 화면 갱신
+        setStudyData((prevState) => ({
+          ...prevState,
+          status: '모집완료',
+        }));
       }
     });
   };
@@ -212,32 +268,36 @@ const StudyDetail = () => {
         <strong>조회수:</strong> {views}
       </div>
 
+      {/* 모집 상태가 '모집중'일 때만 '스터디 시작' 버튼을 보이게 */}
+      {isUserOwner && status === '모집중' && (
+        <button onClick={handleStartStudy}>스터디 시작</button>
+      )}
+
       {!isUserOwner && !applications.some((app) => app.userId === currentUserId) && (
         <button onClick={handleApply}>신청하기</button>
       )}
 
       {/* 신청자 목록 (작성자만 볼 수 있음) */}
-      {isUserOwner && (
+      {isUserOwner && applications.length > 0 && (
         <div>
           <h3>신청자 목록</h3>
-          {applications.length === 0 ? (
-            <p>신청자가 없습니다.</p>
-          ) : (
-            <ul>
-              {applications.map((app) => (
-                <li key={app.userId}>
-                  {app.state === '신청됨' && (  // state 사용
-                    <div>
-                      <strong>{Meteor.users.findOne(app.userId)?.profile?.nickname || '알 수 없음'}</strong>님이 신청했습니다.
-                      <button onClick={() => handleAccept(app.userId)}>수락</button>
-                      <button onClick={() => handleReject(app.userId)}>거절</button>
-                    </div>
-                  )}
-                  {app.state === '수락됨' && <p>수락됨</p>}
-                </li>
-              ))}
-            </ul>
-          )}
+          {applications.map((app, index) => (
+            <div key={index}>
+              {app.applicants
+                .filter(applicant => applicant.userId !== userId)  // 작성자를 제외한 신청자만 필터링
+                .map((applicant) => (
+                  <div key={applicant.userId}>
+                    <strong>{applicant.user?.profile?.nickname || '알 수 없음'}</strong> - {applicant.state}
+                    {applicant.state === '신청됨' && (
+                      <>
+                        <button onClick={() => handleAccept(applicant.userId)}>수락</button>
+                        <button onClick={() => handleReject(applicant.userId)}>거절</button>
+                      </>
+                    )}
+                  </div>
+                ))}
+            </div>
+          ))}
         </div>
       )}
 

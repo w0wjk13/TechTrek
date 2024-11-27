@@ -1,7 +1,10 @@
 import { Study, Application } from "/imports/api/collections";
 import Data from "../imports/ui/Data.jsx";
 const { citys, techStacks } = Data;
-const noimage = '../imports/ui/image/noimage.png';
+const noimage = '../client/image/noimage.png';
+
+
+
 
 // citys 배열에서 랜덤으로 도시와 구를 선택하여 주소를 생성하는 함수
 const randomAddress = () => {
