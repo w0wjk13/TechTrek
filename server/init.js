@@ -136,7 +136,13 @@ randomStudyIds.forEach((studyId) => {
   // 랜덤 신청자 선택
   for (let i = 0; i < numOfApplicants; i++) {
     const applicant = users[Math.floor(Math.random() * users.length)];
-    if (!applicants.includes(applicant._id)) {  // 중복을 피하기 위해
+    // 이미 신청한 사용자가 중복으로 신청하지 않도록 하기 위해 Application 컬렉션을 확인
+    const existingApplication = Application.findOne({
+      studyId: studyId,
+      userIds: applicant._id,  // 해당 사용자가 이미 신청한 경우
+    });
+
+    if (!existingApplication) {  // 중복 신청자가 없으면
       applicants.push(applicant._id);
 
       // Application 컬렉션에 신청 정보 추가
