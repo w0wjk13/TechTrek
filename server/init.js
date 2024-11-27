@@ -85,7 +85,7 @@ if (Study.find().count() === 0) {
       roles: ["풀스택", "백엔드", "프론트엔드"].sort(() => Math.random() - 0.5).slice(0, 1),
       onOffline: ["온라인", "오프라인", "온/오프라인"].sort(() => Math.random() - 0.5).slice(0, 1),
       address: randomAddress(),
-      studyCount: Math.floor(Math.random() * 10) + 1,  // 모집인원 (1~10명)
+      studyCount: Math.floor(Math.random() * 9) + 2,  // 모집인원 (1~10명)
       techStack: techStacks.sort(() => Math.random() - 0.5).slice(0, Math.floor(Math.random() * 5) + 1),
       studyClose: studyClose,
       score: score,
