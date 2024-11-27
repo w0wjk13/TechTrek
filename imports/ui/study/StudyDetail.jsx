@@ -129,7 +129,7 @@ const StudyDetail = () => {
             applicants: [
               {
                 userId: currentUserId,
-                state: '신청됨',
+                state: '신청',
                 user: Meteor.users.findOne(currentUserId), // 신청한 유저 정보
               },
             ],
@@ -160,7 +160,7 @@ const StudyDetail = () => {
                 ...app,
                 applicants: app.applicants.map((applicant) =>
                   applicant.userId === applicantId
-                    ? { ...applicant, state: '수락됨' }  // 상태를 '수락됨'으로 변경
+                    ? { ...applicant, state: '수락' }  // 상태를 '수락됨'으로 변경
                     : applicant
                 ),
               }
@@ -196,13 +196,13 @@ const StudyDetail = () => {
   // 신청자 목록 필터링 처리: 거절된 신청자는 제외
   const filteredApplications = applications.map(app => ({
     ...app,
-    applicants: app.applicants.filter(applicant => applicant.state !== '거절됨')  // '거절됨' 상태 제외
+    applicants: app.applicants.filter(applicant => applicant.state !== '거절')  // '거절' 상태 제외
   }));
 
   const handleStartStudy = () => {
     // 수락된 신청자들 필터링 (수락된 신청자만)
     const acceptedApplicants = applications.flatMap((application) =>
-      application.applicants.filter((applicant) => applicant.state === '수락됨')
+      application.applicants.filter((applicant) => applicant.state === '수락')
     );
   
     // 작성자를 포함한 전체 참가자 수 계산
@@ -331,7 +331,7 @@ const StudyDetail = () => {
       .map((applicant) => (
         <div key={applicant.userId}>
           <strong>{applicant.user?.profile?.nickname || '알 수 없음'}</strong> - {applicant.state}
-          {applicant.state === '신청됨' && (
+          {applicant.state === '신청' && (
             <>
               <button onClick={() => handleAccept(applicant.userId)}>수락</button>
               <button onClick={() => handleReject(applicant.userId)}>거절</button>

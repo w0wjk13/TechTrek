@@ -85,7 +85,7 @@ if (Meteor.isServer) {
       Application.insert({
         studyId,
         userId: this.userId,
-        state: '신청됨',
+        state: '신청',
         createdAt: new Date(),
       });
     },
@@ -114,7 +114,7 @@ if (Meteor.isServer) {
   // 신청 상태를 '수락됨'으로 업데이트 (현재 신청자만)
   const updatedStates = application.states.map((state, index) => {
     if (application.userIds[index] === applicantId) {
-      return '수락됨';  // 해당 신청자만 '수락됨'으로 업데이트
+      return '수락';  // 해당 신청자만 '수락됨'으로 업데이트
     }
     return state;  // 나머지 신청자 상태는 변경하지 않음
   });
@@ -125,7 +125,7 @@ if (Meteor.isServer) {
 
   // 수락된 신청자 수 확인
   const acceptedApplicantIndexes = updatedStates
-    .map((state, index) => state === '수락됨' ? index : -1)
+    .map((state, index) => state === '수락' ? index : -1)
     .filter(index => index !== -1);  // '수락됨' 상태인 인덱스만 필터링
 
   const acceptedApplicantsCount = acceptedApplicantIndexes.length;
@@ -165,7 +165,7 @@ if (Meteor.isServer) {
 
       // 신청자를 거절 상태로 처리
       Application.update(application._id, {
-        $set: { states: application.states.map(state => state === '신청됨' ? '거절됨' : state) },
+        $set: { states: application.states.map(state => state === '신청' ? '거절' : state) },
       });
     },
 
@@ -185,7 +185,7 @@ if (Meteor.isServer) {
   if (study.userId !== userId) {
     throw new Meteor.Error('not-authorized', '작성자만 상태를 변경할 수 있습니다.');
   }
-
+  
   // 해당 스터디의 모든 신청서 데이터 가져오기
   const application = Application.findOne({ studyId });
 
@@ -195,7 +195,7 @@ if (Meteor.isServer) {
 
   // '수락됨' 상태인 신청자의 인덱스를 찾고, 그에 해당하는 userIds 배열을 추출
   const acceptedApplicantIndexes = application.states
-    .map((state, index) => state === '수락됨' ? index : -1)  // '수락됨' 상태의 인덱스만 필터링
+    .map((state, index) => state === '수락' ? index : -1)  // '수락됨' 상태의 인덱스만 필터링
     .filter(index => index !== -1);  // -1은 제외
 
   // 수락된 신청자 수
@@ -218,9 +218,29 @@ if (Meteor.isServer) {
     console.log(`모집 마감일이 지나서 상태가 '모집마감'으로 변경되었습니다.`);
   }
 
+  // 상태 변경 (진행, 종료 등을 'progress'로 반영)
+  if (study.status === '진행') {
+    if (study.progress !== '진행') {
+      console.log('스터디 시작: 진행으로 상태 변경');
+      Application.update(application._id, { 
+        $set: { progress: '진행' } 
+      });
+    }
+  } else if (study.status === '종료') {
+    if (study.progress !== '종료') {
+      console.log('스터디 종료: 종료로 상태 변경');
+      Application.update(application._id, { 
+        $set: { progress: '종료' } 
+      });
+    }
+  } else {
+    throw new Meteor.Error('invalid-status', '유효하지 않은 상태입니다.');
+  }
+
   // 상태 변경
-  console.log(`상태 변경: ${newStatus}`);
-  Study.update(studyId, { $set: { status: newStatus } });
+  console.log(`상태 변경: ${study.status}`);
+  Study.update(studyId, { $set: { status: study.status } });
+
   return true;
 }
 ,

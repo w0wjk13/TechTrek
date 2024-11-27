@@ -94,6 +94,10 @@ if (Study.find().count() === 0) {
       createdAt: new Date(),
       views: i,
       status: "모집중",
+
+
+
+      
     });
 
     // 스터디 모집글 작성자가 자동으로 해당 스터디에 신청
@@ -102,7 +106,8 @@ if (Study.find().count() === 0) {
       Application.insert({
         studyId: studyId,
         userIds: [user._id],  // 신청자 배열 초기화
-        states: ['신청됨'],  // 신청 상태 배열 초기화
+        states: ['신청'],  // 신청 상태 배열 초기화
+        progress: '예정' ,
         createdAt: new Date(),
       });
     }
@@ -149,7 +154,7 @@ randomStudyIds.forEach((studyId) => {
       Application.update(
         { studyId: studyId },
         {
-          $push: { userIds: applicant._id, states: '신청됨' },  // 신청자 추가
+          $push: { userIds: applicant._id, states: '신청' },  // 신청자 추가
           $inc: { applicantCount: 1 }  // 신청자 수 증가
         }
       );
@@ -158,5 +163,5 @@ randomStudyIds.forEach((studyId) => {
 
   // 해당 스터디의 총 신청자 수를 출력
   const totalApplicants = Application.find({ studyId: studyId }).fetch().reduce((sum, app) => sum + app.userIds.length, 0);
-  console.log(`스터디 "${study.title}"에 총 ${totalApplicants}명이 신청했습니다.`);
+ 
 });

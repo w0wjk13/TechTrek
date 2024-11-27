@@ -6,6 +6,7 @@ import MypageNav from './MypageNav.jsx';
 const MypageProject = () => {
   const [myStudies, setMyStudies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState([]);  // 사용자 정보를 저장할 상태 변수 추가
 
   // 현재 로그인한 사용자 ID
   const currentUserId = Meteor.userId();
@@ -38,8 +39,24 @@ const MypageProject = () => {
       }
     };
 
+    const fetchUsers = async () => {
+      // 모든 사용자 정보를 가져오는 함수
+      const allUsers = await new Promise((resolve, reject) => {
+        Meteor.call('getAllUsers', (error, result) => { // getAllUsers 메서드로 모든 사용자 정보 가져오기
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        });
+      });
+
+      setUsers(allUsers); // 사용자 정보 설정
+    };
+
     if (currentUserId) {
       fetchMyStudies();
+      fetchUsers();
     }
   }, [currentUserId]);
 
@@ -59,34 +76,44 @@ const MypageProject = () => {
       <div className="mypage-content">
         <h1>내가 생성한 스터디</h1>
         <ul>
-          {myStudies.map((study, index) => (
-            <li key={study._id}>
-              <div>
-                <strong>제목:</strong> {study.title}
-              </div>
-              <div>
-                <strong>작성자:</strong> {study.username}
-              </div>
-              <div>
-                <strong>등록일:</strong> {new Date(study.createdAt).toLocaleDateString()}
-              </div>
-              <div>
-                <strong>모집 마감일:</strong> {new Date(study.studyClose).toLocaleDateString()}
-              </div>
-              <div>
-                <strong>기술 스택:</strong>
-                <ul>
-                  {study.techStack.map((tech, index) => (
-                    <li key={index}>{tech}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                {/* 수정된 부분: 버튼 클릭 시 해당 스터디의 _id를 URL 파라미터로 전달하여 StudyDetail 페이지로 이동 */}
-                <button onClick={() => navigate(`/study/detail/${study._id}`)}>상세보기</button>
-              </div>
-            </li>
-          ))}
+          {myStudies.map((study) => {
+            // study.userId를 통해 해당 작성자 찾기
+            const creator = users.find(user => user._id === study.userId);  // 작성자 정보 찾기
+            
+            // 생성자 이름 찾기
+            const creatorName = creator ? creator.profile.name : '알 수 없음';  // 작성자 이름 설정
+
+            console.log("study.userId: ", study.userId);  // 디버깅을 위한 로그
+            console.log("creator._id: ", creator ? creator._id : null);  // 디버깅을 위한 로그
+
+            return (
+              <li key={study._id}>
+                <div>
+                  <strong>제목:</strong> {study.title}
+                </div>
+                <div>
+                  <strong>작성자:</strong> {study.creatorName}
+                </div>
+                <div>
+                  <strong>등록일:</strong> {new Date(study.createdAt).toLocaleDateString()}
+                </div>
+                <div>
+                  <strong>모집 마감일:</strong> {new Date(study.studyClose).toLocaleDateString()}
+                </div>
+                <div>
+                  <strong>기술 스택:</strong>
+                  <ul>
+                    {study.techStack.map((tech, index) => (
+                      <li key={index}>{tech}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <button onClick={() => navigate(`/study/detail/${study._id}`)}>상세보기</button>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>
