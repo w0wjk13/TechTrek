@@ -1,8 +1,22 @@
 import { Meteor } from 'meteor/meteor';
-import { Study, Comment } from '/imports/api/collections';  // Comment 컬렉션도 가져오기
+import { Study } from '/imports/api/collections';
 
 if (Meteor.isServer) {
   Meteor.methods({
+    // 스터디 정보 조회 메서드
+    'study.getStudyDetails'(id) {
+      if (typeof id !== 'string') {
+        throw new Meteor.Error('invalid-id', '스터디 ID는 문자열이어야 합니다.');
+      }
+
+      const study = Study.findOne(id);
+      if (!study) {
+        throw new Meteor.Error('study-not-found', '해당 ID에 대한 스터디를 찾을 수 없습니다.');
+      }
+
+      return study;  // 스터디 정보를 반환
+    },
+
     // 스터디 조회수 증가 메서드
     'study.incrementViews'(id) {
       if (typeof id !== 'string') {
@@ -48,6 +62,76 @@ if (Meteor.isServer) {
 
       // comment 컬렉션에 댓글 추가
       Comment.insert(newComment);
+    },
+
+    // 스터디 신청 메서드
+    'study.apply'(studyId) {
+      // 로그인 확인
+      if (!this.userId) {
+        throw new Meteor.Error('not-authorized', '로그인 후 신청할 수 있습니다.');
+      }
+
+      // 신청자가 이미 신청한 상태인지 확인
+      const existingApplication = Application.findOne({ studyId, userId: this.userId });
+      if (existingApplication) {
+        throw new Meteor.Error('already-applied', '이미 신청한 상태입니다.');
+      }
+
+      // 신청 정보 추가
+      Application.insert({
+        studyId,
+        userId: this.userId,
+        state: '신청됨',  // 상태를 state로 변경
+        createdAt: new Date(),
+      });
+    },
+
+    // 신청 수락 메서드
+    'study.acceptApplication'(studyId, applicantId) {
+      // 로그인 확인
+      if (!this.userId) {
+        throw new Meteor.Error('not-authorized', '로그인 후 수락할 수 있습니다.');
+      }
+
+      // 스터디 작성자인지 확인
+      const study = Study.findOne(studyId);
+      if (!study || study.userId !== this.userId) {
+        throw new Meteor.Error('not-authorized', '작성자만 신청을 수락할 수 있습니다.');
+      }
+
+      // 신청된 유저가 존재하는지 확인
+      const application = Application.findOne({ studyId, userId: applicantId });
+      if (!application) {
+        throw new Meteor.Error('application-not-found', '해당 신청자가 없습니다.');
+      }
+
+      // 신청 상태를 '수락됨'으로 변경
+      Application.update(application._id, {
+        $set: { state: '수락됨' },  // 상태를 state로 변경
+      });
+    },
+
+    // 신청 거절 메서드
+    'study.rejectApplication'(studyId, applicantId) {
+      // 로그인 확인
+      if (!this.userId) {
+        throw new Meteor.Error('not-authorized', '로그인 후 거절할 수 있습니다.');
+      }
+
+      // 스터디 작성자인지 확인
+      const study = Study.findOne(studyId);
+      if (!study || study.userId !== this.userId) {
+        throw new Meteor.Error('not-authorized', '작성자만 신청을 거절할 수 있습니다.');
+      }
+
+      // 신청된 유저가 존재하는지 확인
+      const application = Application.findOne({ studyId, userId: applicantId });
+      if (!application) {
+        throw new Meteor.Error('application-not-found', '해당 신청자가 없습니다.');
+      }
+
+      // 신청 삭제 (거절)
+      Application.remove(application._id);
     },
   });
 }
