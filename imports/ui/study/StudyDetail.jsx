@@ -34,7 +34,7 @@ const StudyDetail = () => {
     Meteor.call('study.incrementViews', id, (error, result) => {
       if (error) {
         console.error('조회수 증가 실패:', error);
-      } 
+      }
     });
   }, [id]);  // id가 변경될 때마다 실행
 
@@ -49,7 +49,7 @@ const StudyDetail = () => {
       if (error) {
         console.error('댓글 작성 실패:', error);
       } else {
-        setCommentContent(''); 
+        setCommentContent('');
         // 댓글 추가 후 UI에 반영
         setComments((prevComments) => [
           ...prevComments,
@@ -104,7 +104,7 @@ const StudyDetail = () => {
       </div>
 
       <div>
-        <strong>지역:</strong> {address}
+        <strong>지역:</strong> {address ? `${address.city} ${address.gubun}` : '정보 없음'}
       </div>
 
       <div>
