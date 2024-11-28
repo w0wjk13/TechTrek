@@ -73,7 +73,7 @@ if (Meteor.isServer) {
         throw new Meteor.Error('study-not-found', '스터디를 찾을 수 없습니다.');
       }
 
-      if (study.userId === this.userId) {
+      if (study.userId === Meteor.user()?.profile?.nickname) {
         throw new Meteor.Error('not-authorized', '작성자는 신청할 수 없습니다.');
       }
 
@@ -97,7 +97,7 @@ if (Meteor.isServer) {
   }
 
   const study = Study.findOne(studyId);
-  if (!study || study.userId !== this.userId) {
+  if (!study || study.userId !== Meteor.user()?.profile?.nickname) {
     throw new Meteor.Error('not-authorized', '작성자만 신청을 수락할 수 있습니다.');
   }
 
@@ -149,7 +149,7 @@ if (Meteor.isServer) {
       }
 
       const study = Study.findOne(studyId);
-      if (!study || study.userId !== this.userId) {
+      if (!study || study.userId !== Meteor.user()?.profile?.nickname) {
         throw new Meteor.Error('not-authorized', '작성자만 신청을 거절할 수 있습니다.');
       }
 
@@ -180,7 +180,7 @@ if (Meteor.isServer) {
     throw new Meteor.Error('study-not-found', '해당 스터디를 찾을 수 없습니다.');
   }
 
-  if (study.userId !== userId) {
+  if (study.userId !== Meteor.user()?.profile?.nickname) {
     throw new Meteor.Error('not-authorized', '작성자만 상태를 변경할 수 있습니다.');
   }
 

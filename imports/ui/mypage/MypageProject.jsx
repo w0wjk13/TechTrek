@@ -1,71 +1,56 @@
 import React, { useEffect, useState } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { useNavigate } from 'react-router-dom'; // useNavigate 훅을 import
+import { useNavigate } from 'react-router-dom'; 
 import MypageNav from './MypageNav.jsx';
 
 const MypageProject = () => {
-  const [myStudies, setMyStudies] = useState([]);  // 내가 생성한 스터디
-  const [appliedStudies, setAppliedStudies] = useState([]);  // 내가 신청한 스터디
+  const [myStudies, setMyStudies] = useState([]);  // Created studies
+  const [appliedStudies, setAppliedStudies] = useState([]);  // Applied studies
   const [loading, setLoading] = useState(true);
 
-  // 현재 로그인한 사용자 ID
+  // Current logged-in user ID
   const currentUserId = Meteor.userId();
 
-  // 페이지 이동을 위한 navigate 훅
+  // Navigate hook for routing
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 현재 사용자가 생성한 스터디 목록을 가져오는 함수
     const fetchMyStudies = async () => {
-      setLoading(true); // 로딩 상태 true로 설정
-
+      setLoading(true);
       try {
-        // 서버 메서드 호출하여 사용자 생성 스터디 목록 가져오기
+        // Fetch studies created by the user
         const studies = await new Promise((resolve, reject) => {
           Meteor.call('study.getMyStudies', (error, result) => {
-            if (error) {
-              reject(error);
-            } else {
-              resolve(result);
-            }
+            if (error) reject(error);
+            else resolve(result);
           });
         });
-
-        setMyStudies(studies);  // 생성한 스터디 데이터를 상태에 설정
+        setMyStudies(studies);
       } catch (error) {
-        console.error('생성한 스터디를 가져오는 데 실패했습니다:', error.message);
+        console.error('Failed to fetch created studies:', error.message);
       }
     };
 
-    // 현재 사용자가 신청한 스터디 목록을 가져오는 함수
     const fetchAppliedStudies = async () => {
       try {
-        // 서버 메서드 호출하여 사용자 신청 스터디 목록 가져오기
+        // Fetch studies the user has applied to
         const studies = await new Promise((resolve, reject) => {
           Meteor.call('study.getAppliedStudies', (error, result) => {
-            if (error) {
-              reject(error);
-            } else {
-              resolve(result);
-            }
+            if (error) reject(error);
+            else resolve(result);
           });
         });
-
-        // 내가 생성한 스터디를 신청한 스터디 목록에서 제외
-        const filteredStudies = studies.filter(study => study.creatorName !== currentUserId);
-
-        setAppliedStudies(filteredStudies);  // 신청한 스터디 데이터를 상태에 설정
-        setLoading(false);  // 로딩 상태 해제
+        setAppliedStudies(studies);
       } catch (error) {
-        console.error('신청한 스터디를 가져오는 데 실패했습니다:', error.message);
-        setLoading(false);
+        console.error('Failed to fetch applied studies:', error.message);
       }
     };
 
     if (currentUserId) {
-      fetchMyStudies();  // 생성한 스터디 목록 가져오기
-      fetchAppliedStudies();  // 신청한 스터디 목록 가져오기
+      fetchMyStudies();
+      fetchAppliedStudies();
     }
+    setLoading(false);
   }, [currentUserId]);
 
   if (loading) {
@@ -78,7 +63,7 @@ const MypageProject = () => {
         <MypageNav />
       </div>
       <div className="mypage-content">
-        {/* 내가 생성한 스터디 목록 */}
+        {/* Created Studies */}
         <h1>내가 생성한 스터디</h1>
         {myStudies.length === 0 ? (
           <div>생성한 스터디가 없습니다.</div>
@@ -90,7 +75,7 @@ const MypageProject = () => {
                   <strong>제목:</strong> {study.title}
                 </div>
                 <div>
-                  <strong>작성자:</strong> {study.creatorName} {/* 작성자 표시 */}
+                  <strong>작성자:</strong> {study.userId}
                 </div>
                 <div>
                   <strong>등록일:</strong> {new Date(study.createdAt).toLocaleDateString()}
@@ -105,13 +90,13 @@ const MypageProject = () => {
                   <strong>모집 인원:</strong> {study.studyCount}
                 </div>
                 <div>
-                  <strong>신청자:</strong> {study.applicantCount} {/* 신청자 수 표시 */}
+                  <strong>신청자:</strong> {study.applicantCount}
                 </div>
                 <div>
-                  <strong>진행 상태:</strong> {study.progress} {/* 진행 상태 출력 */}
+                  <strong>진행 상태:</strong> {study.progress}
                 </div>
                 <div>
-                  <strong>진행일:</strong> {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()} {/* 진행일 출력 */}
+                  <strong>진행일:</strong> {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()}
                 </div>
                 <div>
                   <strong>기술 스택:</strong>
@@ -129,7 +114,7 @@ const MypageProject = () => {
           </ul>
         )}
 
-        {/* 내가 신청한 스터디 목록 */}
+        {/* Applied Studies */}
         <h1>내가 신청한 스터디</h1>
         {appliedStudies.length === 0 ? (
           <div>신청한 스터디가 없습니다.</div>
@@ -141,7 +126,7 @@ const MypageProject = () => {
                   <strong>제목:</strong> {study.title}
                 </div>
                 <div>
-                  <strong>작성자:</strong> {study.userId} {/* 작성자 표시 */}
+                  <strong>작성자:</strong> {study.userId}
                 </div>
                 <div>
                   <strong>등록일:</strong> {new Date(study.createdAt).toLocaleDateString()}
@@ -156,13 +141,13 @@ const MypageProject = () => {
                   <strong>모집 인원:</strong> {study.studyCount}
                 </div>
                 <div>
-                  <strong>신청자:</strong> {study.applicantCount} {/* 신청자 수 표시 */}
+                  <strong>신청자:</strong> {study.applicantCount}
                 </div>
                 <div>
-                  <strong>진행 상태:</strong> {study.progress} {/* 진행 상태 출력 */}
+                  <strong>진행 상태:</strong> {study.progress}
                 </div>
                 <div>
-                  <strong>진행일:</strong> {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()} {/* 진행일 출력 */}
+                  <strong>진행일:</strong> {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()}
                 </div>
                 <div>
                   <strong>기술 스택:</strong>

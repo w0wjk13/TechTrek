@@ -1,75 +1,81 @@
-// imports/api/studyform.js
 import { Meteor } from 'meteor/meteor';
-import { Study, Application } from '/imports/api/collections'; // Study와 Application 컬렉션을 가져옵니다.
+import { Study, Application } from '/imports/api/collections';
 
 Meteor.methods({
-  // 현재 로그인한 유저가 생성한 스터디 가져오기
+  // Get studies created by the logged-in user
   'study.getMyStudies': function () {
-    // 로그인하지 않은 경우
     if (!this.userId) {
       throw new Meteor.Error('not-authorized', '로그인한 사용자만 접근 가능합니다.');
     }
 
-    // 현재 로그인한 사용자가 생성한 스터디를 찾기
-    const myStudies = Study.find({ userId: this.userId }).fetch();
+   // 로그인한 사용자의 nickname을 사용하여 userId를 찾기
+   const user = Meteor.users.findOne(this.userId); // 현재 로그인한 사용자
+   if (!user || !user.profile || !user.profile.nickname) {
+     throw new Meteor.Error('no-nickname', '사용자 닉네임이 없습니다.');
+   }
 
-    if (myStudies.length === 0) {
-      throw new Meteor.Error('no-studies', '생성한 스터디가 없습니다.');
+   const nickname = user.profile.nickname;
+
+   // nickname을 기준으로 해당 사용자가 생성한 스터디를 찾기
+   const myStudies = Study.find({ userId: nickname }).fetch();
+
+   if (myStudies.length === 0) {
+     throw new Meteor.Error('no-studies', '생성한 스터디가 없습니다.');
+   }
+
+   // 작성자 닉네임과 신청자 수를 포함한 스터디 목록 반환
+   const studiesWithCreator = myStudies.map(study => {
+     // 작성자 닉네임 설정
+     const creator = Meteor.users.findOne({ 'profile.nickname': study.userId }); // nickname 기준으로 사용자 찾기
+     study.creatorName = creator ? creator.profile.nickname : '알 수 없음'; // 작성자 닉네임 설정
+
+     // 신청자 수 계산 (작성자 제외)
+     const applications = Application.find({ studyId: study._id }).fetch();
+     const applicantCount = applications.reduce((count, app) => {
+       // 신청자 중 작성자를 제외한 수를 카운트
+       const isApplicant = app.userIds.filter(userId => userId !== study.userId).length;
+       return count + isApplicant;
+     }, 0);
+     study.applicantCount = applicantCount;
+
+     // 스터디의 진행 상태(progress) 가져오기
+     const application = Application.findOne({ studyId: study._id });
+     study.progress = application ? application.progress : '예정'; // 신청서가 없으면 기본값 '예정'
+     study.startDate = application ? application.startDate : new Date();
+     return study;
+   });
+
+   return studiesWithCreator; 
+  },
+
+  // Get studies the current user has applied for
+  'study.getAppliedStudies': function () {
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized', '로그인한 사용자만 접근 가능합니다.');
     }
 
-    // 작성자 닉네임과 신청자 수를 포함한 스터디 목록 반환
-    const studiesWithCreator = myStudies.map(study => {
-      const creator = Meteor.users.findOne(study.userId); // userId에 해당하는 작성자 정보 가져오기
-      study.creatorName = creator ? creator.profile.nickname : '알 수 없음'; // 작성자 닉네임 설정
+    const appliedStudies = Application.find({ userIds: this.userId }).fetch();
+    if (appliedStudies.length === 0) {
+      return [];
+    }
 
-      // 신청자 수 계산 (작성자 제외)
+    const studyIds = appliedStudies.map(app => app.studyId);
+    const studies = Study.find({ _id: { $in: studyIds } }).fetch();
+
+    const studiesWithCreator = studies.map(study => {
+      const creator = Meteor.users.findOne(study.userId);
+      study.creatorName = creator ? creator.profile.nickname : '알 수 없음';
+
       const applications = Application.find({ studyId: study._id }).fetch();
-      const applicantCount = applications.reduce((count, app) => {
-        // 신청자 중 작성자를 제외한 수를 카운트
-        const isApplicant = app.userIds.filter(userId => userId !== study.userId).length;
-        return count + isApplicant;
-      }, 0);
-      study.applicantCount = applicantCount;
+      study.applicantCount = applications.length;
 
-      // 스터디의 진행 상태(progress) 가져오기 (최초로 신청한 상태를 기준으로 사용)
-      const application = Application.findOne({ studyId: study._id });
-      study.progress = application ? application.progress : '예정'; // 신청서가 없으면 기본값 '예정'
+      const application = applications.find(app => app.userIds.includes(this.userId));
+      study.progress = application ? application.progress : '예정';
       study.startDate = application ? application.startDate : new Date();
+
       return study;
     });
 
-    return studiesWithCreator;  // 작성자 닉네임과 신청자 수를 포함한 스터디 목록 반환
+    return studiesWithCreator;
   },
-
-  // 현재 로그인한 유저가 신청한 스터디 가져오기
-  'study.getAppliedStudies': function () {
-    // 로그인하지 않은 경우
-    if (!this.userId) {
-      throw new Meteor.Error('not-authorized', '로그인한 사용자만 접근 가능합니다.');
-    }
-
-    // 현재 로그인한 사용자가 신청한 스터디를 찾기
-    const appliedStudies = Application.find({ userIds: this.userId }).fetch();
-
-    if (appliedStudies.length === 0) {
-      throw new Meteor.Error('no-applied-studies', '신청한 스터디가 없습니다.');
-    }
-
-    // 신청한 스터디의 세부 정보 추가
-    const studiesWithDetails = appliedStudies.map(application => {
-      const study = Study.findOne(application.studyId);
-      if (!study) {
-        return null;  // 스터디 정보가 없으면 null 반환
-      }
-
-      study.progress = application.progress || '예정';  // 신청서의 진행 상태 사용
-      study.startDate = application.startDate || new Date();  // 신청서의 시작 날짜 사용
-      study.applicantCount = application.userIds.length;  // 신청자 수
-   
-
-      return study;
-    }).filter(study => study !== null);  // null 값을 필터링하여 반환
-
-    return studiesWithDetails;  // 신청한 스터디의 상세 정보를 포함한 목록 반환
-  }
 });

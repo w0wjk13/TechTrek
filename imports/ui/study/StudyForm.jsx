@@ -145,8 +145,17 @@ const StudyForm = () => {
       return;
     }
 
+    const currentUser = Meteor.user();
+  const userId = currentUser?.profile?.nickname;
+
+  if (!userId) {
+    alert("사용자 정보가 올바르지 않습니다.");
+    return;
+  }
+
     // Prepare the data to submit
     const studyData = {
+      userId,
       title,
       content,
       address: { city: selectedCity, gubun: selectedGubun },

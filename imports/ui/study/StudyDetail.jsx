@@ -14,7 +14,7 @@ const StudyDetail = () => {
   const [loading, setLoading] = useState(true);  // 로딩 상태 추가
 
   // 현재 로그인한 사용자 ID
-  const currentUserId = Meteor.userId();
+  const currentUserNickname = Meteor.user()?.profile?.nickname || '';
 
   useEffect(() => {
     // 데이터 로딩 시작
@@ -102,7 +102,7 @@ const StudyDetail = () => {
         setComments((prevComments) => [
           ...prevComments,
           {
-            userId: currentUserId,
+            userId: currentUserNickname,
             nickname: Meteor.user()?.profile?.nickname || '알 수 없음',
             content: commentContent,
             createdAt: new Date(),
@@ -114,7 +114,7 @@ const StudyDetail = () => {
 
   // 신청하기 버튼 클릭 처리
   const handleApply = () => {
-    if (applications.some((app) => app.applicants.some((applicant) => applicant.userId === currentUserId))) {
+    if (applications.some((app) => app.applicants.some((applicant) => applicant.userId === currentUserNickname))) {
       alert('이미 신청한 상태입니다.');
       return;
     }
@@ -128,9 +128,9 @@ const StudyDetail = () => {
           {
             applicants: [
               {
-                userId: currentUserId,
+                userId: currentUserNickname,
                 state: '신청',
-                user: Meteor.users.findOne(currentUserId), // 신청한 유저 정보
+                user: Meteor.users.findOne(currentUserNickname), // 신청한 유저 정보
               },
             ],
           },
@@ -207,7 +207,7 @@ const StudyDetail = () => {
     );
   
     // 작성자를 포함한 전체 참가자 수 계산
-    const totalParticipants = acceptedApplicants.length + (studyData.userId === currentUserId ? 1 : 0);
+    const totalParticipants = acceptedApplicants.length + (studyData.userId === currentUserNickname ? 1 : 0);
   
   
     // 참가자가 2명 이상이어야 스터디 시작 가능
@@ -246,7 +246,7 @@ const StudyDetail = () => {
   };
 
   // 작성자가 아닌 경우에만 신청 버튼을 보이게
-  const isUserOwner = currentUserId === userId;
+  const isUserOwner = currentUserNickname === userId;
 
   // 모집 상태가 '모집마감'일 경우 버튼 비활성화 여부
   const isRecruitingClosed = status === '모집마감';
@@ -320,7 +320,7 @@ const StudyDetail = () => {
         <button onClick={handleStartStudy}>스터디 시작</button>
       )}
 
-      {!isUserOwner && !applications.some((app) => app.userId === currentUserId) && (
+      {!isUserOwner && !applications.some((app) => app.userId === currentUserNickname) && (
         <button onClick={handleApply} disabled={isRecruitingClosed}>신청하기</button>
       )}
 
