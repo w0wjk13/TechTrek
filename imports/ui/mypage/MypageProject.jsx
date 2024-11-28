@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import MypageNav from './MypageNav.jsx';
 
 const MypageProject = () => {
@@ -40,7 +40,8 @@ const MypageProject = () => {
             else resolve(result);
           });
         });
-        setAppliedStudies(studies);
+        const filteredAppliedStudies = studies.filter((study) => study.userId !== Meteor.user().profile.nickname);
+        setAppliedStudies(filteredAppliedStudies);
       } catch (error) {
         console.error('Failed to fetch applied studies:', error.message);
       }
@@ -52,6 +53,35 @@ const MypageProject = () => {
     }
     setLoading(false);
   }, [currentUserId]);
+
+  // Delete created study
+  const handleDeleteStudy = (studyId) => {
+    if (window.confirm('정말로 이 스터디를 삭제하시겠습니까?')) {
+      Meteor.call('study.delete', studyId, (error) => {
+        if (error) {
+          console.error('Study delete failed:', error); // 서버에서 발생한 오류 로그
+          alert('스터디 삭제에 실패했습니다.');
+        } else {
+          alert('스터디가 삭제되었습니다.');
+          setMyStudies((prev) => prev.filter(study => study._id !== studyId));
+        }
+      });
+    }
+  };
+  
+  const handleCancelApplication = (studyId) => {
+    if (window.confirm('정말로 이 스터디 신청을 취소하시겠습니까?')) {
+      Meteor.call('study.cancelApplication', studyId, (error) => {
+        if (error) {
+          console.error('Application cancel failed:', error); // 서버에서 발생한 오류 로그
+          alert('스터디 신청 취소에 실패했습니다.');
+        } else {
+          alert('스터디 신청이 취소되었습니다.');
+          setAppliedStudies((prev) => prev.filter(study => study._id !== studyId));
+        }
+      });
+    }
+  };
 
   if (loading) {
     return <div>로딩 중...</div>;
@@ -108,6 +138,7 @@ const MypageProject = () => {
                 </div>
                 <div>
                   <button onClick={() => navigate(`/study/detail/${study._id}`)}>상세보기</button>
+                  <button onClick={() => handleDeleteStudy(study._id)}>삭제</button> {/* 삭제 버튼 */}
                 </div>
               </li>
             ))}
@@ -159,6 +190,7 @@ const MypageProject = () => {
                 </div>
                 <div>
                   <button onClick={() => navigate(`/study/detail/${study._id}`)}>상세보기</button>
+                  <button onClick={() => handleCancelApplication(study._id)}>신청 취소</button> {/* 취소 버튼 */}
                 </div>
               </li>
             ))}

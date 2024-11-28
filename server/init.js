@@ -64,7 +64,7 @@ if (Study.find().count() === 0) {
     const user = users[Math.floor(Math.random() * users.length)];  // 랜덤 사용자 선택
 
     // 해당 유저가 이미 스터디를 작성한 적이 있는지 확인
-    const existingStudy = Study.findOne({ userId: user._id });
+    const existingStudy = Study.findOne({ userId: user.profile.nickname });
 
     // 유저가 스터디를 작성하지 않은 경우에만 스터디를 생성
     if (!existingStudy) {
@@ -103,7 +103,7 @@ if (Study.find().count() === 0) {
     });
 
     // 스터디 모집글 작성자가 자동으로 해당 스터디에 신청
-    const existingApplication = Application.findOne({ studyId, userIds: { $in: [user._id] } });
+    const existingApplication = Application.findOne({ studyId, userIds: { $in: [user.profile.nickname] } });
     if (!existingApplication) {
       Application.insert({
         studyId: studyId,
@@ -149,17 +149,17 @@ randomStudyIds.forEach((studyId) => {
     // 이미 신청한 사용자가 중복으로 신청하지 않도록 하기 위해 Application 컬렉션을 확인
     const existingApplication = Application.findOne({
       studyId: studyId,
-      userIds: applicant._id,  // 해당 사용자가 이미 신청한 경우
+      userIds: applicant.profile.nickname,  // 해당 사용자가 이미 신청한 경우
     });
 
     if (!existingApplication) {  // 중복 신청자가 없으면
-      applicants.push(applicant._id);
+      applicants.push(applicant.profile.nickname);
 
       // Application 컬렉션에 신청 정보 추가
       Application.update(
         { studyId: studyId },
         {
-          $push: { userIds: applicant._id, states: '신청' },  // 신청자 추가
+          $push: { userIds: applicant.profile.nickname, states: '신청' },  // 신청자 추가
           $inc: { applicantCount: 1 }  // 신청자 수 증가
         }
       );

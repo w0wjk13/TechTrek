@@ -54,7 +54,16 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized', '로그인한 사용자만 접근 가능합니다.');
     }
 
-    const appliedStudies = Application.find({ userIds: this.userId }).fetch();
+    const user = Meteor.users.findOne(this.userId); // 현재 로그인한 사용자 정보 가져오기
+    if (!user || !user.profile || !user.profile.nickname) {
+      throw new Meteor.Error('no-nickname', '사용자 닉네임이 없습니다.');
+    }
+
+    // 사용자 닉네임
+    const nickname = user.profile.nickname;
+
+    // 해당 사용자가 신청한 스터디 찾기
+    const appliedStudies = Application.find({ userIds: nickname }).fetch();
     if (appliedStudies.length === 0) {
       return [];
     }
@@ -63,13 +72,17 @@ Meteor.methods({
     const studies = Study.find({ _id: { $in: studyIds } }).fetch();
 
     const studiesWithCreator = studies.map(study => {
-      const creator = Meteor.users.findOne(study.userId);
+      const creator = Meteor.users.findOne({ 'profile.nickname': study.userId }); // study.userId를 nickname으로 사용
       study.creatorName = creator ? creator.profile.nickname : '알 수 없음';
 
       const applications = Application.find({ studyId: study._id }).fetch();
-      study.applicantCount = applications.length;
+    const applicantCount = applications.reduce((count, app) => {
+      const isApplicant = app.userIds.filter(userId => userId !== study.userId).length;
+      return count + isApplicant;
+    }, 0);
+    study.applicantCount = applicantCount;
 
-      const application = applications.find(app => app.userIds.includes(this.userId));
+      const application = applications.find(app => app.userIds.includes(nickname));
       study.progress = application ? application.progress : '예정';
       study.startDate = application ? application.startDate : new Date();
 
@@ -78,4 +91,84 @@ Meteor.methods({
 
     return studiesWithCreator;
   },
+});
+Meteor.methods({
+  'study.delete'(studyId) {
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized', '로그인한 사용자만 접근 가능합니다.');
+    }
+
+    const study = Study.findOne(studyId);
+    if (!study) {
+      console.error('Study not found:', studyId); // 로그 추가
+      throw new Meteor.Error('study-not-found', '스터디를 찾을 수 없습니다.');
+    }
+
+    // 로그인한 사용자의 닉네임을 가져옴
+    const user = Meteor.users.findOne(this.userId);
+    const loggedInUserNickname = user ? user.profile.nickname : null;
+
+    if (!loggedInUserNickname) {
+      throw new Meteor.Error('nickname-not-found', '로그인한 사용자의 닉네임을 찾을 수 없습니다.');
+    }
+
+    // 스터디의 userId가 로그인한 사용자의 닉네임과 일치하는지 확인
+    if (study.userId !== loggedInUserNickname) {
+      console.error('Unauthorized attempt to delete study by user:', this.userId); // 로그 추가
+      throw new Meteor.Error('not-authorized', '이 스터디를 삭제할 권한이 없습니다.');
+    }
+
+    // 스터디 삭제
+    try {
+      Study.remove(studyId);
+      console.log('Study deleted successfully:', studyId); // 로그 추가
+    } catch (error) {
+      console.error('Error during study deletion:', error); // 로그 추가
+      throw new Meteor.Error('delete-failed', '스터디 삭제 중 오류가 발생했습니다.');
+    }
+  },
+
+  'study.cancelApplication'(studyId) {
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized', '로그인한 사용자만 접근 가능합니다.');
+    }
+
+    // 로그인한 사용자의 닉네임을 가져옴
+  const user = Meteor.users.findOne(this.userId);
+  const loggedInUserNickname = user ? user.profile.nickname : null;
+
+  if (!loggedInUserNickname) {
+    throw new Meteor.Error('nickname-not-found', '로그인한 사용자의 닉네임을 찾을 수 없습니다.');
+  }
+
+    const study = Study.findOne(studyId);
+    if (!study) {
+      throw new Meteor.Error('study-not-found', '스터디를 찾을 수 없습니다.');
+    }
+
+    // 신청 취소 처리
+    const application = Application.findOne({ studyId, userIds: loggedInUserNickname });
+    if (!application) {
+      throw new Meteor.Error('no-application', '이 스터디에 신청하지 않았습니다.');
+    }
+
+    // 신청 취소 (userIds 배열에서 해당 사용자를 제거)
+    try {
+      // 해당 사용자가 포함된 신청서를 찾아서 그들의 userIds 배열에서만 사용자를 제거
+      const updatedApplication = Application.update(
+        { _id: application._id }, 
+        { $pull: { userIds: loggedInUserNickname } }  // userIds 배열에서 현재 사용자를 제거
+      );
+
+      if (updatedApplication) {
+        console.log('User application cancelled successfully:', studyId); // 로그 추가
+      } else {
+        console.error('Failed to cancel application for user:', this.userId, 'studyId:', studyId); // 로그 추가
+        throw new Meteor.Error('cancel-failed', '스터디 신청 취소 중 오류가 발생했습니다.');
+      }
+    } catch (error) {
+      console.error('Error during application cancellation:', error); // 로그 추가
+      throw new Meteor.Error('cancel-failed', '스터디 신청 취소 중 오류가 발생했습니다.');
+    }
+  }
 });
