@@ -39,5 +39,37 @@ Meteor.methods({
     });
 
     return studiesWithCreator;  // 작성자 닉네임과 신청자 수를 포함한 스터디 목록 반환
+  },
+
+  // 현재 로그인한 유저가 신청한 스터디 가져오기
+  'study.getAppliedStudies': function () {
+    // 로그인하지 않은 경우
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized', '로그인한 사용자만 접근 가능합니다.');
+    }
+
+    // 현재 로그인한 사용자가 신청한 스터디를 찾기
+    const appliedStudies = Application.find({ userIds: this.userId }).fetch();
+
+    if (appliedStudies.length === 0) {
+      throw new Meteor.Error('no-applied-studies', '신청한 스터디가 없습니다.');
+    }
+
+    // 신청한 스터디의 세부 정보 추가
+    const studiesWithDetails = appliedStudies.map(application => {
+      const study = Study.findOne(application.studyId);
+      if (!study) {
+        return null;  // 스터디 정보가 없으면 null 반환
+      }
+
+      study.progress = application.progress || '예정';  // 신청서의 진행 상태 사용
+      study.startDate = application.startDate || new Date();  // 신청서의 시작 날짜 사용
+      study.applicantCount = application.userIds.length;  // 신청자 수
+   
+
+      return study;
+    }).filter(study => study !== null);  // null 값을 필터링하여 반환
+
+    return studiesWithDetails;  // 신청한 스터디의 상세 정보를 포함한 목록 반환
   }
 });

@@ -299,7 +299,7 @@ export default function Home() {
                     <strong>{result.title}</strong><br /><br />
                     <span>역할: {result.roles}</span><br />
                     <span>기술 스택: {result.techStack && Array.isArray(result.techStack) ? result.techStack.join(", ") : "기술 스택 없음"}</span><br />
-                    <span>작성자: {username}</span><br />
+                    <span>작성자: {result.userId}</span><br />
                     <span>조회수: {result.views}</span>
                     <div>점수: {formatScore(result.score)}</div>
                     <button onClick={() => handleViewDetail(result._id)}>상세 보기</button>

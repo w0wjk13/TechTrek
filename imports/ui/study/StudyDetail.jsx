@@ -260,7 +260,7 @@ const StudyDetail = () => {
       </div>
 
       <div>
-        <strong>작성자:</strong> {username}
+        <strong>작성자:</strong> {userId}
       </div>
 
       <div>
@@ -324,29 +324,29 @@ const StudyDetail = () => {
         <button onClick={handleApply} disabled={isRecruitingClosed}>신청하기</button>
       )}
 
-      {/* 신청자 목록 (작성자만 볼 수 있음) */}
-      {isUserOwner && filteredApplications.length > 0 && (
-        <div>
-          <h3>신청자 목록</h3>
-          {filteredApplications.map((app, index) => (
-  <div key={index}>
-    {app.applicants
-      .filter(applicant => applicant.userId !== userId)  // 작성자를 제외한 신청자만 필터링
-      .map((applicant) => (
-        <div key={applicant.userId}>
-          <strong>{applicant.user?.profile?.nickname || '알 수 없음'}</strong> - {applicant.state}
-          {applicant.state === '신청' && (
-            <>
-              <button onClick={() => handleAccept(applicant.userId)} disabled={isRecruitingClosed}>수락</button>
-              <button onClick={() => handleReject(applicant.userId)} disabled={isRecruitingClosed}>거절</button>
-            </>
-                    )}
-                  </div>
-                ))}
+      {/* 신청자 목록 (누구나 볼 수 있음) */}
+{filteredApplications.length > 0 && (
+  <div>
+    <h3>신청자 목록</h3>
+    {filteredApplications.map((app, index) => (
+      <div key={index}>
+        {app.applicants
+          .filter(applicant => applicant.userId !== userId)  // 작성자를 제외한 신청자만 필터링
+          .map((applicant) => (
+            <div key={applicant.userId}>
+              <strong>{applicant.user?.profile?.nickname || '알 수 없음'}</strong> - {applicant.state}
+              {isUserOwner && applicant.state === '신청' && (  // 작성자만 수락/거절 버튼을 볼 수 있도록 조건 추가
+                <>
+                  <button onClick={() => handleAccept(applicant.userId)} disabled={isRecruitingClosed}>수락</button>
+                  <button onClick={() => handleReject(applicant.userId)} disabled={isRecruitingClosed}>거절</button>
+                </>
+              )}
             </div>
           ))}
-        </div>
-      )}
+      </div>
+    ))}
+  </div>
+)}
 
       {/* 스터디 리스트 버튼을 댓글 섹션 위로 이동 */}
       <button onClick={() => navigate('/')}>스터디 리스트</button>

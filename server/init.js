@@ -86,7 +86,7 @@ if (Study.find().count() === 0) {
 
     // 스터디 모집글 삽입
     const studyId = Study.insert({
-      userId: user._id,
+      userId: user.profile.nickname,
       roles: ["풀스택", "백엔드", "프론트엔드"].sort(() => Math.random() - 0.5).slice(0, 1),
       onOffline: ["온라인", "오프라인", "온/오프라인"].sort(() => Math.random() - 0.5).slice(0, 1),
       address: randomAddress(),
@@ -107,7 +107,7 @@ if (Study.find().count() === 0) {
     if (!existingApplication) {
       Application.insert({
         studyId: studyId,
-        userIds: [user._id],  // 신청자 배열 초기화
+        userIds: [user.profile.nickname],  // 신청자 배열 초기화
         states: ['수락'],  // 신청 상태 배열 초기화
         progress: '예정' ,
         createdAt: new Date(),
