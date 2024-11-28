@@ -6,8 +6,20 @@ import { Study } from '/imports/api/collections'; // Study 컬렉션 경로에 �
 Meteor.methods({
   // 스터디 생성 메서드
   'study.create': function (studyData) {
+    // 현재 로그인된 사용자 정보 가져오기
+    const user = Meteor.users.findOne(this.userId); // 로그인한 사용자 정보
+    if (!user) {
+      throw new Meteor.Error('user-not-found', '사용자를 찾을 수 없습니다.');
+    }
+
+    // 사용자 닉네임 가져오기
+    const userNickname = user.profile?.nickname;
+    if (!userNickname) {
+      throw new Meteor.Error('nickname-not-found', '사용자 닉네임이 없습니다.');
+    }
+
     // 사용자가 이미 스터디를 생성한 경우를 확인
-    const existingStudy = Study.findOne({ userId: this.userId });
+    const existingStudy = Study.findOne({ userId: userNickname });
 
     if (existingStudy) {
       throw new Meteor.Error('study-exists', '이미 스터디를 생성한 사용자입니다.');
@@ -61,7 +73,7 @@ if (scoreValues.filter(s => s >= 0 && s <= 5).length !== scoreValues.length) {
       score: studyData.score,
       views: 0,
       status: '모집중',
-      userId: this.userId, // 현재 로그인된 사용자 ID
+      userId: userNickname, // 현재 로그인된 사용자 ID
       createdAt: new Date(),
     });
 
