@@ -140,6 +140,7 @@ const StudyDetail = () => {
     });
   };
 
+
   // 신청 상태 수락 처리
   const handleAccept = (applicantId) => {
     const application = Application.findOne({ studyId: id, 'userIds': applicantId });
@@ -208,25 +209,25 @@ const StudyDetail = () => {
     // 작성자를 포함한 전체 참가자 수 계산
     const totalParticipants = acceptedApplicants.length + (studyData.userId === currentUserId ? 1 : 0);
   
+  
     // 참가자가 2명 이상이어야 스터디 시작 가능
     if (totalParticipants < 2) {
       alert('2명 이상이어야 스터디를 시작할 수 있습니다.');
       return;
     }
-  
-    // 상태 변경을 위한 API 호출
-    Meteor.call('study.updateStatus', id, '모집완료', (error) => {
-      if (error) {
-        console.error('모집 상태 변경 실패:', error);
-      } else {
-        setStudyData((prevState) => ({
-          ...prevState,
-          status: '모집완료',
-        }));
-        alert('스터디가 시작되었습니다!');
-      }
-    });
-  };
+   // 상태 변경을 위한 API 호출
+   Meteor.call('study.updateStatus', id, '모집완료', (error) => {
+    if (error) {
+      console.error('모집 상태 변경 실패:', error);
+    } else {
+      setStudyData((prevState) => ({
+        ...prevState,
+        status: '모집완료',
+      }));
+      alert('스터디가 시작되었습니다!');
+    }
+  });
+};
 
   if (loading) {
     return <div>로딩 중...</div>;  // 로딩 중 표시

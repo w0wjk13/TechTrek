@@ -108,7 +108,7 @@ if (Study.find().count() === 0) {
       Application.insert({
         studyId: studyId,
         userIds: [user._id],  // 신청자 배열 초기화
-        states: ['신청'],  // 신청 상태 배열 초기화
+        states: ['수락'],  // 신청 상태 배열 초기화
         progress: '예정' ,
         createdAt: new Date(),
         startDate: '미정',
@@ -119,12 +119,12 @@ if (Study.find().count() === 0) {
 }
 }
 
-// 스터디 모집글 중에서 랜덤으로 10개 선택해서 참가자 추가
+// 스터디 모집글 중에서 랜덤으로 15개 선택해서 참가자 추가
 const studyIds = Study.find().fetch().map(study => study._id);  // 모든 스터디 ID 가져오기
 const randomStudyIds = [];
 
-// 10개의 랜덤 스터디 모집글을 선택
-while (randomStudyIds.length < 10) {
+// 15개의 랜덤 스터디 모집글을 선택
+while (randomStudyIds.length < 15) {
   const randomIndex = Math.floor(Math.random() * studyIds.length);
   const randomStudyId = studyIds[randomIndex];
 
