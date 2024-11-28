@@ -34,7 +34,7 @@ Meteor.methods({
       // 스터디의 진행 상태(progress) 가져오기 (최초로 신청한 상태를 기준으로 사용)
       const application = Application.findOne({ studyId: study._id });
       study.progress = application ? application.progress : '예정'; // 신청서가 없으면 기본값 '예정'
-
+      study.startDate = application ? application.startDate : new Date();
       return study;
     });
 

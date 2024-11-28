@@ -87,6 +87,9 @@ const MypageProject = () => {
                 <strong>진행 상태:</strong> {study.progress} {/* 진행 상태 출력 */}
               </div>
               <div>
+                <strong>진행일:</strong> {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()} {/* 진행 상태 출력 */}
+              </div>
+              <div>
                 <strong>기술 스택:</strong>
                 <ul>
                   {study.techStack.map((tech, index) => (

@@ -32,7 +32,7 @@ if (!Meteor.users.findOne({ username: "admin" })) {
 
 // admin 외에 다른 사용자가 없다면
 if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
-  for (let i = 1; i <= 20; i++) {
+  for (let i = 1; i <= 30; i++) {
     Accounts.createUser({
       password: "1234",
       email: `user${i}@example.com`,
@@ -57,9 +57,9 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
   }
 }
 
-// 스터디 모집글이 없다면 (30개 생성)
+// 스터디 모집글이 없다면 (20개 생성)
 if (Study.find().count() === 0) {
-  for (let i = 0; i < 30; i++) {  // 30개 스터디 모집글 생성
+  for (let i = 0; i < 20; i++) {  // 20개 스터디 모집글 생성
     const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
     const user = users[Math.floor(Math.random() * users.length)];  // 랜덤 사용자 선택
 
@@ -111,8 +111,8 @@ if (Study.find().count() === 0) {
         states: ['신청'],  // 신청 상태 배열 초기화
         progress: '예정' ,
         createdAt: new Date(),
-        startDate: new Date(),
-        endDate: new Date(),
+        startDate: '미정',
+        endDate: '미정',
       });
     }
   }

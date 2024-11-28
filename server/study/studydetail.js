@@ -200,54 +200,39 @@ if (Meteor.isServer) {
     }
 
     // 해당 스터디의 모든 신청서 데이터 가져오기
-    const application = Application.findOne({ studyId });
+    const applications = Application.find({ studyId }).fetch();
 
-    if (!application) {
+    if (applications.length === 0) {
       throw new Meteor.Error('application-not-found', '해당 스터디에 대한 신청서가 없습니다.');
     }
 
-     // 수락되지 않은 신청자들을 '거절' 상태로 업데이트
-     Application.find({ studyId }).forEach((application) => {
-      const updatedStates = application.states.map(state => 
-        state === '수락' ? state : '거절'  // 수락되지 않은 신청자는 '거절'로 상태 변경
-      );
-      
-
-       // 수락되지 않은 신청자는 '거절' 상태로 변경
-       Application.update(application._id, {
-        $set: { states: updatedStates }
-      });
-      if (study.status === '모집완료') {
-        // 모집이 완료된 경우, 해당 스터디에 신청한 모든 신청자에 대해 progress를 '진행'으로 설정
-        Application.find({ studyId, state: '신청' }).forEach((application) => {
-          // 신청자가 '신청' 상태인 경우에만 업데이트
-          if (application.state === '신청') {
-            Application.update(application._id, {
-              $set: {
-                progress: '진행',  // progress를 '진행'으로 설정
-                startDate: new Date()  // startDate를 현재 시간으로 설정
-              }
-            });
-            console.log(`스터디(${studyId})의 신청자(${application.userId}) progress가 '진행'으로 업데이트되었습니다.`);
-          }
-        });
-      }
+    // 스터디 상태가 "모집완료"인 경우에만 처리
+if (study.status === '모집완료') {
+  // 신청자들을 한 명씩 처리
+  applications.forEach((application) => {
+    // 신청자의 상태를 확인하여 수락되지 않은 경우 '거절'로 업데이트
+    const updatedStates = application.states.map(state => 
+      state === '수락' ? state : '거절'  // '수락' 상태를 제외하고 '거절'로 변경
+    );
+       // 신청자의 상태를 업데이트 (수락이 아니면 '거절'로)
+    const updateResult = Application.update(application._id, {
+      $set: { states: updatedStates }
     });
-    
-        
-    // 수락된 신청자 수
-    const acceptedApplicantsCount = acceptedApplicantIndexes.length;
-    console.log(`수락된 신청자 수: ${acceptedApplicantsCount}`);
-
-    const totalParticipants = acceptedApplicantsCount + 1;  // 작성자 포함
-
-    console.log(`작성자 포함 총 인원 수: ${totalParticipants}`);
-    console.log(`스터디 모집 인원: ${study.studyCount}`);
-
-    // 최소 1명의 수락된 신청자가 있어야만 스터디를 시작할 수 있음
-    if (acceptedApplicantsCount < 1) {
-      throw new Meteor.Error('insufficient-participants', '최소 1명이 수락되어야 스터디를 시작할 수 있습니다.');
+        // 수락된 신청자만 '진행' 상태로 변경
+        if (updatedStates.includes('수락')) {
+          Application.update(application._id, {
+            $set: {
+              progress: '진행',  // '진행' 상태로 설정
+              startDate: new Date()  // 현재 날짜를 시작 날짜로 설정
+            }
+          });
+          console.log(`스터디(${studyId})의 신청자(${application.userId}) progress가 '진행'으로 업데이트되었습니다.`);
+        } 
+      });
     }
+    
+    
+
 
     // 모집 마감일이 지난 경우 자동으로 '모집마감' 상태로 변경
     if (study.studyClose && new Date() > new Date(study.studyClose)) {
@@ -256,7 +241,6 @@ if (Meteor.isServer) {
     }
 
     return true;
-}
-,
-  });
+  },
+});
 }
