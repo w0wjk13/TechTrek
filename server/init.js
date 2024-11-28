@@ -63,6 +63,11 @@ if (Study.find().count() === 0) {
     const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
     const user = users[Math.floor(Math.random() * users.length)];  // 랜덤 사용자 선택
 
+    // 해당 유저가 이미 스터디를 작성한 적이 있는지 확인
+    const existingStudy = Study.findOne({ userId: user._id });
+
+    // 유저가 스터디를 작성하지 않은 경우에만 스터디를 생성
+    if (!existingStudy) {
     // 현재 날짜에 1~30일 사이의 랜덤 값을 더해주어 한 달 내의 날짜를 설정
     const randomDays = Math.floor(Math.random() * 30) + 1;
     const studyClose = new Date();
@@ -94,10 +99,7 @@ if (Study.find().count() === 0) {
       createdAt: new Date(),
       views: i,
       status: "모집중",
-
-
-
-      
+   
     });
 
     // 스터디 모집글 작성자가 자동으로 해당 스터디에 신청
@@ -109,9 +111,12 @@ if (Study.find().count() === 0) {
         states: ['신청'],  // 신청 상태 배열 초기화
         progress: '예정' ,
         createdAt: new Date(),
+        startDate: new Date(),
+        endDate: new Date(),
       });
     }
   }
+}
 }
 
 // 스터디 모집글 중에서 랜덤으로 10개 선택해서 참가자 추가

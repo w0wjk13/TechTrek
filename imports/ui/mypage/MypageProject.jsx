@@ -84,6 +84,9 @@ const MypageProject = () => {
                 <strong>신청자:</strong> {study.applicantCount} {/* 신청자 수 표시 */}
               </div>
               <div>
+                <strong>진행 상태:</strong> {study.progress} {/* 진행 상태 출력 */}
+              </div>
+              <div>
                 <strong>기술 스택:</strong>
                 <ul>
                   {study.techStack.map((tech, index) => (

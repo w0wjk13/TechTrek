@@ -247,6 +247,9 @@ const StudyDetail = () => {
   // 작성자가 아닌 경우에만 신청 버튼을 보이게
   const isUserOwner = currentUserId === userId;
 
+  // 모집 상태가 '모집마감'일 경우 버튼 비활성화 여부
+  const isRecruitingClosed = status === '모집마감';
+
   return (
     <div className="study-details">
       <h1>스터디 상세 정보</h1>
@@ -317,7 +320,7 @@ const StudyDetail = () => {
       )}
 
       {!isUserOwner && !applications.some((app) => app.userId === currentUserId) && (
-        <button onClick={handleApply}>신청하기</button>
+        <button onClick={handleApply} disabled={isRecruitingClosed}>신청하기</button>
       )}
 
       {/* 신청자 목록 (작성자만 볼 수 있음) */}
@@ -333,8 +336,8 @@ const StudyDetail = () => {
           <strong>{applicant.user?.profile?.nickname || '알 수 없음'}</strong> - {applicant.state}
           {applicant.state === '신청' && (
             <>
-              <button onClick={() => handleAccept(applicant.userId)}>수락</button>
-              <button onClick={() => handleReject(applicant.userId)}>거절</button>
+              <button onClick={() => handleAccept(applicant.userId)} disabled={isRecruitingClosed}>수락</button>
+              <button onClick={() => handleReject(applicant.userId)} disabled={isRecruitingClosed}>거절</button>
             </>
                     )}
                   </div>
@@ -354,7 +357,7 @@ const StudyDetail = () => {
           onChange={(e) => setCommentContent(e.target.value)}
           placeholder="댓글을 작성해주세요."
         />
-        <button onClick={handleCommentSubmit}>댓글 작성</button>
+        <button onClick={handleCommentSubmit} disabled={isRecruitingClosed}>댓글 작성</button>
 
         <ul>
           {comments.map((comment, index) => (
