@@ -233,9 +233,12 @@ if (Meteor.isServer) {
       // '거절' 상태인 신청자를 삭제 (수락된 신청자만 남김)
       application.userIds.forEach((userId, index) => {
         if (updatedStates[index] === '거절') {
-          console.log(`거절된 신청자 삭제: userId = ${userId}, applicationId = ${application._id}`);
+          
           // '거절'된 신청자는 삭제
-          Application.remove({ studyId: application.studyId, userIds: userId });
+          Application.update(
+            { _id: application._id },  // 해당 application의 ID
+            { $pull: { userIds: userId } }  // userIds 배열에서 해당 userId를 삭제
+          );
         }
       });
 
