@@ -36,6 +36,14 @@ Meteor.methods({
       throw new Meteor.Error('invalid-nickname', '닉네임은 필수 입력 항목입니다.');
     }
 
+    const recommendation = {
+      participation: 0, // 참여도
+      teamwork: 0, // 팀워크
+      leadership: 0, // 리더십
+      communication: 0, // 소통 능력
+      timeliness: 0, // 일정 준수
+    };
+    const rating = 0;
     // 사용자 생성
     const userId = Accounts.createUser({
       username: email, // 이메일을 username으로 사용
@@ -49,7 +57,8 @@ Meteor.methods({
         position,
         profilePicture,
         address,
-        averageScore: 0, // 초기 평균 점수 설정
+        rating,
+        recommendation,
       },
       createdAt: new Date(),
     });

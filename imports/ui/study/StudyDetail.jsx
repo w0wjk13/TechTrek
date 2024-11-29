@@ -270,7 +270,7 @@ const StudyDetail = () => {
   
   
 
-  const { title, content, address, techStack, studyCount, studyClose, roles, onOffline, score, views, status, createdAt, userId } = studyData;
+  const { title, content, address, techStack, studyCount, studyClose, roles, onOffline, rating, views, status, createdAt, userId } = studyData;
 
   // 날짜 포맷 함수
   const formatDate = (dateString) => {
@@ -329,6 +329,9 @@ const StudyDetail = () => {
       <div>
         <strong>진행 방식:</strong> {onOffline}
       </div>
+      <div>
+        <strong>역할:</strong>{roles}
+      </div>
       {status !== '모집완료' && (
        
       <div>
@@ -364,15 +367,21 @@ const StudyDetail = () => {
       </div>
 
       <div>
-        <strong>점수:</strong>
-        <ul>
-          {Object.keys(score).map((key) => (
-            <li key={key}>
-              {key}: {score[key]}
-            </li>
-          ))}
-        </ul>
-      </div>
+  <strong>평점: </strong>
+  <div className="star-rating">
+    {[1, 2, 3, 4, 5].map((star) => (
+      <span
+        key={star}
+        style={{
+          fontSize: '24px',
+          color: rating >= star ? '#FFD700' : '#D3D3D3', // Gold for selected, gray for unselected
+        }}
+      >
+        {rating >= star ? '★' : '☆'}
+      </span>
+    ))}
+  </div>
+</div>
 
       <div>
         <strong>내용:</strong> {content}

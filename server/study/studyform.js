@@ -52,11 +52,11 @@ Meteor.methods({
     if (!['온라인', '오프라인', '온/오프라인'].includes(studyData.onOffline)) {
       throw new Meteor.Error('invalid-onOffline', '진행 방식을 선택해주세요.');
     }
-    if (!studyData.score || typeof studyData.score !== 'object' || Object.values(studyData.score).some(s => s === '')) {
-      throw new Meteor.Error('invalid-score', '모든 점수를 입력해주세요.');
+    if (!studyData.rating || typeof studyData.rating !== 'object' || Object.values(studyData.rating).some(s => s === '')) {
+      throw new Meteor.Error('invalid-score', '평점을 입력해주세요.');
     }
-    const scoreValues = Object.values(studyData.score);
-if (scoreValues.filter(s => s >= 0 && s <= 5).length !== scoreValues.length) {
+    const ratingValues = Object.values(studyData.rating);
+if (ratingValues.filter(s => s >= 0 && s <= 5).length !== ratingValues.length) {
   throw new Meteor.Error('invalid-score', '점수는 0부터 5 사이의 값만 입력할 수 있습니다.');
 }
   
@@ -70,7 +70,7 @@ if (scoreValues.filter(s => s >= 0 && s <= 5).length !== scoreValues.length) {
       studyClose: studyData.studyClose,
       roles: studyData.roles,
       onOffline: studyData.onOffline,
-      score: studyData.score,
+      rating: studyData.rating,
       views: 0,
       status: '모집중',
       userId: userNickname, // 현재 로그인된 사용자 ID

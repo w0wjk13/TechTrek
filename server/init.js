@@ -22,6 +22,33 @@ const randomNumber = () => {
   return Array.from({ length: 4 }, () => digits[Math.floor(Math.random() * digits.length)]).join('');
 };
 
+const recommendation = {
+  participation: Math.floor(Math.random() * 30) + 1,
+  teamwork: Math.floor(Math.random() * 30) + 1,
+  leadership: Math.floor(Math.random() * 30) + 1,
+  communication: Math.floor(Math.random() * 30) + 1,
+  timeliness: Math.floor(Math.random() * 30) + 1,
+};
+
+let ratingCount = Math.min(
+  recommendation.participation,
+  recommendation.teamwork,
+  recommendation.leadership,
+  recommendation.communication,
+  recommendation.timeliness
+);
+
+// 여기에 추가적으로 랜덤값을 더하되, 각 항목의 값보다 크지 않도록 제한
+const randomAdjustment = Math.floor(Math.random() * 30); 
+ratingCount = Math.min(
+  ratingCount + randomAdjustment,
+  recommendation.participation,
+  recommendation.teamwork,
+  recommendation.leadership,
+  recommendation.communication,
+  recommendation.timeliness
+);
+
 // admin 생성
 if (!Meteor.users.findOne({ username: "admin" })) {
   Accounts.createUser({
@@ -44,13 +71,9 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
         address: randomAddress(),
         techStack: techStacks.sort(() => Math.random() - 0.5).slice(0, 5),  // 랜덤으로 기술 스택 선택
         roles: ["백엔드", "프론트엔드", "풀스택"].sort(() => Math.random() - 0.5).slice(0, 1),  // 랜덤으로 역할 선택
-        score: {
-          manner: Math.floor(Math.random() * 5) + 1,
-          mentoring: Math.floor(Math.random() * 5) + 1,
-          passion: Math.floor(Math.random() * 5) + 1,
-          communication: Math.floor(Math.random() * 5) + 1,
-          time: Math.floor(Math.random() * 5) + 1,
-        },
+        rating: (Math.random() * 4 + 1).toFixed(1),
+        ratingCount,
+        recommendation: recommendation,
       },
       createdAt: new Date(),
     });
@@ -73,17 +96,6 @@ if (Study.find().count() === 0) {
     const studyClose = new Date();
     studyClose.setDate(studyClose.getDate() + randomDays);
 
-    const scoreFields = ["manner", "mentoring", "passion", "communication", "time"];
-
-    // 스터디 모집글 작성자가 요구하는 역량
-    const needScore = scoreFields;
-
-    // 요구하는 역량에 랜덤으로 점수 할당
-    const score = {};
-    needScore.forEach((need) => {
-      score[need] = Math.floor(Math.random() * 5) + 1;  // 1~4 사이의 랜덤 점수
-    });
-
     // 스터디 모집글 삽입
     const studyId = Study.insert({
       userId: user.profile.nickname,
@@ -93,7 +105,7 @@ if (Study.find().count() === 0) {
       studyCount: Math.floor(Math.random() * 9) + 2,  // 모집인원 (1~10명)
       techStack: techStacks.sort(() => Math.random() - 0.5).slice(0, Math.floor(Math.random() * 5) + 1),
       studyClose: studyClose,
-      score: score,
+      rating: (Math.random() * 4 + 1).toFixed(1),
       title: "제목" + (i + 1),
       content: "내용" + (i + 1),
       createdAt: new Date(),

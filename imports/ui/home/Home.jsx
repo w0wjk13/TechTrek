@@ -108,23 +108,7 @@ export default function Home() {
     return onOffline || "정보 없음";
   };
 
-  const formatScore = (score) => {
-    if (score) {
-      const scores = [];
-      const gifts = ["manner", "mentoring", "passion", "communication", "time"];
 
-      // Check each score and add to the array if available
-      gifts.forEach((gift) => {
-        if (score[gift]) {
-          scores.push(`${gift}: ${score[gift]}`);
-        }
-      });
-
-      // If there are available scores, return them joined by commas
-      return scores.length > 0 ? scores.join(", ") : "점수 정보 없음";
-    }
-    return "점수 정보 없음";
-  };
 
 
   return (
@@ -301,7 +285,7 @@ export default function Home() {
                     <span>기술 스택: {result.techStack && Array.isArray(result.techStack) ? result.techStack.join(", ") : "기술 스택 없음"}</span><br />
                     <span>작성자: {result.userId}</span><br />
                     <span>조회수: {result.views}</span>
-                    <div>점수: {formatScore(result.score)}</div>
+                    <div>평점: {result.rating}</div>
                     <button onClick={() => handleViewDetail(result._id)}>상세 보기</button>
                   </li>
                 );

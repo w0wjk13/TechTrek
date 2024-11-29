@@ -87,6 +87,10 @@ const MypageProject = () => {
     return <div>로딩 중...</div>;
   }
   
+  const handleReview = (studyId) => {
+    // 평가 페이지로 이동
+    navigate(`/study/review/${studyId}`);
+  };
   
   return (
     <div className="mypage-container">
@@ -159,10 +163,16 @@ const MypageProject = () => {
                     ))}
                   </ul>
                 </div>
+                {study.progress === '종료' && (
+                  <div>
+                    <button onClick={() => handleReview(study._id)}>평가하기</button>
+                  </div>
+                )}
                 <div>
                   <button onClick={() => navigate(`/study/detail/${study._id}`)}>상세보기</button>
                   <button onClick={() => handleDeleteStudy(study._id)}>삭제</button> {/* 삭제 버튼 */}
                 </div>
+               
               </li>
             ))}
           </ul>
@@ -232,10 +242,16 @@ const MypageProject = () => {
                     ))}
                   </ul>
                 </div>
+                {study.progress === '종료' && (
+                  <div>
+                    <button onClick={() => handleReview(study._id)}>평가하기</button>
+                  </div>
+                )}
                 <div>
                   <button onClick={() => navigate(`/study/detail/${study._id}`)}>상세보기</button>
                   <button onClick={() => handleCancelApplication(study._id)}>신청 취소</button> {/* 취소 버튼 */}
                 </div>
+                
               </li>
             ))}
           </ul>

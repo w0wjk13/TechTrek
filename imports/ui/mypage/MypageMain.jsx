@@ -87,17 +87,7 @@ const MypageMain = () => {
           )}
         </div>
 
-        {/* 점수 */}
-        <div className="score">
-          <h3>점수</h3>
-          <ul>
-            <li><strong>매너:</strong> {score.manner}</li>
-            <li><strong>멘토링:</strong> {score.mentoring}</li>
-            <li><strong>열정:</strong> {score.passion}</li>
-            <li><strong>의사소통:</strong> {score.communication}</li>
-            <li><strong>시간 준수:</strong> {score.time}</li>
-          </ul>
-        </div>
+      
       </div>
     </div>
   );
