@@ -46,7 +46,7 @@ const StudyDetail = () => {
       ...app,
       applicants: app.userIds.map((userId, index) => {
         const user = Meteor.users.findOne(userId);
-        console.log(`User data for ${userId}:`, user); // 각 userId에 대한 데이터 확인
+       
 
         // 사용자 정보 대신 'nickname' 또는 'username' 사용
         return {
@@ -257,6 +257,11 @@ const StudyDetail = () => {
   // 모집 상태가 '모집마감'일 경우 버튼 비활성화 여부
   const isRecruitingClosed = status === '모집마감';
 
+  // 수락된 신청자 수
+  const acceptedApplicants = applications.flatMap(app =>
+    app.applicants.filter(applicant => applicant.state === '수락')
+  );
+
   return (
     <div className="study-details">
       <h1>스터디 상세 정보</h1>
@@ -273,9 +278,12 @@ const StudyDetail = () => {
         <strong>등록일:</strong> {formatDate(createdAt)}
       </div>
 
-      <div>
-        <strong>모집 마감일:</strong> {formatDate(studyClose)}
-      </div>
+      {/* 모집 상태가 '모집완료'일 경우, '모집 마감일' 숨기기 */}
+{status !== '모집완료' && (
+  <div>
+    <strong>모집 마감일:</strong> {formatDate(studyClose)}
+  </div>
+)}
 
       <div>
         <strong>모집 상태:</strong> {status}
@@ -288,11 +296,26 @@ const StudyDetail = () => {
       <div>
         <strong>진행 방식:</strong> {onOffline}
       </div>
-
+      {status !== '모집완료' && (
+       
       <div>
         <strong>모집 인원:</strong> {studyCount}
       </div>
-
+    )}
+    {status == '모집완료' && (
+      <>
+      <div>
+      <strong>스터디 인원:</strong> {acceptedApplicants.length}
+    </div>
+    {applications.map((application) => (
+  <div key={application.studyId}>
+    {/* 신청자와 상관없는 정보 출력 */}
+    <div>진행 상태: {application.progress || '정보 없음'}</div>
+    <div>시작일: {formatDate(application.startDate) || '정보 없음'}</div>
+  </div>
+))}
+  </>
+)}
       <div>
         <strong>기술 스택:</strong>
         <ul>
