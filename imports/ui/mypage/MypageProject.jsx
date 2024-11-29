@@ -7,7 +7,7 @@ const MypageProject = () => {
   const [myStudies, setMyStudies] = useState([]);  // Created studies
   const [appliedStudies, setAppliedStudies] = useState([]);  // Applied studies
   const [loading, setLoading] = useState(true);
-
+  
   // Current logged-in user ID
   const currentUserId = Meteor.userId();
 
@@ -86,7 +86,8 @@ const MypageProject = () => {
   if (loading) {
     return <div>로딩 중...</div>;
   }
-
+  
+  
   return (
     <div className="mypage-container">
       <div className="mypage-nav">
@@ -111,23 +112,45 @@ const MypageProject = () => {
                   <strong>등록일:</strong> {new Date(study.createdAt).toLocaleDateString()}
                 </div>
                 <div>
-                  <strong>모집 마감일:</strong> {new Date(study.studyClose).toLocaleDateString()}
-                </div>
+  {study.status !== '모집완료' && (
+    <>
+      <strong>모집 마감일:</strong> {new Date(study.studyClose).toLocaleDateString()}
+    </>
+  )}
+</div>
                 <div>
                   <strong>모집 상태:</strong> {study.status}
                 </div>
-                <div>
-                  <strong>모집 인원:</strong> {study.studyCount}
-                </div>
-                <div>
-                  <strong>신청자:</strong> {study.applicantCount}
-                </div>
+                {study.status !== '모집완료' && (
+  <>
+    <div>
+      <strong>모집 인원:</strong> {study.studyCount}
+    </div>
+    <div>
+      <strong>신청자:</strong> {study.applicantCount}
+    </div>
+    
+  </>
+)}
+
+
                 <div>
                   <strong>진행 상태:</strong> {study.progress}
                 </div>
-                <div>
-                  <strong>진행일:</strong> {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()}
-                </div>
+                {study.progress !== '예정' && (
+  <>
+    <div>
+      <strong>진행일:</strong> {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()}
+    </div>
+    <div>
+      <strong>종료일:</strong> 
+      {study.endDate === '미정' || isNaN(new Date(study.endDate)) 
+        ? '날짜 미정' 
+        : new Date(study.endDate).toLocaleDateString()}
+    </div>
+  </>
+)}
+
                 <div>
                   <strong>기술 스택:</strong>
                   <ul>
@@ -163,23 +186,44 @@ const MypageProject = () => {
                   <strong>등록일:</strong> {new Date(study.createdAt).toLocaleDateString()}
                 </div>
                 <div>
-                  <strong>모집 마감일:</strong> {new Date(study.studyClose).toLocaleDateString()}
-                </div>
+  {study.status !== '모집완료' && (
+    <>
+      <strong>모집 마감일:</strong> {new Date(study.studyClose).toLocaleDateString()}
+    </>
+  )}
+</div>
                 <div>
                   <strong>모집 상태:</strong> {study.status}
                 </div>
-                <div>
-                  <strong>모집 인원:</strong> {study.studyCount}
-                </div>
-                <div>
-                  <strong>신청자:</strong> {study.applicantCount}
-                </div>
+                {study.status !== '모집완료' && (
+  <>
+    <div>
+      <strong>모집 인원:</strong> {study.studyCount}
+    </div>
+    <div>
+      <strong>신청자:</strong> {study.applicantCount}
+    </div>
+  </>
+)}
+
                 <div>
                   <strong>진행 상태:</strong> {study.progress}
                 </div>
-                <div>
-                  <strong>진행일:</strong> {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()}
-                </div>
+                {study.progress !== '예정' && (
+  <>
+    <div>
+      <strong>진행일:</strong> {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()}
+    </div>
+    <div>
+      <strong>종료일:</strong> 
+      {study.endDate === '미정' || isNaN(new Date(study.endDate)) 
+        ? '날짜 미정' 
+        : new Date(study.endDate).toLocaleDateString()}
+    </div>
+  </>
+)}
+
+
                 <div>
                   <strong>기술 스택:</strong>
                   <ul>
