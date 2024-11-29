@@ -42,14 +42,20 @@ const StudyDetail = () => {
       const studyApplications = Application.find({ studyId: id }).fetch();
 
       // 신청자 상태 및 정보를 합친 배열 생성
-      const applicants = studyApplications.map(app => ({
-        ...app,
-        applicants: app.userIds.map((userId, index) => ({
+    const applicants = studyApplications.map(app => ({
+      ...app,
+      applicants: app.userIds.map((userId, index) => {
+        const user = Meteor.users.findOne(userId);
+        console.log(`User data for ${userId}:`, user); // 각 userId에 대한 데이터 확인
+
+        // 사용자 정보 대신 'nickname' 또는 'username' 사용
+        return {
           userId,
           state: app.states[index], // 신청 상태
-          user: Meteor.users.findOne(userId), // 사용자 정보
-        }))
-      }));
+          nickname: user?.profile?.nickname || user?.username || '알 수 없음', // 사용자 이름 대신 닉네임 표시
+        };
+      })
+    }));
 
       setApplications(applicants);
 
@@ -334,7 +340,7 @@ const StudyDetail = () => {
           .filter(applicant => applicant.userId !== userId)  // 작성자를 제외한 신청자만 필터링
           .map((applicant) => (
             <div key={applicant.userId}>
-              <strong>{applicant.user?.profile?.nickname || '알 수 없음'}</strong> - {applicant.state}
+              <strong>{applicant.userId || '알 수 없음'}</strong> - {applicant.state}
               {isUserOwner && applicant.state === '신청' && (  // 작성자만 수락/거절 버튼을 볼 수 있도록 조건 추가
                 <>
                   <button onClick={() => handleAccept(applicant.userId)} disabled={isRecruitingClosed}>수락</button>
