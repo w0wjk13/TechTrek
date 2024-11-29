@@ -207,20 +207,24 @@ const StudyDetail = () => {
   }));
 
   const handleStartStudy = () => {
-    // 수락된 신청자들 필터링 (수락된 신청자만)
-    const acceptedApplicants = applications.flatMap((application) =>
-      application.applicants.filter((applicant) => applicant.state === '수락')
-    );
+   // 수락된 신청자들 필터링 (수락된 신청자만)
+  const acceptedApplicants = applications.flatMap((application) =>
+    application.applicants.filter((applicant) => applicant.state === '수락')
+  );
   
-    // 작성자를 포함한 전체 참가자 수 계산
-    const totalParticipants = acceptedApplicants.length + (studyData.userId === currentUserNickname ? 1 : 0);
+  // 작성자를 제외한 수락된 신청자 수 계산
+  const acceptedNonOwnerApplicants = acceptedApplicants.filter(
+    (applicant) => applicant.userId !== currentUserNickname
+  );
   
+  // 작성자를 포함한 전체 참가자 수 계산
+  const totalParticipants = acceptedNonOwnerApplicants.length + (studyData.userId === currentUserNickname ? 1 : 0);
   
-    // 참가자가 2명 이상이어야 스터디 시작 가능
-    if (totalParticipants < 2) {
-      alert('2명 이상이어야 스터디를 시작할 수 있습니다.');
-      return;
-    }
+  // 참가자가 2명 이상이어야 스터디 시작 가능
+  if (totalParticipants < 2) {
+    alert('2명 이상이어야 스터디를 시작할 수 있습니다.');
+    return;
+  }
    // 상태 변경을 위한 API 호출
    Meteor.call('study.updateStatus', id, '모집완료', (error) => {
     if (error) {
@@ -254,22 +258,12 @@ const StudyDetail = () => {
         alert('스터디 종료에 실패했습니다.');
         return;
       }
-  
-      // Application 컬렉션에서 진행 중인 스터디 상태를 '종료'로 변경
-      Application.update(
-        { studyId: id, progress: { $ne: '종료' } },  // '종료'가 아닌 상태를 찾기
-        { $set: { progress: '종료', endDate: endDate } },  // progress와 endDate를 업데이트
-        { multi: true },  // 여러 개의 신청서를 동시에 업데이트
-        (err, res) => {
-          if (err) {
-            console.error('Application 업데이트 실패:', err);
-          } else {
-            // 성공적으로 업데이트되었으면 상태를 반영
-            alert('스터디가 종료되었습니다.');
-            window.location.reload();
-          }
-        }
-      );
+      else {
+        alert('스터디가 종료되었습니다.');
+        window.location.reload();  // 페이지 새로 고침
+      }
+      
+      
     });
   };
   
