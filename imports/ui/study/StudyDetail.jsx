@@ -231,6 +231,7 @@ const StudyDetail = () => {
         status: '모집완료',
       }));
       alert('스터디가 시작되었습니다!');
+      window.location.reload();
     }
   });
 };
@@ -242,6 +243,38 @@ const StudyDetail = () => {
   if (!studyData) {
     return <div>스터디 정보가 없습니다.</div>;
   }
+
+  const handleEndStudy = () => {
+    const endDate = new Date();  // 현재 날짜로 마감일 설정
+    
+    // Application 컬렉션에서 해당 스터디의 신청 상태를 '종료'로 업데이트
+    Meteor.call('study.endStudy', id, endDate, (error, result) => {
+      if (error) {
+        console.error('스터디 종료 처리 실패:', error);
+        alert('스터디 종료에 실패했습니다.');
+        return;
+      }
+  
+      // Application 컬렉션에서 진행 중인 스터디 상태를 '종료'로 변경
+      Application.update(
+        { studyId: id, progress: { $ne: '종료' } },  // '종료'가 아닌 상태를 찾기
+        { $set: { progress: '종료', endDate: endDate } },  // progress와 endDate를 업데이트
+        { multi: true },  // 여러 개의 신청서를 동시에 업데이트
+        (err, res) => {
+          if (err) {
+            console.error('Application 업데이트 실패:', err);
+          } else {
+            // 성공적으로 업데이트되었으면 상태를 반영
+            alert('스터디가 종료되었습니다.');
+            window.location.reload();
+          }
+        }
+      );
+    });
+  };
+  
+  
+  
 
   const { title, content, address, techStack, studyCount, studyClose, roles, onOffline, score, views, status, createdAt, userId } = studyData;
 
@@ -262,6 +295,11 @@ const StudyDetail = () => {
     app.applicants.filter(applicant => applicant.state === '수락')
   );
 
+  const hasOngoingApplications = applications.some(app => 
+    app.progress === '진행'  // progress가 '진행'인 경우 체크
+  );
+  
+
   return (
     <div className="study-details">
       <h1>스터디 상세 정보</h1>
@@ -279,11 +317,12 @@ const StudyDetail = () => {
       </div>
 
       {/* 모집 상태가 '모집완료'일 경우, '모집 마감일' 숨기기 */}
-{status !== '모집완료' && (
+      {status !== '모집완료' && (
   <div>
     <strong>모집 마감일:</strong> {formatDate(studyClose)}
   </div>
 )}
+
 
       <div>
         <strong>모집 상태:</strong> {status}
@@ -316,6 +355,11 @@ const StudyDetail = () => {
 ))}
   </>
 )}
+{applications.some(app => app.progress === '종료') && (
+  <div>
+    <strong>종료일:</strong> {formatDate(studyData.endDate) || '정보 없음'}
+  </div>
+)}
       <div>
         <strong>기술 스택:</strong>
         <ul>
@@ -343,12 +387,17 @@ const StudyDetail = () => {
       <div>
         <strong>조회수:</strong> {views}
       </div>
-
+    
+      {isUserOwner && hasOngoingApplications && (
+        <div>
+          <button onClick={handleEndStudy}>스터디 종료</button>
+        </div>
+      )}
       {/* 모집 상태가 '모집중'일 때만 '스터디 시작' 버튼을 보이게 */}
       {isUserOwner && status === '모집중' && (
         <button onClick={handleStartStudy}>스터디 시작</button>
       )}
-
+      <h3>신청자 목록</h3>
       {!isUserOwner && !applications.some((app) => app.userId === currentUserNickname) && (
         <button onClick={handleApply} disabled={isRecruitingClosed}>신청하기</button>
       )}
@@ -356,7 +405,7 @@ const StudyDetail = () => {
       {/* 신청자 목록 (누구나 볼 수 있음) */}
 {filteredApplications.length > 0 && (
   <div>
-    <h3>신청자 목록</h3>
+   
     {filteredApplications.map((app, index) => (
       <div key={index}>
         {app.applicants
@@ -376,9 +425,6 @@ const StudyDetail = () => {
     ))}
   </div>
 )}
-
-      {/* 스터디 리스트 버튼을 댓글 섹션 위로 이동 */}
-      <button onClick={() => navigate('/')}>스터디 리스트</button>
 
       <div>
         <h3>댓글</h3>

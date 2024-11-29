@@ -62,6 +62,43 @@ if (Meteor.isServer) {
       Comment.insert(newComment);
     },
 
+// 스터디 종료 메서드
+'study.endStudy'(studyId, endDate) {
+  // 권한 체크
+  if (!this.userId) {
+    throw new Meteor.Error('not-authorized', '로그인 후 종료할 수 있습니다.');
+  }
+
+  const study = Study.findOne(studyId);
+  if (!study) {
+    throw new Meteor.Error('study-not-found', '스터디를 찾을 수 없습니다.');
+  }
+
+  // 작성자만 종료 가능
+  if (study.userId !== Meteor.user()?.profile?.nickname) {
+    throw new Meteor.Error('not-authorized', '작성자만 스터디를 종료할 수 있습니다.');
+  }
+
+  // Application 컬렉션에서 해당 studyId를 가진 '진행' 상태의 신청서들만 '종료'로 업데이트
+  const result = Application.update(
+    { studyId: studyId, progress: '진행' },  // studyId가 일치하고 progress가 '진행'인 경우
+    { 
+      $set: { 
+        progress: '종료',  // 신청서의 진행 상태를 '종료'로 변경
+        endDate: endDate   // 마감일 설정
+      }
+    },
+    { multi: true }  // 여러 개의 신청서들 한 번에 업데이트
+  );
+
+  // 업데이트 결과를 반환
+  if (result) {
+    return { success: true, progress: '종료', endDate };
+  } else {
+    throw new Meteor.Error('update-failed', '신청서 상태 업데이트 실패');
+  }
+},
+
     // 스터디 신청 메서드
     'study.apply'(studyId) {
       if (!this.userId) {
