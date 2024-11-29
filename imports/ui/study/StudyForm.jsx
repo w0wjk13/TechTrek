@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { useNavigate } from 'react-router-dom';
 import Data from "../Data";
+import { useTracker } from 'meteor/react-meteor-data';  // useTracker import 추가
 
 const { citys, techStacks } = Data;
 
@@ -15,25 +16,22 @@ const StudyForm = () => {
   const [studyClose, setStudyClose] = useState('');
   const [roles, setRoles] = useState([]);
   const [onOffline, setOnOffline] = useState('');
-  const [rating, setRating] = useState(''); // 평점을 문자열로 설정
+  const [rating, setRating] = useState('');
 
   const navigate = useNavigate();
   const isInitialized = useRef(false);
 
   const currentUser = Meteor.user();
-  const userCity =  currentUser?.profile?.address === 'string'
-    ? currentUser.profile.address.split(" ")[0]
-    : '';
-  const userGubun = currentUser?.profile?.address === 'string'
-    ? currentUser.profile.address.split(" ")[1]
-    : '';
+  const userCity = currentUser?.profile?.address?.city || '';  // 도시 정보
+  const userGubun = currentUser?.profile?.address?.gubun || '';  // 구 정보
+
   const userTechStack = Array.isArray(currentUser?.profile?.techStack)
     ? currentUser.profile.techStack
     : [];
   const userRoles = Array.isArray(currentUser?.profile?.roles)
     ? currentUser.profile.roles
     : [];
-  const userRating = currentUser?.profile?.rating || 0; // 유저 평점을 숫자로 가져옴
+  const userRating = currentUser?.profile?.rating || 0;
 
   useEffect(() => {
     if (!isInitialized.current) {
@@ -54,11 +52,16 @@ const StudyForm = () => {
       today.setDate(today.getDate() + 3);
       setStudyClose(today.toISOString().split('T')[0]);
 
-      setRating(userRating);  // 유저의 평점을 초기 값으로 설정
+      setRating(userRating); 
 
       isInitialized.current = true;
     }
   }, [userCity, userGubun, userTechStack, userRoles, userRating]);
+
+  // useTracker 사용하여 실시간으로 지역과 구 데이터를 추적
+  const { cityList } = useTracker(() => {
+    return { cityList: citys };  // citys 데이터를 실시간으로 추적
+  });
 
   const getMinDate = () => {
     const today = new Date();
@@ -91,7 +94,7 @@ const StudyForm = () => {
     if (parseInt(value) > userRating) {
       alert(`내 평점보다 높은 평점을 설정할 수 없습니다.`);
     } else {
-      setRating(value); // 클릭한 평점 값을 문자열로 설정
+      setRating(value); 
     }
   };
 
@@ -124,7 +127,7 @@ const StudyForm = () => {
       studyClose: new Date(studyClose),
       roles,
       onOffline,
-      rating,  // 평점 저장
+      rating,
     };
 
     Meteor.call('study.create', studyData, (error) => {
@@ -132,7 +135,7 @@ const StudyForm = () => {
         alert(`Error: ${error.reason}`);
       } else {
         alert('스터디가 성공적으로 생성되었습니다!');
-        navigate('/');  // 메인 페이지로 이동
+        navigate('/');  
       }
     });
   };
@@ -175,7 +178,7 @@ const StudyForm = () => {
           }}
         >
           <option value="">선택하세요</option>
-          {citys.map((city, index) => (
+          {cityList.map((city, index) => (
             <option key={index} value={city.name}>{city.name}</option>
           ))}
         </select>
@@ -188,7 +191,7 @@ const StudyForm = () => {
           onChange={(e) => setSelectedGubun(e.target.value)}
         >
           <option value="">선택하세요</option>
-          {citys
+          {cityList
             .find((city) => city.name === selectedCity)
             ?.gubuns?.map((gubun, index) => (
               <option key={index} value={gubun}>{gubun}</option>
@@ -295,11 +298,11 @@ const StudyForm = () => {
           {[1, 2, 3, 4, 5].map((star) => (
             <span
               key={star}
-              onClick={() => handleStarClick(star.toString())} // 클릭 시 평점을 문자열로 설정
+              onClick={() => handleStarClick(star.toString())} 
               style={{
                 cursor: 'pointer',
                 fontSize: '24px',
-                color: rating >= star ? '#FFD700' : '#D3D3D3', // Gold for selected, gray for unselected
+                color: rating >= star ? '#FFD700' : '#D3D3D3', 
               }}
             >
               ★
