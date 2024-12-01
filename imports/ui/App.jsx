@@ -19,6 +19,7 @@ import StudyForm from "./study/StudyForm.jsx";
 import StudyDetail from "./study/StudyDetail.jsx";
 import MypageMain from "./mypage/MypageMain.jsx";
 import MypageProject from "./mypage/MypageProject.jsx";
+import StudyRating from "./study/StudyRating.jsx";
 
 
 
@@ -52,6 +53,7 @@ export const App = () => {
         <Route path="/study">
           <Route path="form" element={<PrivateRoute element={<StudyForm />} />} />
           <Route path="detail/:id" element={<PrivateRoute element={<StudyDetail />} />} />
+          <Route path="rating/:id" element={<PrivateRoute element={<StudyRating />} />} />
         </Route>
         <Route path="/mypage">
           <Route path="main" element={<PrivateRoute element={<MypageMain />} />} />

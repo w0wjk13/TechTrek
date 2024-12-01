@@ -89,7 +89,7 @@ const MypageProject = () => {
   
   const handleReview = (studyId) => {
     // 평가 페이지로 이동
-    navigate(`/study/review/${studyId}`);
+    navigate(`/study/rating/${studyId}`);
   };
   
   return (

@@ -42,20 +42,18 @@ const StudyDetail = () => {
       const studyApplications = Application.find({ studyId: id }).fetch();
 
       // 신청자 상태 및 정보를 합친 배열 생성
-    const applicants = studyApplications.map(app => ({
-      ...app,
-      applicants: app.userIds.map((userId, index) => {
-        const user = Meteor.users.findOne(userId);
-       
+    const applicants = Array.isArray(studyApplications) ? studyApplications.map(app => ({
+  ...app,
+  applicants: app.userIds.map((userId, index) => {
+    const user = Meteor.users.findOne(userId);
+    return {
+      userId,
+      state: app.states[index],
+      nickname: user?.profile?.nickname || user?.username || '알 수 없음',
+    };
+  })
+})) : [];
 
-        // 사용자 정보 대신 'nickname' 또는 'username' 사용
-        return {
-          userId,
-          state: app.states[index], // 신청 상태
-          nickname: user?.profile?.nickname || user?.username || '알 수 없음', // 사용자 이름 대신 닉네임 표시
-        };
-      })
-    }));
 
       setApplications(applicants);
 
@@ -200,11 +198,30 @@ const StudyDetail = () => {
     });
   };
 
-  // 신청자 목록 필터링 처리: 거절된 신청자는 제외
-  const filteredApplications = applications.map(app => ({
+ // 신청자 목록 필터링 처리: 거절된 신청자는 제외
+const filteredApplications = applications.map(app => {
+  // 각 신청서에서 신청자들의 userId와 상태를 결합
+  const filteredApplicants = app.userIds
+    .map((userId, index) => {
+      const applicantState = app.states[index]; // 해당 신청자의 상태
+      return {
+        userId,
+        state: applicantState
+      };
+    })
+    .filter(applicant => applicant.state !== '거절'); // '거절' 상태 제외
+
+  // 필터링된 신청자 목록을 반환
+  return {
     ...app,
-    applicants: app.applicants.filter(applicant => applicant.state !== '거절')  // '거절' 상태 제외
-  }));
+    applicants: filteredApplicants
+  };
+});
+
+
+
+
+
 
   const handleStartStudy = () => {
    // 수락된 신청자들 필터링 (수락된 신청자만)
@@ -406,28 +423,39 @@ const StudyDetail = () => {
       )}
 
       {/* 신청자 목록 (누구나 볼 수 있음) */}
-{filteredApplications.length > 0 && (
+      {filteredApplications.length > 0 && (
   <div>
-   
-    {filteredApplications.map((app, index) => (
-      <div key={index}>
-        {app.applicants
-          .filter(applicant => applicant.userId !== userId)  // 작성자를 제외한 신청자만 필터링
-          .map((applicant) => (
-            <div key={applicant.userId}>
-              <strong>{applicant.userId || '알 수 없음'}</strong> - {applicant.state}
-              {isUserOwner && applicant.state === '신청' && (  // 작성자만 수락/거절 버튼을 볼 수 있도록 조건 추가
-                <>
-                  <button onClick={() => handleAccept(applicant.userId)} disabled={isRecruitingClosed}>수락</button>
-                  <button onClick={() => handleReject(applicant.userId)} disabled={isRecruitingClosed}>거절</button>
-                </>
-              )}
-            </div>
-          ))}
-      </div>
-    ))}
+    {filteredApplications.map((application, index) => {
+      
+      return (
+        <div key={index}>
+          {application.applicants
+            .filter(applicant => applicant.userId !== userId)  // 작성자를 제외한 신청자만 필터링
+            .map((applicant) => {
+              
+              return (
+                <div key={applicant.userId}>
+                  <strong>{applicant.nickname || applicant.userId}</strong> - {applicant.state}
+                  
+
+                  {isUserOwner && applicant.state === '신청' && (  // 작성자만 수락/거절 버튼을 볼 수 있도록 조건 추가
+                    <>
+                    
+                      <button onClick={() => handleAccept(applicant.userId)} disabled={isRecruitingClosed}>수락</button>
+                      <button onClick={() => handleReject(applicant.userId)} disabled={isRecruitingClosed}>거절</button>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+        </div>
+      );
+    })}
   </div>
 )}
+
+
+
 
       <div>
         <h3>댓글</h3>
