@@ -132,7 +132,11 @@ const techStacks = [
   "Swift",
   "Django",
   "React",
-  "ReactNative",
+  "Ruby",
+  "PHP",                 
+  "VueJS",             
+  "Angular",             
+  "Svelte",  
 ];
 const Data = {
   citys,

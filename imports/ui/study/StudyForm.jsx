@@ -14,8 +14,8 @@ const StudyForm = () => {
   const [techStack, setTechStack] = useState([]);
   const [studyCount, setStudyCount] = useState(2);
   const [studyClose, setStudyClose] = useState('');
-  const [roles, setRoles] = useState([]);
-  const [onOffline, setOnOffline] = useState('');
+  const [roles, setRoles] = useState(['백엔드']);
+  const [onOffline, setOnOffline] = useState('온라인');
   const [rating, setRating] = useState('');
 
   const navigate = useNavigate();
@@ -44,9 +44,6 @@ const StudyForm = () => {
       if (userTechStack.length > 0) {
         setTechStack(userTechStack);
       }
-      if (userRoles.length > 0) {
-        setRoles(userRoles);
-      }
 
       const today = new Date();
       today.setDate(today.getDate() + 3);
@@ -56,7 +53,7 @@ const StudyForm = () => {
 
       isInitialized.current = true;
     }
-  }, [userCity, userGubun, userTechStack, userRoles, userRating]);
+  }, [userCity, userGubun, userTechStack, userRating]);
 
   // useTracker 사용하여 실시간으로 지역과 구 데이터를 추적
   const { cityList } = useTracker(() => {
@@ -125,8 +122,8 @@ const StudyForm = () => {
       techStack,
       studyCount,
       studyClose: new Date(studyClose),
-      roles,
-      onOffline,
+      roles: roles.length > 0 ? roles : ['백엔드'],
+      onOffline: onOffline || '온라인',
       rating,
     };
 
@@ -226,7 +223,7 @@ const StudyForm = () => {
               type="radio"
               name="onOffline"
               value="온라인"
-              checked={onOffline === "온라인"}
+              checked={onOffline === "온라인"} defaultChecked
               onChange={(e) => setOnOffline(e.target.value)}
             />
             온라인
@@ -262,7 +259,7 @@ const StudyForm = () => {
             <input
               type="radio"
               name="role"
-              value="백엔드"
+              value="백엔드" defaultChecked
               checked={roles.includes("백엔드")}
               onChange={handleRolesChange}
             />

@@ -76,10 +76,13 @@ Meteor.methods({
       study.creatorName = creator ? creator.profile.nickname : '알 수 없음';
 
       const applications = Application.find({ studyId: study._id }).fetch();
-    const applicantCount = applications.reduce((count, app) => {
-      const isApplicant = app.userIds.filter(userId => userId !== study.userId).length;
-      return count + isApplicant;
-    }, 0);
+      const applicantCount = applications.reduce((count, app) => {
+        if (app.userIds && Array.isArray(app.userIds)) {
+          const isApplicant = app.userIds.filter(userId => userId !== study.userId).length;
+          return count + isApplicant;
+        }
+        return count;
+      }, 0);
     study.applicantCount = applicantCount;
 
       const application = applications.find(app => app.userIds.includes(nickname));

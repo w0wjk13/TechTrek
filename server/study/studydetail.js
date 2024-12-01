@@ -166,13 +166,10 @@ if (Meteor.isServer) {
     .filter(index => index !== -1);  // '수락됨' 상태인 인덱스만 필터링
 
   const acceptedApplicantsCount = acceptedApplicantIndexes.length;
-  console.log(`수락된 신청자 수: ${acceptedApplicantsCount}`);
+  
 
   // 작성자 포함 총 인원
   const totalParticipants = acceptedApplicantsCount + 1;  // 작성자 포함
-
-  console.log(`작성자 포함 총 인원 수: ${totalParticipants}`);
-  console.log(`스터디 모집 인원: ${study.studyCount}`);
 
   // 모집 인원보다 신청자가 많을 수 없다는 조건
   if (totalParticipants > study.studyCount) {
@@ -301,7 +298,7 @@ if (Meteor.isServer) {
       Application.update(application._id, {
         $set: { progress: updatedProgress },
       });
-      console.log(`신청자 ${application.userIds}의 진행 상태가 '${updatedProgress}'로 업데이트되었습니다.`);
+     
     });
   }
 
