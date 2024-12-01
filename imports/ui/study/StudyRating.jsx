@@ -11,7 +11,7 @@ const StudyRating = () => {
 
   // 평가 데이터를 위한 상태들
   const [rating, setRating] = useState({});  // 각 신청자별 별점
-  const [comments, setComments] = useState({});  // 각 신청자별 한줄 평
+  const [feedback, setFeedback] = useState({});  // 각 신청자별 피드백
 
   const initialRating = {
     participation: '',
@@ -28,8 +28,6 @@ const StudyRating = () => {
         console.error('신청자 목록 조회 실패:', error);
         return;
       }
-      setApplications(fetchedApplications);  // 전체 신청자 목록 저장
-    });
 
     // 현재 로그인한 사용자의 정보 가져오기
     const currentUser = Meteor.user();
@@ -37,6 +35,28 @@ const StudyRating = () => {
       setCurrentUserNickname(currentUser.profile?.nickname); // 현재 사용자 닉네임 저장
       setUserId(currentUser._id);  // 현재 사용자 ID 저장
     }
+    // 현재 사용자를 제외한 신청자만 필터링
+    const filteredApplications = fetchedApplications.map(app => {
+      const filteredApplicants = (app.userIds || []).map((userId, index) => {
+        const applicantState = (app.states || [])[index];  // 해당 신청자의 상태
+        const applicant = {
+          userId,
+          state: applicantState,
+          nickname: (app.nicknames || [])[index],  // 신청자의 닉네임
+        };
+        
+        // 현재 사용자를 제외하고 수락된 신청자만 필터링
+        return applicant.state === '수락' && applicant.userId !== currentUserNickname;
+      }).filter(Boolean);  // 필터링된 신청자만 남깁니다.
+
+      return {
+        ...app,
+        applicants: filteredApplicants,
+      };
+    });
+
+    setApplications(filteredApplications);  // 필터링된 신청자 목록 저장
+  });
   }, [id]);
 
   useEffect(() => {
@@ -87,9 +107,9 @@ const StudyRating = () => {
     }));
   };
 
-  // 한줄 평 핸들러
-  const handleCommentChange = (userId, value) => {
-    setComments((prev) => ({
+  // 피드백 핸들러
+  const handleFeedbackChange = (userId, value) => {
+    setFeedback((prev) => ({
       ...prev,
       [userId]: value,
     }));
@@ -103,7 +123,7 @@ const StudyRating = () => {
           studyId: id,
           userId: applicant.userId,
           rating: rating[applicant.userId],
-          comment: comments[applicant.userId],
+          feedback: feedback[applicant.userId],
         };
 
         Meteor.call('study.submitRating', data, (error, result) => {
@@ -233,12 +253,12 @@ const StudyRating = () => {
                       Timeliness
                     </label>
                   </div><br/>
-                  {/* 한줄 평 */}
+                  {/* 피드백 */}
                   <div>
-                    <label>한줄 평: </label>
+                    <label>피드백: </label>
                     <textarea
-                      value={comments[applicant.userId] || ''}
-                      onChange={(e) => handleCommentChange(applicant.userId, e.target.value)}
+                      value={feedback[applicant.userId] || ''}
+                      onChange={(e) => handleFeedbackChange(applicant.userId, e.target.value)}
                     />
                   </div><br/>
                 </div>

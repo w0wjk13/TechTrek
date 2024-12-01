@@ -30,25 +30,6 @@ const recommendation = {
   timeliness: Math.floor(Math.random() * 30) + 1,
 };
 
-let ratingCount = Math.min(
-  recommendation.participation,
-  recommendation.teamwork,
-  recommendation.leadership,
-  recommendation.communication,
-  recommendation.timeliness
-);
-
-// 여기에 추가적으로 랜덤값을 더하되, 각 항목의 값보다 크지 않도록 제한
-const randomAdjustment = Math.floor(Math.random() * 30); 
-ratingCount = Math.min(
-  ratingCount + randomAdjustment,
-  recommendation.participation,
-  recommendation.teamwork,
-  recommendation.leadership,
-  recommendation.communication,
-  recommendation.timeliness
-);
-
 // admin 생성
 if (!Meteor.users.findOne({ username: "admin" })) {
   Accounts.createUser({
@@ -72,7 +53,6 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
         techStack: techStacks.sort(() => Math.random() - 0.5).slice(0, 5),  // 랜덤으로 기술 스택 선택
         roles: ["백엔드", "프론트엔드", "풀스택"].sort(() => Math.random() - 0.5).slice(0, 1),  // 랜덤으로 역할 선택
         rating: (Math.random() * 4 + 1).toFixed(1),
-        ratingCount,
         recommendation: recommendation,
       },
       createdAt: new Date(),
