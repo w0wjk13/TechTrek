@@ -42,18 +42,54 @@ const StudyDetail = () => {
       const studyApplications = Application.find({ studyId: id }).fetch();
 
       // 신청자 상태 및 정보를 합친 배열 생성
-    const applicants = Array.isArray(studyApplications) ? studyApplications.map(app => ({
-  ...app,
-  applicants: app.userIds.map((userId, index) => {
-    const user = Meteor.users.findOne(userId);
-    return {
-      userId,
-      state: app.states[index],
-      nickname: user?.profile?.nickname || user?.username || '알 수 없음',
-    };
-  })
-})) : [];
+    // 신청자 상태 및 정보를 합친 배열 생성
+    let applicants = [];
 
+    if (Array.isArray(studyApplications)) {
+      for (let i = 0; i < studyApplications.length; i++) {
+        const app = studyApplications[i];
+    
+        // userIds와 states가 배열인지 확인하고, 아니면 단일 userId와 state 처리
+        if (Array.isArray(app.userIds) && Array.isArray(app.states)) {
+          const processedApplicants = [];
+    
+          // userIds와 states를 순회하여 신청자 상태 및 정보를 합침
+          for (let j = 0; j < app.userIds.length; j++) {
+            const userId = app.userIds[j];
+            const user = Meteor.users.findOne(userId);
+            processedApplicants.push({
+              userId,
+              state: app.states[j],
+              nickname: user?.profile?.nickname || user?.username || '알 수 없음',
+            });
+          }
+    
+          // processedApplicants 배열을 신청서에 포함
+          applicants.push({
+            ...app,
+            applicants: processedApplicants,
+          });
+        } else {
+          // userIds나 states가 배열이 아니면 단일 userId와 state로 처리
+          const userId = app.userId;
+          const user = Meteor.users.findOne(userId);
+    
+          applicants.push({
+            ...app,
+            applicants: [
+              {
+                userId,
+                state: app.state,
+                nickname: user?.profile?.nickname || user?.username || '알 수 없음',
+              },
+            ],
+          });
+        }
+      }
+    }
+    
+    console.log('Final Applicants:', applicants); // 최종 신청자 정보 출력
+    
 
       setApplications(applicants);
 
@@ -198,36 +234,36 @@ const StudyDetail = () => {
     });
   };
 
- // 신청자 목록 필터링 처리: 거절된 신청자는 제외
-const filteredApplications = applications.map(app => {
-  // 각 신청서에서 신청자들의 userId와 상태를 결합
-  const filteredApplicants = app.userIds
-    .map((userId, index) => {
-      const applicantState = app.states[index]; // 해당 신청자의 상태
-      return {
-        userId,
-        state: applicantState
-      };
-    })
-    .filter(applicant => applicant.state !== '거절'); // '거절' 상태 제외
+  // 신청자 목록 필터링 처리: 거절된 신청자는 제외
+  const filteredApplications = [];
+  for (let i = 0; i < applications.length; i++) {
+    const app = applications[i];
+    const filteredApplicants = [];
 
-  // 필터링된 신청자 목록을 반환
-  return {
-    ...app,
-    applicants: filteredApplicants
-  };
-});
+    for (let j = 0; j < app.applicants.length; j++) {
+      const applicant = app.applicants[j];
+      if (applicant.state !== '거절') {
+        filteredApplicants.push(applicant);
+      }
+    }
 
-
-
-
-
-
+    filteredApplications.push({
+      ...app,
+      applicants: filteredApplicants,
+    });
+  }
   const handleStartStudy = () => {
    // 수락된 신청자들 필터링 (수락된 신청자만)
-  const acceptedApplicants = applications.flatMap((application) =>
-    application.applicants.filter((applicant) => applicant.state === '수락')
-  );
+   const acceptedApplicants = [];
+   for (let i = 0; i < applications.length; i++) {
+     const application = applications[i];
+     for (let j = 0; j < application.applicants.length; j++) {
+       const applicant = application.applicants[j];
+       if (applicant.state === '수락') {
+         acceptedApplicants.push(applicant);
+       }
+     }
+   }
   
   // 작성자를 제외한 수락된 신청자 수 계산
   const acceptedNonOwnerApplicants = acceptedApplicants.filter(

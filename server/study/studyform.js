@@ -53,10 +53,7 @@ Meteor.methods({
       throw new Meteor.Error('invalid-onOffline', '진행 방식을 선택해주세요.');
     }
    
-    const ratingValues = Object.values(studyData.rating);
-if (ratingValues.filter(s => s >= 0 && s <= 5).length !== ratingValues.length) {
-  throw new Meteor.Error('invalid-score', '점수는 0부터 5 사이의 값만 입력할 수 있습니다.');
-}
+   
   
     // 스터디 생성
     const studyId = Study.insert({

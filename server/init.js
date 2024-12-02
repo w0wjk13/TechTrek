@@ -140,14 +140,14 @@ randomStudyIds.forEach((studyId) => {
     });
 
     if (!existingApplication) {  // 중복 신청자가 없으면
-      applicants.push(applicant.profile.nickname);
+      
 
       // Application 컬렉션에 신청 정보 추가
       Application.update(
         { studyId: studyId },
         {
           $push: { userIds: applicant.profile.nickname, states: '신청' },  // 신청자 추가
-          $inc: { applicantCount: 1 }  // 신청자 수 증가
+         
         }
       );
     }
@@ -159,6 +159,6 @@ randomStudyIds.forEach((studyId) => {
     return sum + userIds.length;
   }, 0);
 
-  console.log(`스터디 ${studyId}의 총 신청자 수: ${totalApplicants}`);
+  
 });
 
