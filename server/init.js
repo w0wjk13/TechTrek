@@ -111,19 +111,13 @@ if (Study.find().count() === 0) {
 }
 }
 
-// 스터디 모집글 중에서 랜덤으로 15개 선택해서 참가자 추가
-const studyIds = Study.find().fetch().map(study => study._id);  // 모든 스터디 ID 가져오기
-const randomStudyIds = [];
+// 모든 스터디 ID 가져오기
+const studyIds = Study.find().fetch().map(study => study._id); 
 
-// 15개의 랜덤 스터디 모집글을 선택
-while (randomStudyIds.length < 15) {
-  const randomIndex = Math.floor(Math.random() * studyIds.length);
-  const randomStudyId = studyIds[randomIndex];
-
-  if (!randomStudyIds.includes(randomStudyId)) {
-    randomStudyIds.push(randomStudyId);
-  }
-}
+// 랜덤으로 스터디 모집글 15개 선택
+const randomStudyIds = studyIds
+  .sort(() => Math.random() - 0.5)  // 배열을 랜덤하게 섞음
+  .slice(0, 15);  // 상위 15개 선택
 
 // 각 스터디 모집글에 대해 랜덤으로 참가자 추가
 randomStudyIds.forEach((studyId) => {
@@ -138,6 +132,7 @@ randomStudyIds.forEach((studyId) => {
   // 랜덤 신청자 선택
   for (let i = 0; i < numOfApplicants; i++) {
     const applicant = users[Math.floor(Math.random() * users.length)];
+
     // 이미 신청한 사용자가 중복으로 신청하지 않도록 하기 위해 Application 컬렉션을 확인
     const existingApplication = Application.findOne({
       studyId: studyId,
@@ -158,11 +153,12 @@ randomStudyIds.forEach((studyId) => {
     }
   }
 
- // 해당 스터디의 총 신청자 수를 출력
-const totalApplicants = Application.find({ studyId: studyId }).fetch().reduce((sum, app) => {
-  // app.userIds가 undefined일 수 있으므로 기본값을 빈 배열([])로 설정
-  const userIds = app.userIds || [];
-  return sum + userIds.length;
-}, 0);
+  // 해당 스터디의 총 신청자 수를 출력
+  const totalApplicants = Application.find({ studyId: studyId }).fetch().reduce((sum, app) => {
+    const userIds = app.userIds || [];
+    return sum + userIds.length;
+  }, 0);
 
+  console.log(`스터디 ${studyId}의 총 신청자 수: ${totalApplicants}`);
 });
+

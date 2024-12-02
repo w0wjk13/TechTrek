@@ -16,12 +16,12 @@ const StudyForm = () => {
   const [studyClose, setStudyClose] = useState('');
   const [roles, setRoles] = useState(['백엔드']);
   const [onOffline, setOnOffline] = useState('온라인');
-  const [rating, setRating] = useState('');
+  const [rating, setRating] = useState(null);
 
   const navigate = useNavigate();
   const isInitialized = useRef(false);
 
-  const currentUser = Meteor.user();
+  const currentUser = useTracker(() => Meteor.user());
   const userCity = currentUser?.profile?.address?.city || '';  // 도시 정보
   const userGubun = currentUser?.profile?.address?.gubun || '';  // 구 정보
 
@@ -34,7 +34,7 @@ const StudyForm = () => {
   const userRating = currentUser?.profile?.rating || 0;
 
   useEffect(() => {
-    if (!isInitialized.current) {
+    if (currentUser && !isInitialized.current) {
       if (userCity && !selectedCity) {
         setSelectedCity(userCity);
       }
@@ -53,7 +53,7 @@ const StudyForm = () => {
 
       isInitialized.current = true;
     }
-  }, [userCity, userGubun, userTechStack, userRating]);
+  }, [currentUser,userCity, userGubun, userTechStack, userRating]);
 
   // useTracker 사용하여 실시간으로 지역과 구 데이터를 추적
   const { cityList } = useTracker(() => {
@@ -88,12 +88,19 @@ const StudyForm = () => {
   };
 
   const handleStarClick = (value) => {
+    // 사용자 평점보다 높은 값을 선택하려는 경우
     if (parseInt(value) > userRating) {
       alert(`내 평점보다 높은 평점을 설정할 수 없습니다.`);
     } else {
-      setRating(value); 
+      if (rating === value) {
+        // 이미 선택한 별을 다시 클릭하면 평점을 0으로 설정
+        setRating(0);
+      } else {
+        setRating(value);  // 선택된 평점 값 설정
+      }
     }
   };
+  
 
   const handleSubmit = () => {
     if (!title || !content || !studyClose || !roles.length || !onOffline || !techStack.length) {
@@ -101,11 +108,7 @@ const StudyForm = () => {
       return;
     }
 
-    const filledRating = rating;
-    if (!filledRating) {
-      alert("평점을 입력해주세요.");
-      return;
-    }
+   
 
     const currentUser = Meteor.user();
     const userId = currentUser?.profile?.nickname;
@@ -295,7 +298,7 @@ const StudyForm = () => {
           {[1, 2, 3, 4, 5].map((star) => (
             <span
               key={star}
-              onClick={() => handleStarClick(star.toString())} 
+              onClick={() => handleStarClick(star)} 
               style={{
                 cursor: 'pointer',
                 fontSize: '24px',

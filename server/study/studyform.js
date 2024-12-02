@@ -52,9 +52,7 @@ Meteor.methods({
     if (!['온라인', '오프라인', '온/오프라인'].includes(studyData.onOffline)) {
       throw new Meteor.Error('invalid-onOffline', '진행 방식을 선택해주세요.');
     }
-    if (!studyData.rating || typeof studyData.rating !== 'object' || Object.values(studyData.rating).some(s => s === '')) {
-      throw new Meteor.Error('invalid-score', '평점을 입력해주세요.');
-    }
+   
     const ratingValues = Object.values(studyData.rating);
 if (ratingValues.filter(s => s >= 0 && s <= 5).length !== ratingValues.length) {
   throw new Meteor.Error('invalid-score', '점수는 0부터 5 사이의 값만 입력할 수 있습니다.');
