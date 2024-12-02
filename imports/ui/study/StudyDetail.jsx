@@ -88,7 +88,7 @@ const StudyDetail = () => {
       }
     }
     
-    console.log('Final Applicants:', applicants); // 최종 신청자 정보 출력
+    
     
 
       setApplications(applicants);
@@ -154,15 +154,30 @@ const StudyDetail = () => {
 
   // 신청하기 버튼 클릭 처리
   const handleApply = () => {
-    if (applications.some((app) => app.applicants.some((applicant) => applicant.userId === currentUserNickname))) {
+    const isAlreadyApplied = applications.some((app) =>
+      app.applicants.some((applicant) =>
+        applicant.userId === currentUserNickname && applicant.state === '신청'
+      )
+    );
+  
+    // 이미 신청한 경우
+    if (isAlreadyApplied) {
       alert('이미 신청한 상태입니다.');
       return;
     }
 
     Meteor.call('study.apply', id, (error, result) => {
       if (error) {
-        console.error('스터디 신청 실패:', error);
+        // 'already-applied' 오류일 경우, 이미 신청한 상태로 간주하고 알림 처리
+        if (error.error === 'already-applied') {
+          alert('이미 신청한 상태입니다.');
+        } else {
+          // 그 외의 오류 처리
+          console.error('스터디 신청 실패:', error.message || error);  // error 객체에서 메시지 출력
+          alert('스터디 신청에 실패했습니다. 다시 시도해주세요.');
+        }
       } else {
+        // 신청 성공 시, applications에 추가
         setApplications((prevApplications) => [
           ...prevApplications,
           {
