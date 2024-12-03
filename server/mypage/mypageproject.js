@@ -32,10 +32,13 @@ Meteor.methods({
      // 신청자 수 계산 (작성자 제외)
      const applications = Application.find({ studyId: study._id }).fetch();
      const applicantCount = applications.reduce((count, app) => {
-       // 신청자 중 작성자를 제외한 수를 카운트
-       const isApplicant = app.userIds.filter(userId => userId !== study.userId).length;
-       return count + isApplicant;
-     }, 0);
+      if (Array.isArray(app.userIds)) {
+        const isApplicant = app.userIds.filter(userId => userId !== study.userId).length;
+        return count + isApplicant;
+      }
+      return count; // userIds가 배열이 아닌 경우 count를 그대로 반환
+    }, 0);
+    
      study.applicantCount = applicantCount;
 
      // 스터디의 진행 상태(progress) 가져오기
