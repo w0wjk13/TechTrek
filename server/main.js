@@ -8,6 +8,7 @@ import "./study/studyform.js";
 import "./study/studydetail.js";
 import "./study/studyrating.js";
 import "./mypage/mypagemain.js";
+import "./mypage/mypageuser.js";
 import "./mypage/mypageproject.js";
 import "./init.js";
 import "./home.js";

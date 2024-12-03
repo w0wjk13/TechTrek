@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Meteor } from "meteor/meteor";
+import Data from "./../Data";
 
-// 기술 스택 및 포지션 목록
-const techStacks = [
-  "Java", "NodeJS", "Kotlin", "Mysql", "MongoDB", "Python", "Oracle",
-  "AWS", "Spring", "Azure", "NextJS", "Kubernetes", "Javascript",
-  "Flutter", "Docker", "Typescript", "Swift", "Django", "React", "ReactNative"
-];
+const { techStacks } = Data;
+
 
 const positions = ["백엔드", "프론트엔드", "풀스택"];
 

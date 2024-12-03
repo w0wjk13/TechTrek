@@ -10,6 +10,9 @@ const Navbar = () => {
           <Link to="/mypage/main">마이 페이지</Link>
         </li>
         <li>
+          <Link to="/mypage/user">회원정보 수정</Link>
+        </li>
+        <li>
           <Link to="/mypage/project">프로젝트</Link>
         </li>
 
