@@ -60,10 +60,10 @@ const StudyDetail = () => {
             processedApplicants.push({
               userId,
               state: app.states[j],
-              nickname: user?.profile?.nickname || user?.username || '알 수 없음',
+              
             });
           }
-    
+          console.log(processedApplicants);
           // processedApplicants 배열을 신청서에 포함
           applicants.push({
             ...app,
@@ -240,10 +240,16 @@ const StudyDetail = () => {
         console.error('거절 실패:', error);
       } else {
         setApplications((prevApplications) =>
-          prevApplications.map((app) => ({
-            ...app,
-            applicants: app.applicants.filter((applicant) => applicant.userId !== applicantId), // 신청자 제거
-          }))
+          prevApplications.map((app) => {
+            // 신청서 내에 해당 신청자가 포함되어 있을 때만 필터링
+            if (app.userIds.includes(applicantId)) {
+              return {
+                ...app,
+                applicants: app.applicants.filter((applicant) => applicant.userId !== applicantId), // 특정 신청자만 거절
+              };
+            }
+            return app;  // 해당 신청서에 신청자가 없다면 그대로 반환
+          })
         );
       }
     });
