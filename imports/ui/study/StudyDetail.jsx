@@ -12,6 +12,8 @@ const StudyDetail = () => {
   const [comments, setComments] = useState([]);
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);  // 로딩 상태 추가
+  const [isEditing, setIsEditing] = useState(null);  // 댓글 수정 상태 추가
+  const [editedCommentContent, setEditedCommentContent] = useState(''); 
 
   // 현재 로그인한 사용자 ID
   const currentUserNickname = Meteor.user()?.profile?.nickname || '';
@@ -127,30 +129,74 @@ const StudyDetail = () => {
   }, [studyData]);  // studyData가 변경될 때마다 실행
 
   // 댓글 입력 처리
-  const handleCommentSubmit = () => {
-    if (!commentContent.trim()) {
-      alert('댓글 내용을 입력해주세요.');
-      return;
-    }
+const handleCommentSubmit = () => {
+  if (!commentContent.trim()) {
+    alert('댓글 내용을 입력해주세요.');
+    return;
+  }
 
-    Meteor.call('study.addComment', id, commentContent, (error, result) => {
-      if (error) {
-        console.error('댓글 작성 실패:', error);
-      } else {
-        setCommentContent('');
-        // 댓글 추가 후 UI에 반영
-        setComments((prevComments) => [
-          ...prevComments,
-          {
-            userId: currentUserNickname,
-            nickname: Meteor.user()?.profile?.nickname || '알 수 없음',
-            content: commentContent,
-            createdAt: new Date(),
-          },
-        ]);
-      }
-    });
-  };
+  Meteor.call('study.addComment', id, commentContent, (error, result) => {
+    if (error) {
+      console.error('댓글 작성 실패:', error);
+    } else {
+      setCommentContent('');
+      // 댓글 추가 후 UI에 반영
+      setComments((prevComments) => [
+        ...prevComments,
+        {
+          userId: currentUserNickname,
+          nickname: Meteor.user()?.profile?.nickname || '알 수 없음',
+          content: commentContent,
+          createdAt: new Date(),
+        },
+      ]);
+    }
+  });
+};
+
+// 댓글 수정 처리
+const handleEditClick = (comment) => {
+  setIsEditing(comment._id);  // 수정하려는 댓글의 _id 설정
+  setEditedCommentContent(comment.content);  // 수정하려는 댓글의 내용 설정
+};
+
+// 댓글 저장 처리
+const handleSaveComment = () => {
+  if (!editedCommentContent.trim()) {
+    alert('댓글 내용을 입력해주세요.');
+    return;
+  }
+
+  // 현재 날짜를 createdAt으로 설정
+  const updatedAt = new Date();
+
+  Meteor.call('study.updateComment', isEditing, editedCommentContent, updatedAt, (error) => {
+    if (error) {
+      console.error('댓글 수정 실패:', error);
+    } else {
+      // 수정된 댓글을 UI에 반영
+      setComments((prevComments) =>
+        prevComments.map((comment) =>
+          comment._id === isEditing ? { ...comment, content: editedCommentContent, createdAt: updatedAt } : comment
+        )
+      );
+      setIsEditing(null);  // 수정 모드 종료
+      setEditedCommentContent('');
+    }
+  });
+};
+
+
+// 댓글 삭제 처리
+const handleDeleteComment = (commentId) => {
+  Meteor.call('study.deleteComment', commentId, (error) => {
+    if (error) {
+      console.error('댓글 삭제 실패:', error);
+    } else {
+      setComments((prevComments) => prevComments.filter((comment) => comment._id !== commentId));
+    }
+  });
+};
 
   // 신청하기 버튼 클릭 처리
   const handleApply = () => {
@@ -524,14 +570,33 @@ const StudyDetail = () => {
         <button onClick={handleCommentSubmit} disabled={isRecruitingClosed}>댓글 작성</button>
 
         <ul>
-          {comments.map((comment, index) => (
-            <li key={index}>
-              <strong>{comment.nickname}</strong> ({formatDate(comment.createdAt)})
+        {comments.map((comment) => (
+          <li key={comment._id}>
+            <strong>{comment.nickname}</strong> ({new Date(comment.createdAt).toLocaleString()})
+            {isEditing === comment._id ? (
+              <div>
+                <input
+                  type="text"
+                  value={editedCommentContent}
+                  onChange={(e) => setEditedCommentContent(e.target.value)}
+                />
+                <button onClick={() => handleSaveComment(comment._id)}>저장</button>
+                <button onClick={() => setIsEditing(null)}>취소</button>
+              </div>
+            ) : (
               <p>{comment.content}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
+            )}
+
+            {comment.nickname === currentUserNickname && !isEditing && (
+              <>
+                <button onClick={() => handleEditClick(comment)}>수정</button>
+                <button onClick={() => handleDeleteComment(comment._id)}>삭제</button>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
     </div>
   );
 };

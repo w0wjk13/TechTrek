@@ -6,6 +6,7 @@ const MypageComment = () => {
   const [userComments, setUserComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedComments, setSelectedComments] = useState([]); // 체크된 댓글 상태
+  const [selectAll, setSelectAll] = useState(false); // 전체 선택 상태
 
   const navigate = useNavigate(); // navigate 훅 사용
 
@@ -63,6 +64,18 @@ const MypageComment = () => {
     });
   };
 
+  // 전체 선택/해제 처리
+  const handleSelectAll = () => {
+    if (selectAll) {
+      // 전체 선택 해제
+      setSelectedComments([]);
+    } else {
+      // 전체 선택
+      setSelectedComments(userComments.map(comment => comment._id));
+    }
+    setSelectAll(!selectAll);
+  };
+
   // 선택된 댓글 삭제 처리
   const handleDeleteSelected = () => {
     if (selectedComments.length === 0) {
@@ -75,12 +88,16 @@ const MypageComment = () => {
       Meteor.call('comment.deleteComment', commentId, (error) => {
         if (error) {
           console.error('댓글 삭제 실패:', error);
+        } else {
+          // 삭제된 댓글을 목록에서 제거하여 UI 갱신
+          setUserComments((prevComments) => prevComments.filter((comment) => comment._id !== commentId));
         }
       });
     });
 
     // 삭제 후 선택 상태 초기화
     setSelectedComments([]);
+    setSelectAll(false); // 전체 선택 해제
   };
 
   // 스터디 제목 클릭 시 상세 페이지로 이동
@@ -100,9 +117,22 @@ const MypageComment = () => {
     <div className="mypage-comments">
       <h1>{currentUserNickname}님의 댓글</h1>
       
+      <div>
+        {/* 댓글 개수 출력 */}
+        <p>총 댓글 수: {userComments.length}</p>
+      </div>
+
       <table>
         <thead>
           <tr>
+            <th>
+              {/* 전체 선택 체크박스 */}
+              <input
+                type="checkbox"
+                checked={selectAll} // 전체 선택 여부에 따라 체크 상태 설정
+                onChange={handleSelectAll} // 전체 선택 토글
+              />
+            </th>
             <th>순위</th>
             <th>스터디</th>
             <th>댓글 내용</th>
@@ -113,6 +143,7 @@ const MypageComment = () => {
         <tbody>
           {userComments.map((comment, index) => (
             <tr key={comment._id}>
+              
               <td>{index + 1}</td>  {/* 순위 표시 (1, 2, 3, ...) */}
               <td>
                 <span 

@@ -61,7 +61,23 @@ if (Meteor.isServer) {
 
       Comment.insert(newComment);
     },
+'study.updateComment'(commentId, content) {
+    // Check if the user is authorized to update the comment
+    const comment = Comment.findOne(commentId);
+    if (!comment || comment.userId !== Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
 
+    Comment.update(commentId, { $set: { content } });
+  },
+  'study.deleteComment'(commentId) {
+    const comment = Comment.findOne(commentId);
+    if (!comment || comment.userId !== Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    Comment.remove(commentId);
+  },
 // 스터디 종료 메서드
 'study.endStudy'(studyId, endDate) {
   // 권한 체크
