@@ -21,6 +21,7 @@ import MypageMain from "./mypage/MypageMain.jsx";
 import MypageProject from "./mypage/MypageProject.jsx";
 import StudyRating from "./study/StudyRating.jsx";
 import MypageUser from "./mypage/MypageUser.jsx";
+import MypageComment from "./mypage/MypageComment.jsx";
 
 
 
@@ -60,6 +61,7 @@ export const App = () => {
           <Route path="main" element={<PrivateRoute element={<MypageMain />} />} />
           <Route path="project" element={<PrivateRoute element={<MypageProject />} />} />
           <Route path="user" element={<PrivateRoute element={<MypageUser />} />} />
+          <Route path="comment" element={<PrivateRoute element={<MypageComment />} />} />
         </Route>
 
         {/* 404 페이지 */}

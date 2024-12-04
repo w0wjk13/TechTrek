@@ -15,6 +15,9 @@ const Navbar = () => {
         <li>
           <Link to="/mypage/project">프로젝트</Link>
         </li>
+        <li>
+          <Link to="/mypage/comment">코멘트</Link>
+        </li>
 
       </ul>
     </div>

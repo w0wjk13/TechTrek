@@ -1,0 +1,143 @@
+import React, { useEffect, useState } from 'react';
+import { Meteor } from 'meteor/meteor';
+import { useNavigate } from 'react-router-dom'; // useNavigate 훅 임포트
+
+const MypageComment = () => {
+  const [userComments, setUserComments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedComments, setSelectedComments] = useState([]); // 체크된 댓글 상태
+
+  const navigate = useNavigate(); // navigate 훅 사용
+
+  // Get the current logged-in user's nickname or username
+  const currentUserNickname = Meteor.user()?.profile?.nickname || '';
+
+  useEffect(() => {
+    // Fetch the comments made by the current user
+    setLoading(true);
+    Meteor.call('comment.getUserComments', currentUserNickname, async (error, result) => {
+      if (error) {
+        console.error('댓글 가져오기 실패:', error);
+        setLoading(false);
+      } else {
+        // 댓글에 스터디 제목 추가
+        const commentsWithStudyInfo = await Promise.all(result.map(async (comment) => {
+          // 비동기적으로 studyId를 통해 스터디 정보를 가져옴
+          const study = await new Promise((resolve, reject) => {
+            Meteor.call('study.getStudyDetails', comment.studyId, (error, studyDetails) => {
+              if (error) {
+                reject(error);
+              } else {
+                resolve(studyDetails);
+              }
+            });
+          });
+
+          // 스터디 제목 추가
+          return {
+            ...comment,
+            studyName: study?.title || '스터디 정보 없음', // 스터디 제목 (없으면 기본 메시지)
+            studyId: study?._id // studyId도 추가
+          };
+        }));
+
+        // 댓글을 작성 날짜가 오래된 순으로 정렬
+        const sortedComments = commentsWithStudyInfo.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+        setUserComments(sortedComments);
+        setLoading(false);
+      }
+    });
+  }, [currentUserNickname]); // Re-run when the currentUserNickname changes
+
+  // 댓글 선택 처리
+  const handleCommentSelect = (commentId) => {
+    setSelectedComments((prevSelected) => {
+      if (prevSelected.includes(commentId)) {
+        // 이미 선택된 댓글이면 제거
+        return prevSelected.filter(id => id !== commentId);
+      } else {
+        // 선택되지 않은 댓글이면 추가
+        return [...prevSelected, commentId];
+      }
+    });
+  };
+
+  // 선택된 댓글 삭제 처리
+  const handleDeleteSelected = () => {
+    if (selectedComments.length === 0) {
+      alert('삭제할 댓글을 선택해주세요!');
+      return;
+    }
+
+    // 선택된 댓글을 삭제
+    selectedComments.forEach((commentId) => {
+      Meteor.call('comment.deleteComment', commentId, (error) => {
+        if (error) {
+          console.error('댓글 삭제 실패:', error);
+        }
+      });
+    });
+
+    // 삭제 후 선택 상태 초기화
+    setSelectedComments([]);
+  };
+
+  // 스터디 제목 클릭 시 상세 페이지로 이동
+  const handleStudyClick = (studyId) => {
+    navigate(`/study/detail/${studyId}`);
+  };
+
+  if (loading) {
+    return <div>로딩 중...</div>;
+  }
+
+  if (!userComments.length) {
+    return <div>댓글이 없습니다.</div>;
+  }
+
+  return (
+    <div className="mypage-comments">
+      <h1>{currentUserNickname}님의 댓글</h1>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>순위</th>
+            <th>스터디</th>
+            <th>댓글 내용</th>
+            <th>작성 날짜</th>
+            <th>선택</th>
+          </tr>
+        </thead>
+        <tbody>
+          {userComments.map((comment, index) => (
+            <tr key={comment._id}>
+              <td>{index + 1}</td>  {/* 순위 표시 (1, 2, 3, ...) */}
+              <td>
+                <span 
+                  style={{ color: 'blue', cursor: 'pointer' }} 
+                  onClick={() => handleStudyClick(comment.studyId)} // 스터디 제목 클릭 시 이동
+                >
+                  {comment.studyName || '알 수 없음'}
+                </span>
+              </td>  {/* 스터디 제목 */}
+              <td>{comment.content}</td>  {/* 댓글 내용 */}
+              <td>{new Date(comment.createdAt).toLocaleString()}</td>  {/* 댓글 작성 날짜 */}
+              <td>
+                <input
+                  type="checkbox"
+                  checked={selectedComments.includes(comment._id)} // 체크 상태
+                  onChange={() => handleCommentSelect(comment._id)} // 선택 토글
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <button onClick={handleDeleteSelected}>삭제하기</button>
+    </div>
+  );
+};
+
+export default MypageComment;

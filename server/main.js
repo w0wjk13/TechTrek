@@ -10,6 +10,7 @@ import "./study/studyrating.js";
 import "./mypage/mypagemain.js";
 import "./mypage/mypageuser.js";
 import "./mypage/mypageproject.js";
+import "./mypage/mypagecomment.js";
 import "./init.js";
 import "./home.js";
 
