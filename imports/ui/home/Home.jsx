@@ -22,7 +22,7 @@ const formatDDay = (studyClose) => {
   } else if (dayDiff === 0) {
     return "오늘 마감";
   } else {
-    return "마감";
+    return "모집마감";
   }
 };
 

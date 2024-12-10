@@ -230,10 +230,27 @@ if (Meteor.isServer) {
     throw new Meteor.Error('study-not-found', '해당 스터디를 찾을 수 없습니다.');
   }
 
+  // 모집 마감일이 지난 경우 자동으로 '모집마감' 상태로 변경
+  const studyCloseDate = new Date(study.studyClose);  // study.studyClose가 문자열이라면 Date로 변환
+  const currentDate = new Date();
+
+  if (study.studyClose && currentDate > studyCloseDate && study.status !== '모집마감') {
+    // 마감일이 지나면 '모집마감'으로 상태 변경
+    
+    Study.update(studyId, {
+      $set: { status: '모집마감' },
+    });
+
+    return;
+  }
+  
   if (study.userId !== Meteor.user()?.profile?.nickname) {
+   
     throw new Meteor.Error('not-authorized', '작성자만 상태를 변경할 수 있습니다.');
   }
 
+
+   
   // "모집중" 상태에서 "모집완료"로 변경
   if (study.status === '모집중') {
     // 스터디 상태를 '모집완료'로 변경
@@ -318,14 +335,7 @@ if (Meteor.isServer) {
     });
   }
 
-  // 모집 마감일이 지난 경우 자동으로 '모집마감' 상태로 변경
-  if (study.studyClose && new Date() > new Date(study.studyClose)) {
-    Study.update(studyId, {
-      $set: { status: '모집마감' },
-    });
-
-    console.log(`모집 마감일이 지나서 상태가 '모집마감'으로 변경되었습니다.`);
-  }
+ 
 
   return true;
 
