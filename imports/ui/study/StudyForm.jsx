@@ -108,7 +108,10 @@ const StudyForm = () => {
       return;
     }
 
-   
+    if (onOffline !== "온라인" && (!selectedCity || !selectedGubun)) {
+     
+      return;
+    }
 
     const currentUser = Meteor.user();
     const userId = currentUser?.profile?.nickname;
@@ -121,7 +124,7 @@ const StudyForm = () => {
       userId,
       title,
       content,
-      address: { city: selectedCity, gubun: selectedGubun },
+      address: onOffline === "온라인" ? {} : { city: selectedCity, gubun: selectedGubun },
       techStack,
       studyCount,
       studyClose: new Date(studyClose),
@@ -168,7 +171,7 @@ const StudyForm = () => {
         </select>
       </div>
 
-      <div>
+      <div style={{ display: onOffline === "온라인" ? "none" : "block" }}>
         <label>지역</label>
         <select
           value={selectedCity}
@@ -176,6 +179,7 @@ const StudyForm = () => {
             setSelectedCity(e.target.value);
             setSelectedGubun('');
           }}
+          
         >
           <option value="">선택하세요</option>
           {cityList.map((city, index) => (
@@ -184,11 +188,12 @@ const StudyForm = () => {
         </select>
       </div>
 
-      <div>
+      <div style={{ display: onOffline === "온라인" ? "none" : "block" }}>
         <label>구</label>
         <select
           value={selectedGubun}
           onChange={(e) => setSelectedGubun(e.target.value)}
+          
         >
           <option value="">선택하세요</option>
           {cityList

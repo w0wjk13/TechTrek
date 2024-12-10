@@ -31,12 +31,14 @@ Meteor.methods({
     if (typeof studyData.content !== 'string' || studyData.content.trim() === '') {
       throw new Meteor.Error('invalid-content', '내용을 입력해주세요.');
     }
+    if (studyData.onOffline !== '온라인') {
     if (!studyData.address || typeof studyData.address.city !== 'string' || studyData.address.city.trim() === '') {
       throw new Meteor.Error('invalid-address-city', '지역(도시)을 입력해주세요.');
     }
     if (typeof studyData.address.gubun !== 'string' || studyData.address.gubun.trim() === '') {
       throw new Meteor.Error('invalid-address-gubun', '지역(구)을 입력해주세요.');
     }
+  }
     if (!Array.isArray(studyData.techStack) || studyData.techStack.length === 0) {
       throw new Meteor.Error('invalid-techstack', '기술 스택을 하나 이상 선택해주세요.');
     }
@@ -59,7 +61,7 @@ Meteor.methods({
     const studyId = Study.insert({
       title: studyData.title,
       content: studyData.content,
-      address: studyData.address,
+      address: studyData.onOffline === '온라인' ? {} : studyData.address,
       techStack: studyData.techStack,
       studyCount: studyData.studyCount,
       studyClose: studyData.studyClose,
