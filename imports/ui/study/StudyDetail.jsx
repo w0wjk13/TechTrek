@@ -43,56 +43,27 @@ const StudyDetail = () => {
       // 스터디에 신청한 사용자들 가져오기 (Application 컬렉션에서)
       const studyApplications = Application.find({ studyId: id }).fetch();
 
-      // 신청자 상태 및 정보를 합친 배열 생성
-    // 신청자 상태 및 정보를 합친 배열 생성
-    let applicants = [];
+      console.log('studyApplications:', studyApplications);
 
-    if (Array.isArray(studyApplications)) {
-      for (let i = 0; i < studyApplications.length; i++) {
-        const app = studyApplications[i];
-    
-        // userIds와 states가 배열인지 확인하고, 아니면 단일 userId와 state 처리
-        if (Array.isArray(app.userIds) && Array.isArray(app.states)) {
-          const processedApplicants = [];
-    
-          // userIds와 states를 순회하여 신청자 상태 및 정보를 합침
-          for (let j = 0; j < app.userIds.length; j++) {
-            const userId = app.userIds[j];
-            const user = Meteor.users.findOne(userId);
-            processedApplicants.push({
-              userId,
-              state: app.states[j],
-              
-            });
-          }
-          console.log(processedApplicants);
-          // processedApplicants 배열을 신청서에 포함
-          applicants.push({
-            ...app,
-            applicants: processedApplicants,
-          });
-        } else {
-          // userIds나 states가 배열이 아니면 단일 userId와 state로 처리
-          const userId = app.userId;
-          const user = Meteor.users.findOne(userId);
-    
-          applicants.push({
-            ...app,
-            applicants: [
-              {
-                userId,
-                state: app.state,
-                nickname: user?.profile?.nickname || user?.username || '알 수 없음',
-              },
-            ],
-          });
-        }
-      }
-    }
-    
-    
-    
+    let applicants = Array.isArray(studyApplications) ? studyApplications.map((app) => {
+      // 콘솔로 각 application 데이터를 확인
+      console.log('Application:', app);
 
+      const processedApplicants = app.userIds.map((userId, index) => ({
+        userId,
+        state: app.states[index],
+        nickname: Meteor.users.findOne(userId)?.profile?.nickname || '알 수 없음',
+      }));
+
+      return {
+        ...app,
+        applicants: processedApplicants,
+      };
+    }) : [];
+
+    // applicants 확인
+    console.log('Processed applicants:', applicants);
+      
       setApplications(applicants);
 
       // 데이터 로딩 완료
@@ -212,28 +183,20 @@ const handleDeleteComment = (commentId) => {
       return;
     }
 
-    Meteor.call('study.apply', id, (error, result) => {
+    Meteor.call('study.apply', id, (error) => {
       if (error) {
-        // 'already-applied' 오류일 경우, 이미 신청한 상태로 간주하고 알림 처리
         if (error.error === 'already-applied') {
           alert('이미 신청한 상태입니다.');
         } else {
-          // 그 외의 오류 처리
-          console.error('스터디 신청 실패:', error.message || error);  // error 객체에서 메시지 출력
+          console.error('스터디 신청 실패:', error.message || error);
           alert('스터디 신청에 실패했습니다. 다시 시도해주세요.');
         }
       } else {
-        // 신청 성공 시, applications에 추가
         setApplications((prevApplications) => [
           ...prevApplications,
           {
-            applicants: [
-              {
-                userId: currentUserNickname,
-                state: '신청',
-                user: Meteor.users.findOne(currentUserNickname), // 신청한 유저 정보
-              },
-            ],
+            userIds: [currentUserNickname],  // 신청자 ID 추가
+            states: ['신청'],  // 신청 상태
           },
         ]);
         alert('스터디 신청이 완료되었습니다.');
@@ -256,18 +219,14 @@ const handleDeleteComment = (commentId) => {
         console.error('수락 실패:', error);
       } else {
         setApplications((prevApplications) =>
-          prevApplications.map((app) =>
-            app.applicants.some((applicant) => applicant.userId === applicantId)
-              ? {
-                ...app,
-                applicants: app.applicants.map((applicant) =>
-                  applicant.userId === applicantId
-                    ? { ...applicant, state: '수락' }  // 상태를 '수락됨'으로 변경
-                    : applicant
-                ),
-              }
-              : app
-          )
+          prevApplications.map((app) => {
+            return {
+              ...app,
+              applicants: app.applicants.map((applicant) =>
+                applicant.userId === applicantId ? { ...applicant, state: '수락' } : applicant
+              ),
+            };
+          })
         );
       }
     });
@@ -287,14 +246,10 @@ const handleDeleteComment = (commentId) => {
       } else {
         setApplications((prevApplications) =>
           prevApplications.map((app) => {
-            // 신청서 내에 해당 신청자가 포함되어 있을 때만 필터링
-            if (app.userIds.includes(applicantId)) {
-              return {
-                ...app,
-                applicants: app.applicants.filter((applicant) => applicant.userId !== applicantId), // 특정 신청자만 거절
-              };
-            }
-            return app;  // 해당 신청서에 신청자가 없다면 그대로 반환
+            return {
+              ...app,
+              applicants: app.applicants.filter((applicant) => applicant.userId !== applicantId), // 거절된 신청자 제거
+            };
           })
         );
       }
@@ -302,21 +257,16 @@ const handleDeleteComment = (commentId) => {
   };
 
   // 신청자 목록 필터링 처리: 거절된 신청자는 제외
-  const filteredApplications = [];
-  for (let i = 0; i < applications.length; i++) {
-    const app = applications[i];
-    const filteredApplicants = [];
-
-    for (let j = 0; j < app.applicants.length; j++) {
-      const applicant = app.applicants[j];
-      if (applicant.state !== '거절') {
-        filteredApplicants.push(applicant);
-      }
-    }
-
-    filteredApplications.push({
+  const filteredApplications = Array.isArray(applications) ? applications.map((app) => {
+    return {
       ...app,
-      applicants: filteredApplicants,
+      applicants: app.applicants ? app.applicants.filter((applicant) => applicant.state !== '거절' && applicant.userId !== userId) : [],
+    };
+  }) : [];
+  if (Array.isArray(applications)) {
+    // applications가 배열일 때만 처리
+    applications.map((application) => {
+      // 각 항목에 대해 처리
     });
   }
   const handleStartStudy = () => {

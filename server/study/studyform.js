@@ -1,6 +1,6 @@
 // imports/api/studyform.js
 import { Meteor } from 'meteor/meteor';
-import { Study } from '/imports/api/collections'; // Study 컬렉션 경로에 맞게 수정
+import { Study, Application } from '/imports/api/collections'; // Study 컬렉션 경로에 맞게 수정
 
 
 Meteor.methods({
@@ -74,6 +74,23 @@ Meteor.methods({
       createdAt: new Date(),
     });
 
-    return studyId; // 생성된 스터디 ID를 반환
-  }
+    
+
+    if (!studyId) {
+      throw new Meteor.Error('study-creation-failed', '스터디 생성에 실패했습니다.');
+    }
+
+    // 스터디가 성공적으로 생성되면 Application도 자동으로 생성
+    Application.insert({
+      studyId,
+      userIds: [userNickname],  // 신청자 배열에 현재 유저 추가
+      states: ['수락'],  // 신청 상태 배열
+      progress: '예정',  // 진행 상태
+      createdAt: new Date(),
+      startDate: '미정',
+      endDate: '미정',
+    });
+
+    return studyId; // 생성된 스터디 ID 반환
+  },
 });

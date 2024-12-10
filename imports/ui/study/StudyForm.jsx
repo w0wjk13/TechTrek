@@ -133,12 +133,12 @@ const StudyForm = () => {
       rating,
     };
 
-    Meteor.call('study.create', studyData, (error) => {
+    Meteor.call('study.create', studyData, (error, studyId) => {
       if (error) {
         alert(`Error: ${error.reason}`);
       } else {
         alert('스터디가 성공적으로 생성되었습니다!');
-        navigate('/');  
+        navigate('/');
       }
     });
   };

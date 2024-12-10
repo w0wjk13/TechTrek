@@ -12,15 +12,16 @@ if (Meteor.isServer) {
   Meteor.methods({
     // 스터디 정보 조회 메서드
     'study.getStudyDetails'(id) {
-      checkString(id, 'invalid-id', '스터디 ID는 문자열이어야 합니다.');
+  checkString(id, 'invalid-id', '스터디 ID는 문자열이어야 합니다.');
 
-      const study = Study.findOne(id);
-      if (!study) {
-        throw new Meteor.Error('study-not-found', '해당 ID에 대한 스터디를 찾을 수 없습니다.');
-      }
+  const study = Study.findOne(id);
+  if (!study) {
+    throw new Meteor.Error('study-not-found', '해당 ID에 대한 스터디를 찾을 수 없습니다.');
+  }
 
-      return study;  // 스터디 정보를 반환
-    },
+  // 필요한 경우 study에 배열을 포함한 데이터가 있는지 확인
+  return study ? study : {};  // 빈 객체를 반환하여 오류를 방지
+},
 
     // 스터디 조회수 증가 메서드
     'study.incrementViews'(id) {
@@ -137,8 +138,8 @@ if (Meteor.isServer) {
 
       Application.insert({
         studyId,
-        userId: this.userId,
-        state: '신청',
+        userIds: [this.userId],  // 신청자가 배열로 추가됨
+        states: ['신청'],  // 신청 상태
         createdAt: new Date(),
       });
     },

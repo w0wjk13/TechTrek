@@ -28,7 +28,7 @@ const recommendation = {
   timeliness: Math.floor(Math.random() * 30) + 1,
 };
 
-// admin 생성
+if (Study.find().count() === 0 && Application.find().count() === 0) {
 if (!Meteor.users.findOne({ username: "admin" })) {
   Accounts.createUser({
     username: "admin",
@@ -160,3 +160,4 @@ randomStudyIds.forEach((studyId) => {
   
 });
 
+}
