@@ -43,30 +43,15 @@ const StudyDetail = () => {
       // 스터디에 신청한 사용자들 가져오기 (Application 컬렉션에서)
       const studyApplications = Application.find({ studyId: id }).fetch();
 
-      console.log('studyApplications:', studyApplications);
-
-    let applicants = Array.isArray(studyApplications) ? studyApplications.map((app) => {
-      // 콘솔로 각 application 데이터를 확인
-      console.log('Application:', app);
-
-      const processedApplicants = app.userIds.map((userId, index) => ({
-        userId,
-        state: app.states[index],
-        nickname: Meteor.users.findOne(userId)?.profile?.nickname || '알 수 없음',
-      }));
-
-      return {
-        ...app,
-        applicants: processedApplicants,
-      };
-    }) : [];
-
-    // applicants 확인
-    console.log('Processed applicants:', applicants);
-      
+      const applicants = studyApplications.map((app) => {
+        const processedApplicants = app.userIds.map((userId, index) => ({
+          userId,
+          state: app.states[index],
+          nickname: Meteor.users.findOne(userId)?.profile?.nickname || '알 수 없음',
+        }));
+        return { ...app, applicants: processedApplicants };
+      });
       setApplications(applicants);
-
-      // 데이터 로딩 완료
       setLoading(false);
     });
     // 페이지가 로드될 때 조회수 증가
@@ -172,10 +157,11 @@ const handleDeleteComment = (commentId) => {
   // 신청하기 버튼 클릭 처리
   const handleApply = () => {
     const isAlreadyApplied = applications.some((app) =>
-      app.applicants.some((applicant) =>
-        applicant.userId === currentUserNickname && applicant.state === '신청'
+      app.applicants?.some((applicant) =>
+        applicant.userId === currentUserNickname && Array.isArray(applicant.states) && applicant.states.includes('신청')
       )
     );
+    
   
     // 이미 신청한 경우
     if (isAlreadyApplied) {
@@ -192,13 +178,15 @@ const handleDeleteComment = (commentId) => {
           alert('스터디 신청에 실패했습니다. 다시 시도해주세요.');
         }
       } else {
-        setApplications((prevApplications) => [
-          ...prevApplications,
-          {
+        setApplications((prevApplications) => {
+          const updatedApplications = [...prevApplications];
+          updatedApplications.push({
             userIds: [currentUserNickname],  // 신청자 ID 추가
             states: ['신청'],  // 신청 상태
-          },
-        ]);
+          });
+          console.log('업데이트된 신청 목록:', updatedApplications);  // 새로운 상태 확인
+          return updatedApplications;
+        });
         alert('스터디 신청이 완료되었습니다.');
       }
     });
@@ -208,13 +196,13 @@ const handleDeleteComment = (commentId) => {
   // 신청 상태 수락 처리
   const handleAccept = (applicantId) => {
     const application = Application.findOne({ studyId: id, 'userIds': applicantId });
-
+  
     if (!application) {
       alert('해당 신청자가 없습니다.');
       return;
     }
-
-    Meteor.call('study.acceptApplication', id, applicantId, (error, result) => {
+  
+    Meteor.call('study.acceptApplication', id, applicantId, (error) => {
       if (error) {
         console.error('수락 실패:', error);
       } else {
@@ -223,7 +211,7 @@ const handleDeleteComment = (commentId) => {
             return {
               ...app,
               applicants: app.applicants.map((applicant) =>
-                applicant.userId === applicantId ? { ...applicant, state: '수락' } : applicant
+                applicant.userId === applicantId ? { ...applicant, states: ['수락'] } : applicant
               ),
             };
           })
@@ -260,12 +248,15 @@ const handleDeleteComment = (commentId) => {
   const filteredApplications = Array.isArray(applications) ? applications.map((app) => {
     return {
       ...app,
-      applicants: app.applicants ? app.applicants.filter((applicant) => applicant.state !== '거절' && applicant.userId !== userId) : [],
+      applicants: app.applicants ? app.applicants.filter((applicant) => Array.isArray(applicant.states) && !applicant.states.includes('거절')) : [],
     };
   }) : [];
-  if (Array.isArray(applications)) {
-    // applications가 배열일 때만 처리
-    applications.map((application) => {
+  
+ 
+  
+  // applications 배열을 사용하려면 먼저 필터링된 데이터를 사용
+  if (Array.isArray(filteredApplications)) {
+    filteredApplications.map((application) => {
       // 각 항목에 대해 처리
     });
   }
@@ -355,9 +346,10 @@ const handleDeleteComment = (commentId) => {
   const isRecruitingClosed = status === '모집마감';
 
   // 수락된 신청자 수
-  const acceptedApplicants = applications.flatMap(app =>
-    app.applicants.filter(applicant => applicant.state === '수락')
-  );
+const acceptedApplicants = Array.isArray(applications) ? applications.flatMap(app =>
+  Array.isArray(app.applicants) ? app.applicants.filter(applicant => applicant.states === '수락') : []
+) : [];
+
 
   const hasOngoingApplications = applications.some(app => 
     app.progress === '진행'  // progress가 '진행'인 경우 체크
@@ -488,10 +480,10 @@ const handleDeleteComment = (commentId) => {
               
               return (
                 <div key={applicant.userId}>
-                  <strong>{applicant.nickname || applicant.userId}</strong> - {applicant.state}
+                  <strong>{applicant.nickname || applicant.userId}</strong> - {applicant.states}
                   
 
-                  {isUserOwner && applicant.state === '신청' && (  // 작성자만 수락/거절 버튼을 볼 수 있도록 조건 추가
+                  {isUserOwner && applicant.states === '신청' && (  // 작성자만 수락/거절 버튼을 볼 수 있도록 조건 추가
                     <>
                     
                       <button onClick={() => handleAccept(applicant.userId)} disabled={isRecruitingClosed}>수락</button>

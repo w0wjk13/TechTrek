@@ -97,15 +97,14 @@ if (Meteor.isServer) {
   }
 
   // Application 컬렉션에서 해당 studyId를 가진 '진행' 상태의 신청서들만 '종료'로 업데이트
-  const result = Application.update(
+  const result = Application.updateMany(
     { studyId: studyId, progress: '진행' },  // studyId가 일치하고 progress가 '진행'인 경우
     { 
       $set: { 
         progress: '종료',  // 신청서의 진행 상태를 '종료'로 변경
         endDate: new Date(),   // 마감일 설정
       }
-    },
-    { multi: true }  // 여러 개의 신청서들 한 번에 업데이트
+    }
   );
 
   // 업데이트 결과를 반환
@@ -118,6 +117,7 @@ if (Meteor.isServer) {
 
     // 스터디 신청 메서드
     'study.apply'(studyId) {
+     
       if (!this.userId) {
         throw new Meteor.Error('not-authorized', '로그인 후 신청할 수 있습니다.');
       }
@@ -131,18 +131,34 @@ if (Meteor.isServer) {
         throw new Meteor.Error('not-authorized', '작성자는 신청할 수 없습니다.');
       }
 
-      const existingApplication = Application.findOne({ studyId, userId: this.userId });
-      if (existingApplication) {
-        throw new Meteor.Error('already-applied', '이미 신청한 상태입니다.');
-      }
+     // 현재 로그인한 사용자의 닉네임을 가져옴
+  const currentNickname = Meteor.user()?.profile?.nickname;
+  if (!currentNickname) {
+    throw new Meteor.Error('not-authorized', '닉네임을 찾을 수 없습니다.');
+  }
 
-      Application.insert({
-        studyId,
-        userIds: [this.userId],  // 신청자가 배열로 추가됨
-        states: ['신청'],  // 신청 상태
-        createdAt: new Date(),
-      });
-    },
+  // 이미 신청한 경우
+  const existingApplication = Application.findOne({ studyId, userIds: currentNickname });
+  if (existingApplication) {
+    throw new Meteor.Error('already-applied', '이미 신청한 상태입니다.');
+  }
+
+  // 기존 신청 정보에 현재 유저 추가
+  const existingApplicationToUpdate = Application.findOne({ studyId });
+  if (existingApplicationToUpdate) {
+    Application.update(
+      { _id: existingApplicationToUpdate._id },
+      {
+        $addToSet: { userIds: currentNickname },  // 닉네임을 추가
+        $push: { states: '신청' },            // 상태 배열에 '신청' 추가
+      }
+    );
+  } else {
+    throw new Meteor.Error('application-not-found', '신청 정보가 없습니다.');
+  }
+
+  return '스터디 신청이 완료되었습니다.';
+},
 
     // 신청 수락 메서드
 'study.acceptApplication'(studyId, applicantId) {
