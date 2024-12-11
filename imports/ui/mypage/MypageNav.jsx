@@ -18,7 +18,9 @@ const Navbar = () => {
         <li>
           <Link to="/mypage/comment">코멘트</Link>
         </li>
-
+        <li>
+          <Link to="/mypage/rating">내평가</Link>
+        </li>
       </ul>
     </div>
   );

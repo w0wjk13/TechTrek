@@ -107,9 +107,10 @@ const StudyRating = () => {
 
   // 피드백 핸들러
   const handleFeedbackChange = (userId, value) => {
+    // 피드백 값이 null이나 undefined일 경우 빈 문자열로 처리
     setFeedback((prev) => ({
       ...prev,
-      [userId]: value,
+      [userId]: value.trim() || '',  // trim()을 이용해 공백만 있는 피드백도 빈 문자열로 처리
     }));
   };
 
@@ -159,12 +160,13 @@ const StudyRating = () => {
         if (typeof rating !== 'number' || rating < 1 || rating > 5) {
           return;
         }
-
+        const feedbackText = feedback[applicant.userId] || ''; 
         const data = {
           studyId: id,
           ratedUserId: applicant.userId,
           rating: rating,
           recommendation: recommendation,
+          feedback: feedbackText,
         };
 
         submitPromises.push(

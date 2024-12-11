@@ -63,7 +63,7 @@ Meteor.methods({
     throw new Meteor.Error('invalid-data', '잘못된 데이터 형식입니다.');
   }
 
-  const { studyId, ratedUserId, rating, recommendation } = data;
+  const { studyId, ratedUserId, rating, recommendation, feedback } = data;
 
   // 필수 데이터가 존재하는지 확인
   if (typeof studyId !== 'string') {
@@ -76,15 +76,10 @@ Meteor.methods({
     throw new Meteor.Error('invalid-rating', '평점은 1에서 5 사이의 숫자여야 합니다.');
   }
 
-  // 이미 평가한 사용자인지 확인
-  const existingRating = Rating.findOne({ studyId, ratedUserId, userId: this.userId });
-  if (existingRating) {
-    throw new Meteor.Error('already-rated', '이미 평가한 사용자입니다.');
-  }
-  
+ 
   // 추천 항목 확인
-  if (typeof recommendation !== 'object' || recommendation === null) {
-    throw new Meteor.Error('invalid-recommendation', '추천 항목은 객체여야 합니다.');
+  if (typeof feedback !== 'string') {
+    feedback = '';  // 피드백이 문자열이 아닌 경우 빈 문자열로 설정
   }
 
   // Check if all recommendation items are either null or 'Selected'
@@ -94,6 +89,10 @@ Meteor.methods({
       throw new Meteor.Error('invalid-recommendation-value', '추천 항목의 값은 "Selected" 또는 null이어야 합니다.');
     }
   });
+
+  if (typeof feedback !== 'string') {
+    throw new Meteor.Error('invalid-feedback', '피드백은 문자열이어야 합니다.');
+  }
 
   // 평가한 사람은 현재 로그인한 유저
   const currentUser = Meteor.user();
@@ -108,6 +107,7 @@ Meteor.methods({
       userId,  // 평가한 사람 ID
       rating,  // 평점
       recommendation,  // 선택된 항목
+      feedback,
       createdAt: new Date(),
     });
 
