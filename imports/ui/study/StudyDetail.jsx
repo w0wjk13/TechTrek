@@ -143,13 +143,29 @@ const StudyDetail = () => {
   };
   
   const handleEndStudy = () => {
-    Meteor.call('study.updateStatus', id, '종료', '종료', (error) => {
+    const currentDate = new Date();  // 현재 시간을 종료일로 설정
+  
+    // 서버 메서드 호출하여 스터디 종료 처리
+    Meteor.call('study.endStudy', id, currentDate, (error, result) => {
       if (error) {
         console.error('스터디 종료 실패:', error);
         alert('스터디 종료에 실패했습니다.');
       } else {
         alert('스터디가 종료되었습니다.');
-        setStudyData((prevData) => ({ ...prevData, status: '종료' }));
+  
+        // 상태 업데이트: 스터디 상태를 '종료'로 변경
+        setStudyData((prevData) => ({
+          ...prevData,
+          status: '종료',
+          endDate: currentDate,  // 종료일을 현재 시간으로 설정
+        }));
+  
+        // 신청자의 진행 상태도 '종료'로 업데이트
+        setApplications((prevApplications) =>
+          prevApplications.map((applicant) =>
+            applicant.progress === '진행' ? { ...applicant, progress: '종료' } : applicant
+          )
+        );
       }
     });
   };
@@ -256,7 +272,7 @@ const StudyDetail = () => {
       <div><strong>등록일:</strong> {new Date(createdAt).toLocaleDateString()}</div>
       {status !== '모집완료' && <div><strong>모집 마감일:</strong> {new Date(studyClose).toLocaleDateString()}</div>}
       <div><strong>모집 상태:</strong> {status}</div>
-      {onOffline !== '온라인' && (
+      {!onOffline.includes('온라인') && (
       <div>
         <strong>지역:</strong> {address ? `${address.city} ${address.gubun}` : '정보 없음'}
       </div>
@@ -325,7 +341,7 @@ const StudyDetail = () => {
         <button onClick={handleStartStudy}>스터디 시작</button>
       </div>
     )}
-    {isUserOwner && studyData.status === '진행' && (
+    {isUserOwner && applications.some((applicant) => applicant.progress === '진행') && (
       <div>
         <button onClick={handleEndStudy}>스터디 종료</button>
       </div>

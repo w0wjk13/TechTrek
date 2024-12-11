@@ -97,20 +97,24 @@ if (Meteor.isServer) {
   }
 
   // Application 컬렉션에서 해당 studyId를 가진 '진행' 상태의 신청서들만 '종료'로 업데이트
-  const result = Application.updateMany(
-    { studyId: studyId, progress: '진행' },  // studyId가 일치하고 progress가 '진행'인 경우
-    { 
-      $set: { 
-        progress: '종료',  // 신청서의 진행 상태를 '종료'로 변경
-        endDate: new Date(),   // 마감일 설정
+  try {
+    const result = Application.update(
+      { studyId: studyId, progress: '진행' },  // studyId가 일치하고 progress가 '진행'인 경우
+      { 
+        $set: { 
+          progress: '종료',  // 신청서의 진행 상태를 '종료'로 변경
+          endDate: endDate   // 마감일 설정
+        }
       }
-    }
-  );
+    );
 
-  // 업데이트 결과를 반환
-  if (result) {
+    if (result === 0) {
+      throw new Meteor.Error('update-failed', '진행 중인 신청서를 찾을 수 없습니다.');
+    }
+
     return { success: true, progress: '종료', endDate };
-  } else {
+  } catch (error) {
+    console.error('스터디 종료 중 오류:', error);
     throw new Meteor.Error('update-failed', '신청서 상태 업데이트 실패');
   }
 },
