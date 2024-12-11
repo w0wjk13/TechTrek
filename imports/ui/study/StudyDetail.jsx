@@ -11,6 +11,8 @@ const StudyDetail = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [commentContent, setCommentContent] = useState('');  // 댓글 내용 상태
+  const [editingCommentId, setEditingCommentId] = useState(null);  // 현재 수정 중인 댓글의 ID
+  const [editedContent, setEditedContent] = useState('');  // 수정된 댓글 내용
 
   const currentUserNickname = Meteor.user()?.profile?.nickname || '';
 
@@ -119,17 +121,61 @@ const StudyDetail = () => {
     };
 
     // 댓글을 서버로 전송하여 DB에 저장
-    Meteor.call('comment.add', newComment, (error) => {
+    Meteor.call('study.addComment', id, commentContent, (error) => {
       if (error) {
         console.error('댓글 작성 실패:', error);
         alert('댓글 작성에 실패했습니다.');
       } else {
-        alert('댓글이 작성되었습니다.');
+        
         // 댓글 목록에 새 댓글을 추가
         setComments((prevComments) => [newComment, ...prevComments]);
         setCommentContent('');  // 댓글 내용 초기화
       }
     });
+  };
+
+  const handleEditComment = (commentId, currentContent) => {
+    setEditingCommentId(commentId);  // 수정할 댓글의 ID를 설정
+    setEditedContent(currentContent);  // 현재 댓글 내용을 설정
+  };
+
+  const handleSaveEditedComment = () => {
+    if (!editedContent.trim()) {
+      alert('수정된 댓글 내용을 입력해주세요.');
+      return;
+    }
+
+    // 댓글 수정 서버 호출
+    Meteor.call('study.updateComment', editingCommentId, editedContent, (error) => {
+      if (error) {
+        console.error('댓글 수정 실패:', error);
+        
+      } else {
+        
+        setComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment._id === editingCommentId ? { ...comment, content: editedContent } : comment
+          )
+        );
+        setEditingCommentId(null);  // 수정 모드 종료
+        setEditedContent('');  // 수정된 내용 초기화
+      }
+    });
+  };
+
+  const handleDeleteComment = (commentId) => {
+    if (window.confirm('정말로 댓글을 삭제하시겠습니까?')) {
+      // 댓글 삭제 서버 호출
+      Meteor.call('study.deleteComment', commentId, (error) => {
+        if (error) {
+          console.error('댓글 삭제 실패:', error);
+          alert('댓글 삭제에 실패했습니다.');
+        } else {
+          alert('댓글이 삭제되었습니다.');
+          setComments((prevComments) => prevComments.filter((comment) => comment._id !== commentId));
+        }
+      });
+    }
   };
 
   if (loading) {
@@ -221,7 +267,27 @@ const StudyDetail = () => {
         {comments.map((comment) => (
           <li key={comment._id}>
             <strong>{comment.nickname}</strong> ({new Date(comment.createdAt).toLocaleString()})
-            <p>{comment.content}</p>
+            {editingCommentId === comment._id ? (
+              <div>
+                {/* 댓글 수정 input 박스 */}
+                <textarea
+                  value={editedContent}
+                  onChange={(e) => setEditedContent(e.target.value)}
+                  placeholder="수정된 댓글 내용을 입력하세요"
+                />
+                <button onClick={handleSaveEditedComment}>수정 저장</button>
+              </div>
+            ) : (
+              <p>{comment.content}</p>
+            )}
+            {/* 수정 버튼 */}
+            {comment.nickname === currentUserNickname && editingCommentId !== comment._id && (
+              <button onClick={() => handleEditComment(comment._id, comment.content)}>수정</button>
+            )}
+            {/* 삭제 버튼 */}
+            {comment.nickname === currentUserNickname && (
+              <button onClick={() => handleDeleteComment(comment._id)}>삭제</button>
+            )}
           </li>
         ))}
       </ul>
