@@ -136,7 +136,7 @@ if (Meteor.isServer) {
   if (!currentNickname) {
     throw new Meteor.Error('not-authorized', '닉네임을 찾을 수 없습니다.');
   }
-
+console.log(currentNickname);
   // 이미 신청한 경우
   const existingApplication = Application.findOne({ studyId, userIds: currentNickname });
   if (existingApplication) {
@@ -230,11 +230,22 @@ if (Meteor.isServer) {
         throw new Meteor.Error('application-not-found', '해당 신청자가 없습니다.');
       }
 
-      // 신청자를 거절 상태로 처리
-      Application.update(application._id, {
-        $set: { states: application.states.map(state => state === '신청' ? '거절' : state) },
-      });
-    },
+       // 신청자의 인덱스를 찾음
+  const applicantIndex = application.userIds.indexOf(applicantId);
+
+  if (applicantIndex === -1) {
+    throw new Meteor.Error('applicant-not-found', '해당 신청자를 찾을 수 없습니다.');
+  }
+
+  // 신청자의 상태만 '거절'로 변경
+  const updatedStates = [...application.states];
+  updatedStates[applicantIndex] = '거절';  // 해당 신청자의 상태만 '거절'로 업데이트
+
+  // 상태 업데이트
+  Application.update(application._id, {
+    $set: { states: updatedStates },
+  });
+},
 
   // 스터디 상태 변경 메서드
 'study.updateStatus'(studyId, status, progress) {
