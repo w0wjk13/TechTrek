@@ -123,7 +123,7 @@ randomStudyIds.forEach((studyId) => {
 
   // 스터디 모집인원 수가 초과되지 않도록 하기 위한 인원 제한
   const maxApplicants = study.studyCount;
-  const numOfApplicants = Math.min(Math.floor(Math.random() * 5) + 1, maxApplicants);  // 1~5명 랜덤 또는 모집인원 이하
+  const numOfApplicants = Math.min(Math.floor(Math.random() * 4) + 2, maxApplicants);  // 1~5명 랜덤 또는 모집인원 이하
   const users = Meteor.users.find({ username: { $ne: "admin" } }).fetch();
   const applicants = [];
 

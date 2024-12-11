@@ -38,6 +38,8 @@ const StudyDetail = () => {
         app.userIds.map((userId, index) => ({
           userId,
           state: app.states[index],
+          progress: app.progress, 
+        startDate: app.startDate, 
           nickname: Meteor.users.findOne(userId)?.profile?.nickname || '알 수 없음',
         }))
       );
@@ -51,6 +53,11 @@ const StudyDetail = () => {
     });
   }, [id]);
 
+  // 날짜 포맷 함수
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  };
   const handleApply = () => {
     const isAlreadyApplied = applications.some((applicant) => applicant.userId === currentUserNickname && applicant.state === '신청');
     
@@ -102,6 +109,50 @@ const StudyDetail = () => {
     });
   };
   
+  
+  const handleStartStudy = () => {
+    if (!canStartStudy) {
+      alert('스터디 시작은 2명 이상일 때만 가능합니다.');
+      return;
+    }
+  
+    const currentDate = new Date(); // 현재 시간을 시작일로 설정
+
+    const updatedApplications = applications.map((applicant) => {
+      return {
+        ...applicant,
+        state: applicant.state === '수락' ? '수락' : '거절', // 수락된 유저는 그대로, 나머지는 거절로 변경
+        progress: '진행', // 수락된 유저는 '진행' 상태로 변경
+      };
+    });
+  
+    // 스터디 시작 서버 호출
+    Meteor.call('study.updateStatus', id, '모집완료', currentDate, (error) => {
+      if (error) {
+        console.error('스터디 시작 실패:', error);
+        alert('스터디 시작에 실패했습니다.');
+      } else {
+        alert('스터디가 시작되었습니다.');
+  
+       
+        // 신청자 상태 업데이트
+        setApplications(updatedApplications);
+        window.location.reload();
+      }
+    });
+  };
+  
+  const handleEndStudy = () => {
+    Meteor.call('study.updateStatus', id, '종료', '종료', (error) => {
+      if (error) {
+        console.error('스터디 종료 실패:', error);
+        alert('스터디 종료에 실패했습니다.');
+      } else {
+        alert('스터디가 종료되었습니다.');
+        setStudyData((prevData) => ({ ...prevData, status: '종료' }));
+      }
+    });
+  };
 
   const handleCommentChange = (e) => {
     setCommentContent(e.target.value);
@@ -186,7 +237,7 @@ const StudyDetail = () => {
     return <div>스터디 정보가 없습니다.</div>;
   }
 
-  const { title, content, studyClose, roles, onOffline, rating, views, status, createdAt, userId } = studyData;
+  const { title, content, address, studyCount, studyClose, roles, onOffline, rating, views, status, createdAt, userId } = studyData;
 
   const isUserOwner = currentUserNickname === userId;
   const isRecruitingClosed = status === '모집마감';
@@ -195,6 +246,7 @@ const StudyDetail = () => {
   const filteredApplications = applications.filter((applicant) => applicant.userId !== userId);
 
   const acceptedApplicants = filteredApplications.filter((applicant) => applicant.state === '수락');
+  const canStartStudy = acceptedApplicants.length >= 1;
 
   return (
     <div className="study-details">
@@ -204,10 +256,37 @@ const StudyDetail = () => {
       <div><strong>등록일:</strong> {new Date(createdAt).toLocaleDateString()}</div>
       {status !== '모집완료' && <div><strong>모집 마감일:</strong> {new Date(studyClose).toLocaleDateString()}</div>}
       <div><strong>모집 상태:</strong> {status}</div>
+      {onOffline !== '온라인' && (
+      <div>
+        <strong>지역:</strong> {address ? `${address.city} ${address.gubun}` : '정보 없음'}
+      </div>
+      )}
       <div><strong>진행 방식:</strong> {onOffline}</div>
       <div><strong>역할:</strong>{roles}</div>
-      {status === '모집완료' && <div><strong>스터디 인원:</strong> {acceptedApplicants.length}</div>}
-
+      {status !== '모집완료' && (
+       
+       <div>
+         <strong>모집 인원:</strong> {studyCount}
+       </div>
+     )}
+     {status == '모집완료' && (
+       <>
+       <div>
+       <strong>스터디 인원:</strong> {acceptedApplicants.length+1}
+     </div>
+     <div>
+            <strong>진행 상태:</strong> {acceptedApplicants.length >= 1 ? acceptedApplicants[0].progress || '정보 없음' : '정보 없음'}
+          </div>
+          <div>
+            <strong>시작일:</strong> {acceptedApplicants.length >= 1 ? formatDate(acceptedApplicants[0].startDate) : '정보 없음'}
+          </div>
+   </>
+ )}
+ {applications.some(app => app.progress === '종료') && (
+   <div>
+     <strong>종료일:</strong> {formatDate(studyData.endDate) || '정보 없음'}
+   </div>
+ )}
       <div><strong>기술 스택:</strong>
         <ul>
           {studyData.techStack.map((tech, index) => <li key={index}>{tech}</li>)}
@@ -241,6 +320,16 @@ const StudyDetail = () => {
       {filteredApplications.length > 0 && (
         <div>
           <h3>신청자 목록</h3>
+          {isUserOwner && studyData.status === '모집중' && (
+      <div>
+        <button onClick={handleStartStudy}>스터디 시작</button>
+      </div>
+    )}
+    {isUserOwner && studyData.status === '진행' && (
+      <div>
+        <button onClick={handleEndStudy}>스터디 종료</button>
+      </div>
+    )}
           {filteredApplications.filter((applicant) => applicant.state !== '거절').map((applicant) => (
             <div key={applicant.userId}>
               <strong>{applicant.userId}</strong> - {applicant.state}

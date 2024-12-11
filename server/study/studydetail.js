@@ -273,33 +273,14 @@ console.log(currentNickname);
   }
   
   if (study.userId !== Meteor.user()?.profile?.nickname) {
-   
     throw new Meteor.Error('not-authorized', '작성자만 상태를 변경할 수 있습니다.');
   }
 
-
-   
   // "모집중" 상태에서 "모집완료"로 변경
   if (study.status === '모집중') {
     // 스터디 상태를 '모집완료'로 변경
     Study.update(studyId, {
       $set: { status: '모집완료' },
-    });
-
-    // 신청자 상태 업데이트
-    const applications = Application.find({ studyId }).fetch();
-    applications.forEach((application) => {
-      const updatedStates = application.states.map((state, index) => {
-        if (application.userIds[index] === study.userId) {
-          return '수락';  // 작성자는 항상 '수락' 처리
-        }
-        return state;  // 신청자는 상태 그대로
-      });
-
-      // 신청자의 상태를 업데이트
-      Application.update(application._id, {
-        $set: { states: updatedStates },
-      });
     });
   }
 
@@ -309,64 +290,28 @@ console.log(currentNickname);
     if (applications.length === 0) {
       throw new Meteor.Error('application-not-found', '해당 스터디에 대한 신청서가 없습니다.');
     }
-
-    applications.forEach((application) => {
-      const updatedStates = application.states.map((state, index) => {
-        if (application.userIds[index] === study.userId) {
-          return '수락';  // 작성자는 항상 '수락'
-        } else if (state !== '수락') {
-          return '거절';  // '수락'이 아닌 경우 '거절'
-        }
-        return state;
-      });
-
-      // 신청자의 상태 업데이트 (수락이 아니면 '거절'로)
-      Application.update(application._id, {
-        $set: { states: updatedStates },
-      });
-
-      // '거절' 상태인 신청자를 삭제 (수락된 신청자만 남김)
-      application.userIds.forEach((userId, index) => {
-        if (updatedStates[index] === '거절') {
-          
-          // '거절'된 신청자는 삭제
-          Application.update(
-            { _id: application._id },  // 해당 application의 ID
-            { $pull: { userIds: userId } }  // userIds 배열에서 해당 userId를 삭제
-          );
-        }
-      });
-
-      // 수락된 신청자만 '진행' 상태로 변경
-      if (updatedStates.includes('수락')) {
-        Application.update(application._id, {
-          $set: {
-            progress: '진행',  // '진행' 상태로 설정
-            startDate: new Date(),  // 현재 날짜를 시작 날짜로 설정
-          },
-        });
+  // 신청자 상태 업데이트: 수락된 유저는 '수락', 수락되지 않은 유저는 '거절'
+  applications.forEach((application) => {
+    const updatedStates = application.states.map((state, index) => {
+      if (state === '수락') {
+        return '수락';  // 수락된 유저는 '진행'
+      } else {
+        return '거절';  // 나머지 신청자는 '거절'
       }
     });
-  }
 
-  // 'progress' 파라미터를 사용한 처리 (신청자의 진행 상태 변경)
-  if (progress) {
-    const applications = Application.find({ studyId }).fetch();
-    applications.forEach((application) => {
-      const updatedProgress = application.progress === '진행' ? progress : application.progress;
-
-      // 신청자의 진행 상태 업데이트
-      Application.update(application._id, {
-        $set: { progress: updatedProgress },
-      });
-     
+    // 신청자 상태 업데이트
+    Application.update(application._id, {
+      $set: {
+        states: updatedStates,   // 상태 업데이트
+        progress: '진행',        // 모든 수락된 유저는 '진행' 상태로 변경
+        startDate: new Date(),   // 스터디 시작 시간 설정
+      },
     });
-  }
-
- 
-
-  return true;
-
-    },
   });
+}
+
+return true;
+}
+});
 }
