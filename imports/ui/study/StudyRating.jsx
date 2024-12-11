@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const StudyRating = () => {
   const { id } = useParams();
@@ -13,7 +13,10 @@ const StudyRating = () => {
   const [ratings, setRatings] = useState({});  // 각 신청자별 별점
   const [selectedItems, setSelectedItems] = useState({});  // 각 항목의 선택 상태 (participation, teamwork 등)
   const [feedback, setFeedback] = useState({});  // 각 신청자별 피드백
-
+  const [alreadyRated, setAlreadyRated] = useState(new Set());
+  
+  const navigate = useNavigate();
+  
   useEffect(() => {
     // 스터디 신청자 목록 가져오기
     Meteor.call('study.getApplications', id, (error, fetchedApplications) => {
@@ -112,12 +115,26 @@ const StudyRating = () => {
 
   // 평가 제출
   const handleSubmit = () => {
-    filteredApplications.forEach((application) => {
-      application.applicants.forEach((applicant) => {
-        // 평점 값 가져오기
+    const alreadyRated = new Set(); 
+    const totalApplications = filteredApplications.length * filteredApplications.reduce((acc, app) => acc + app.applicants.length, 0);
+    
+    // 모든 평가 제출이 완료될 때까지 기다리는 Promise 배열
+    const submitPromises = [];
+
+    // 별점이 누락된 사용자가 있을 경우 제출하지 않음
+    for (const application of filteredApplications) {
+      for (const applicant of application.applicants) {
+        if (alreadyRated.has(applicant.userId)) continue;
+
         const rating = ratings[applicant.userId]?.participation || 0;
-  
-        // 추천 항목 값 가져오기 (선택 여부를 확인)
+
+        // 별점이 없다면, 제출 버튼을 비활성화
+        if (!rating || rating === 0) {
+          alert(`${applicant.userId}님에 대한 평점을 입력해주세요.`);
+          return;  // 별점이 없는 경우 제출을 막음
+        }
+
+        alreadyRated.add(applicant.userId);
         const recommendation = {
           participation: selectedItems[applicant.userId]?.participation === 'Selected' ? 'Selected' : null,
           teamwork: selectedItems[applicant.userId]?.teamwork === 'Selected' ? 'Selected' : null,
@@ -125,54 +142,62 @@ const StudyRating = () => {
           communication: selectedItems[applicant.userId]?.communication === 'Selected' ? 'Selected' : null,
           timeliness: selectedItems[applicant.userId]?.timeliness === 'Selected' ? 'Selected' : null,
         };
-  
+
         // recommendation 객체의 각 항목을 확인하여 문자열 값만 포함되도록 보장
         let validRecommendation = true;
         for (const key in recommendation) {
           if (recommendation[key] !== null && recommendation[key] !== 'Selected') {
-            console.error(`Invalid recommendation for ${applicant.nickname || applicant.userId}: ${recommendation[key]}`);
-            validRecommendation = false; // 유효하지 않으면 validRecommendation을 false로 설정
-            break; // 잘못된 항목을 발견하면 반복문을 종료
+            validRecommendation = false;
+            break;
           }
         }
-  
+
         if (!validRecommendation) {
-          return; // 추천 항목이 유효하지 않으면 제출을 중단
+          continue;
         }
-  
-        // 데이터가 올바른지 확인
+
         if (typeof rating !== 'number' || rating < 1 || rating > 5) {
-          console.error(`Invalid rating for ${applicant.userId}: ${rating}`);
-          return;  // 유효하지 않은 평가 값이 있으면 제출을 중단
+          return;
         }
-  
+
         const data = {
           studyId: id,
-          ratedUserId: applicant.userId,  // 평가받는 사용자 ID
-          rating: rating,  // 평점
-          recommendation: recommendation,  // 추천 항목
+          ratedUserId: applicant.userId,
+          rating: rating,
+          recommendation: recommendation,
         };
-  
-        // 데이터 확인
-        console.log("Submitting data: ", data);
-  
-        // 서버로 데이터 전송
-        Meteor.call('study.submitRating', data, (error, result) => {
-          if (error) {
-            console.error('평가 제출 실패:', error);
-          } else {
-            console.log('평가 제출 성공:', result);
-            successCount++;
-          }
-          if (successCount === totalApplicants) {
-            alert('평가가 성공적으로 제출되었습니다!');
-          }
-        });
-      });
-    });
-  };
-  
 
+        submitPromises.push(
+          new Promise((resolve, reject) => {
+            Meteor.call('study.submitRating', data, (error, result) => {
+              if (error) {
+                reject(error);
+              } else {
+                
+                resolve(result);
+              }
+            });
+          })
+        );
+      }
+    }
+  // 모든 평가 제출이 완료되면 처리
+  Promise.all(submitPromises)
+    .then(() => {
+      if (totalApplications) {
+        alert('평가가 성공적으로 제출되었습니다!');
+        navigate('/mypage/project');
+      } else {
+        alert('평가 제출 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      }
+    })
+    .catch((error) => {
+      console.error('평가 제출 중 오류 발생:', error);
+      alert('평가 제출 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    });
+};
+
+const isRated = (userId) => alreadyRated.has(userId);
 
   // 별 모양 생성 함수 (사용자가 클릭하여 별점을 선택할 수 있게)
   const renderStars = (userId, category) => {
@@ -308,7 +333,7 @@ const StudyRating = () => {
         <p>수락된 신청자가 없습니다.</p>
       )}
 
-      <button onClick={handleSubmit}>평가 제출</button>
+      <button onClick={handleSubmit} >평가 제출</button>
     </div>
   );
 };

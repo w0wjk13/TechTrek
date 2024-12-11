@@ -76,6 +76,12 @@ Meteor.methods({
     throw new Meteor.Error('invalid-rating', '평점은 1에서 5 사이의 숫자여야 합니다.');
   }
 
+  // 이미 평가한 사용자인지 확인
+  const existingRating = Rating.findOne({ studyId, ratedUserId, userId: this.userId });
+  if (existingRating) {
+    throw new Meteor.Error('already-rated', '이미 평가한 사용자입니다.');
+  }
+  
   // 추천 항목 확인
   if (typeof recommendation !== 'object' || recommendation === null) {
     throw new Meteor.Error('invalid-recommendation', '추천 항목은 객체여야 합니다.');
@@ -96,23 +102,6 @@ Meteor.methods({
     throw new Meteor.Error('not-logged-in', '로그인된 사용자만 평가할 수 있습니다.');
   }
 
-  // Rating 컬렉션에 이미 평가가 존재하는지 확인
-  const existingRating = Rating.findOne({ studyId, ratedUserId, userId });
-
-  if (existingRating) {
-    // 기존 평가가 있으면 업데이트
-    Rating.update(
-      { _id: existingRating._id },
-      {
-        $set: {
-          rating,  // 평점
-          recommendation,  // 선택된 항목
-          updatedAt: new Date(),
-        },
-      }
-    );
-  } else {
-    // 새로운 평가가 없으면 새로 추가
     Rating.insert({
       studyId,
       ratedUserId,  // 평가 받는 사람 ID
@@ -121,7 +110,6 @@ Meteor.methods({
       recommendation,  // 선택된 항목
       createdAt: new Date(),
     });
-  }
 
   // 해당 사용자의 평균 평점 계산 (평가한 모든 평점)
   const ratingsData = Rating.find({ studyId, ratedUserId }).fetch();
