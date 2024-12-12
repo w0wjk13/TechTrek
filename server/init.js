@@ -1,4 +1,4 @@
-import { Study, Application } from "/imports/api/collections";
+import { Study, Application ,Rating} from "/imports/api/collections";
 import Data from "../imports/ui/Data.jsx";
 
 const noimage = '/noimage.png';
@@ -151,7 +151,85 @@ randomStudyIds.forEach((studyId) => {
     }
   }
 
+  // 모집중 상태인 스터디에서 5개만 모집완료로 변경
+const studiesToUpdate = Study.find({ status: '모집중' }).fetch().slice(0, 5);  // 모집중인 스터디 중 5개 선택
+
+studiesToUpdate.forEach(study => {
+  // 해당 스터디에 신청한 유저들 찾기
+  const applications = Application.find({ studyId: study._id, states: '신청' }).fetch();
+
+  if (applications.length > 0) {
+    // 신청한 유저들의 'states'를 '수락'으로 변경
+    applications.forEach(application => {
+      const now = new Date();
+      const startDate = new Date(now.setDate(now.getDate() + 3));  // 현재 날짜 기준으로 3일 후
+      const endDate = new Date(startDate);  // startDate로부터 7일 후 종료일 설정
+      endDate.setDate(startDate.getDate() + 7);
+      Application.update(
+        { _id: application._id },
+        { $set: { states: application.states.map(state => state === '신청' ? '수락' : state), 
+          progress: '종료' ,startDate: startDate,endDate: endDate} }
+      );
+    });
+    Study.update(
+      { _id: study._id },
+      { $set: { status: '모집완료' } }
+    );
   
+   
+    const completedStudies = Application.find({ progress: '종료' }).fetch();
+
+    completedStudies.forEach(study => {
+      const studyId = study.studyId;
+    
+      // 해당 스터디의 수락된 신청자들 가져오기
+      const applicants = Application.find({ studyId: studyId, states: '수락' }).fetch();
+    
+    
+        // 나를 제외한 다른 신청자들을 평가
+        applicants.forEach(application => {
+          const userNickname = application.userIds[0]; 
+          // 본인을 제외한 신청자들
+          const otherApplicants = application.userIds.filter(nickname => nickname !== userNickname);
+    
+          otherApplicants.forEach(ratedUserId => {
+            // 이미 평가한 적이 있는지 확인 (중복 평가 방지)
+            const existingRating = Rating.findOne({
+              studyId: studyId, 
+              userId: userNickname,  // 평가한 사람
+              ratedUserId: ratedUserId // 평가받는 사람
+            });
+    
+            if (!existingRating) {
+              // 평점, 추천 항목, 피드백 등을 랜덤으로 생성
+              const rating = Math.floor(Math.random() * 5) + 1;  // 평점 1~5
+              const recommendation = {
+                participation: Math.random() < 0.5 ? 1 : 0,
+                teamwork: Math.random() < 0.5 ? 1 : 0,
+                leadership: Math.random() < 0.5 ? 1 : 0,
+                communication: Math.random() < 0.5 ? 1 : 0,
+                timeliness: Math.random() < 0.5 ? 1 : 0,
+              };
+              const feedback = "잘 했어요! 앞으로도 함께 공부하고 싶어요."; // 더미 피드백
+    
+              // Rating.insert()로 평가 추가
+              Rating.insert({
+                studyId: studyId,  // 해당 스터디 ID
+                ratedUserId: ratedUserId,  // 평가 받는 사람 ID
+                userId: userNickname,  // 평가한 사람 ID
+                rating: rating,  // 평점
+                recommendation: recommendation,  // 추천 항목
+                feedback: feedback,  // 피드백
+                createdAt: new Date(),
+              });
+            }
+          });
+        });
+    });
+
+
+  }
+});
 
   
 });
