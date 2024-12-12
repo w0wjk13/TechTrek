@@ -34,7 +34,7 @@ const MypageRating = () => {
         return;
       }
 
-      console.log('받은 평가 결과:', result);  // 결과 콘솔 출력
+      
 
       setRatings(result);  // 받은 평가 데이터 저장
     });

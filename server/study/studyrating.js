@@ -82,21 +82,19 @@ Meteor.methods({
     feedback = '';  // 피드백이 문자열이 아닌 경우 빈 문자열로 설정
   }
 
-  // Check if all recommendation items are either null or 'Selected'
-  const validRecommendationValues = ['Selected', null];
-  Object.values(recommendation).forEach(value => {
-    if (!validRecommendationValues.includes(value)) {
-      throw new Meteor.Error('invalid-recommendation-value', '추천 항목의 값은 "Selected" 또는 null이어야 합니다.');
-    }
-  });
-
-  if (typeof feedback !== 'string') {
-    throw new Meteor.Error('invalid-feedback', '피드백은 문자열이어야 합니다.');
+  
+  const validRecommendationValues = [1, 0];  // 0을 허용하려면 이와 같이 추가
+Object.values(recommendation).forEach(value => {
+  if (!validRecommendationValues.includes(value)) {
+    throw new Meteor.Error('invalid-recommendation-value', '추천 항목의 값은 1 또는 0  이어야 합니다.');
   }
+});
+
 
   // 평가한 사람은 현재 로그인한 유저
   const currentUser = Meteor.user();
   const userId = currentUser ? currentUser._id : null;
+  const userNickname = currentUser ? currentUser.profile?.nickname : null;  // 닉네임 추가
   if (!userId) {
     throw new Meteor.Error('not-logged-in', '로그인된 사용자만 평가할 수 있습니다.');
   }
@@ -104,28 +102,41 @@ Meteor.methods({
     Rating.insert({
       studyId,
       ratedUserId,  // 평가 받는 사람 ID
-      userId,  // 평가한 사람 ID
+      userId : userNickname,  // 평가한 사람 ID
       rating,  // 평점
       recommendation,  // 선택된 항목
       feedback,
       createdAt: new Date(),
     });
 
-  // 해당 사용자의 평균 평점 계산 (평가한 모든 평점)
-  const ratingsData = Rating.find({ studyId, ratedUserId }).fetch();
-  const totalRatings = ratingsData.reduce((sum, data) => sum + data.rating, 0);  // 평점의 합
-  const totalRatingCount = ratingsData.length;  // 평점의 개수
+  // 기존 사용자의 평균 평점 가져오기
+  const existingUser = Meteor.users.findOne({ 'profile.nickname': ratedUserId });
+  const existingAverageRating = existingUser ? existingUser.profile.rating : 0;
+  const existingRatingCount = existingUser ? existingUser.profile.ratingCount : 0;
 
-  const averageRating = totalRatingCount > 0 ? totalRatings / totalRatingCount : 0;
+  // 해당 사용자가 받은 평가 데이터 가져오기
+  const ratingsData = Rating.find({ ratedUserId }).fetch();
+  const totalRatings = ratingsData.reduce((sum, data) => sum + data.rating, 0);  // 평점의 합 계산
+  const totalRatingCount = ratingsData.length;  // 평점 개수
 
-  // 평균 평점 업데이트
-  Rating.update(
-    { studyId, ratedUserId },
+  // 새로운 총 평점 계산
+  const newTotalRatings = totalRatings + (existingAverageRating * existingRatingCount);
+  const newTotalRatingCount = totalRatingCount + existingRatingCount;
+
+  // 새로운 평균 평점 계산 후 소수점 첫째 자리로 반올림
+  const newAverageRating = newTotalRatingCount > 0 ? (newTotalRatings / newTotalRatingCount).toFixed(1) : '0.0';
+
+  // 사용자 프로필의 평균 평점 업데이트
+  Meteor.users.update(
+    { 'profile.nickname': ratedUserId },  // 평가받는 사람을 식별
     {
-      $set: { averageRating },
+      $set: { 
+        'profile.rating': parseFloat(newAverageRating),  // 소수점 첫째 자리까지 반올림한 평균 평점 업데이트
+      }
     }
   );
 
   return '평가 제출 성공';
 },
+
 });

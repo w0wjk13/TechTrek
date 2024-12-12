@@ -94,13 +94,12 @@ const StudyRating = () => {
     }));
   };
 
-  // 항목 클릭 핸들러 (항목의 'Selected' 상태만 변경)
   const handleItemClick = (userId, category) => {
     setSelectedItems((prev) => ({
       ...prev,
       [userId]: {
         ...prev[userId],
-        [category]: prev[userId]?.[category] === 'Selected' ? '' : 'Selected',  // 'Selected' 상태 변경
+        [category]: prev[userId]?.[category] === 1 ? 0 : 1,  // 1로 선택, 0으로 해제
       },
     }));
   };
@@ -137,26 +136,15 @@ const StudyRating = () => {
 
         alreadyRated.add(applicant.userId);
         const recommendation = {
-          participation: selectedItems[applicant.userId]?.participation === 'Selected' ? 'Selected' : null,
-          teamwork: selectedItems[applicant.userId]?.teamwork === 'Selected' ? 'Selected' : null,
-          leadership: selectedItems[applicant.userId]?.leadership === 'Selected' ? 'Selected' : null,
-          communication: selectedItems[applicant.userId]?.communication === 'Selected' ? 'Selected' : null,
-          timeliness: selectedItems[applicant.userId]?.timeliness === 'Selected' ? 'Selected' : null,
+          participation: selectedItems[applicant.userId]?.participation === 1 ? 1 : 0,
+          teamwork: selectedItems[applicant.userId]?.teamwork === 1 ? 1 : 0,
+          leadership: selectedItems[applicant.userId]?.leadership === 1 ? 1 : 0,
+          communication: selectedItems[applicant.userId]?.communication === 1 ? 1 : 0,
+          timeliness: selectedItems[applicant.userId]?.timeliness === 1 ? 1 : 0,
         };
+        
 
-        // recommendation 객체의 각 항목을 확인하여 문자열 값만 포함되도록 보장
-        let validRecommendation = true;
-        for (const key in recommendation) {
-          if (recommendation[key] !== null && recommendation[key] !== 'Selected') {
-            validRecommendation = false;
-            break;
-          }
-        }
-
-        if (!validRecommendation) {
-          continue;
-        }
-
+        
         if (typeof rating !== 'number' || rating < 1 || rating > 5) {
           return;
         }
@@ -248,7 +236,7 @@ const isRated = (userId) => alreadyRated.has(userId);
                       onClick={() => handleItemClick(applicant.userId, 'participation')}
                       style={{
                         cursor: 'pointer',
-                        backgroundColor: selectedItems[applicant.userId]?.participation === 'Selected' ? '#4CAF50' : '#f0f0f0',
+                        backgroundColor: selectedItems[applicant.userId]?.participation === 1 ? '#4CAF50' : '#f0f0f0',
                         padding: '5px 10px',
                         margin: '5px',
                         borderRadius: '5px',
@@ -263,7 +251,7 @@ const isRated = (userId) => alreadyRated.has(userId);
                       onClick={() => handleItemClick(applicant.userId, 'teamwork')}
                       style={{
                         cursor: 'pointer',
-                        backgroundColor: selectedItems[applicant.userId]?.teamwork === 'Selected' ? '#4CAF50' : '#f0f0f0',
+                        backgroundColor: selectedItems[applicant.userId]?.teamwork === 1 ? '#4CAF50' : '#f0f0f0',
                         padding: '5px 10px',
                         margin: '5px',
                         borderRadius: '5px',
@@ -278,7 +266,7 @@ const isRated = (userId) => alreadyRated.has(userId);
                       onClick={() => handleItemClick(applicant.userId, 'leadership')}
                       style={{
                         cursor: 'pointer',
-                        backgroundColor: selectedItems[applicant.userId]?.leadership === 'Selected' ? '#4CAF50' : '#f0f0f0',
+                        backgroundColor: selectedItems[applicant.userId]?.leadership === 1 ? '#4CAF50' : '#f0f0f0',
                         padding: '5px 10px',
                         margin: '5px',
                         borderRadius: '5px',
@@ -293,7 +281,7 @@ const isRated = (userId) => alreadyRated.has(userId);
                       onClick={() => handleItemClick(applicant.userId, 'communication')}
                       style={{
                         cursor: 'pointer',
-                        backgroundColor: selectedItems[applicant.userId]?.communication === 'Selected' ? '#4CAF50' : '#f0f0f0',
+                        backgroundColor: selectedItems[applicant.userId]?.communication === 1 ? '#4CAF50' : '#f0f0f0',
                         padding: '5px 10px',
                         margin: '5px',
                         borderRadius: '5px',
@@ -308,7 +296,7 @@ const isRated = (userId) => alreadyRated.has(userId);
                       onClick={() => handleItemClick(applicant.userId, 'timeliness')}
                       style={{
                         cursor: 'pointer',
-                        backgroundColor: selectedItems[applicant.userId]?.timeliness === 'Selected' ? '#4CAF50' : '#f0f0f0',
+                        backgroundColor: selectedItems[applicant.userId]?.timeliness === 1 ? '#4CAF50' : '#f0f0f0',
                         padding: '5px 10px',
                         margin: '5px',
                         borderRadius: '5px',

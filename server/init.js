@@ -50,7 +50,7 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
         address: randomAddress(),
         techStack: techStacks.sort(() => Math.random() - 0.5).slice(0, 5),  // 랜덤으로 기술 스택 선택
         roles: ["백엔드", "프론트엔드", "풀스택"].sort(() => Math.random() - 0.5).slice(0, 1),  // 랜덤으로 역할 선택
-        rating: (Math.random() * 4 + 1).toFixed(1),
+        rating: parseFloat((Math.random() * 4 + 1).toFixed(1)),
         recommendation: recommendation,
       },
       createdAt: new Date(),
@@ -151,11 +151,7 @@ randomStudyIds.forEach((studyId) => {
     }
   }
 
-  // 해당 스터디의 총 신청자 수를 출력
-  const totalApplicants = Application.find({ studyId: studyId }).fetch().reduce((sum, app) => {
-    const userIds = app.userIds || [];
-    return sum + userIds.length;
-  }, 0);
+  
 
   
 });
