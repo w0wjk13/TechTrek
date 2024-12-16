@@ -176,56 +176,51 @@ studiesToUpdate.forEach(study => {
       { $set: { status: '모집완료' } }
     );
   
-   
     const completedStudies = Application.find({ progress: '종료' }).fetch();
-
     completedStudies.forEach(study => {
-      const studyId = study.studyId;
-    
+      const studyId = study.studyId; // study._id -> studyId로 설정
       // 해당 스터디의 수락된 신청자들 가져오기
       const applicants = Application.find({ studyId: studyId, states: '수락' }).fetch();
-    
-    
-        // 나를 제외한 다른 신청자들을 평가
-        applicants.forEach(application => {
-          const userNickname = application.userIds[0]; 
-          // 본인을 제외한 신청자들
-          const otherApplicants = application.userIds.filter(nickname => nickname !== userNickname);
-    
-          otherApplicants.forEach(ratedUserId => {
-            // 이미 평가한 적이 있는지 확인 (중복 평가 방지)
-            const existingRating = Rating.findOne({
-              studyId: studyId, 
-              userId: userNickname,  // 평가한 사람
-              ratedUserId: ratedUserId // 평가받는 사람
-            });
-    
-            if (!existingRating) {
-              // 평점, 추천 항목, 피드백 등을 랜덤으로 생성
-              const rating = Math.floor(Math.random() * 5) + 1;  // 평점 1~5
-              const recommendation = {
-                participation: Math.random() < 0.5 ? 1 : 0,
-                teamwork: Math.random() < 0.5 ? 1 : 0,
-                leadership: Math.random() < 0.5 ? 1 : 0,
-                communication: Math.random() < 0.5 ? 1 : 0,
-                timeliness: Math.random() < 0.5 ? 1 : 0,
-              };
-              const feedback = "잘 했어요! 앞으로도 함께 공부하고 싶어요."; // 더미 피드백
-    
-              // Rating.insert()로 평가 추가
-              Rating.insert({
-                studyId: studyId,  // 해당 스터디 ID
-                ratedUserId: ratedUserId,  // 평가 받는 사람 ID
-                userId: userNickname,  // 평가한 사람 ID
-                rating: rating,  // 평점
-                recommendation: recommendation,  // 추천 항목
-                feedback: feedback,  // 피드백
-                createdAt: new Date(),
-              });
-            }
+   
+      // 나를 제외한 다른 신청자들을 평가
+      applicants.forEach(application => {
+        const userNickname = application.userIds[0];  // 본인 닉네임
+        const otherApplicants = application.userIds.filter(nickname => nickname !== userNickname);
+   
+        otherApplicants.forEach(ratedUserId => {
+          const existingRating = Rating.findOne({
+            studyId: studyId,
+            userId: userNickname,  // 평가한 사람
+            ratedUserId: ratedUserId  // 평가받은 사람
           });
+
+          if (!existingRating) {
+            // 평점, 추천 항목, 피드백 등을 랜덤으로 생성
+            const rating = Math.floor(Math.random() * 5) + 1;  // 평점 1~5
+            const recommendation = {
+              participation: Math.random() < 0.5 ? 1 : 0,
+              teamwork: Math.random() < 0.5 ? 1 : 0,
+              leadership: Math.random() < 0.5 ? 1 : 0,
+              communication: Math.random() < 0.5 ? 1 : 0,
+              timeliness: Math.random() < 0.5 ? 1 : 0,
+            };
+            const feedback = "잘 했어요! 앞으로도 함께 공부하고 싶어요."; // 더미 피드백
+   
+            // Rating.insert()로 평가 추가
+            Rating.insert({
+              studyId: studyId,  // 해당 스터디 ID
+              ratedUserId: ratedUserId,  // 평가 받는 사람 ID
+              userId: userNickname,  // 평가한 사람 ID
+              rating: rating,  // 평점
+              recommendation: recommendation,  // 추천 항목
+              feedback: feedback,  // 피드백
+              createdAt: new Date(),
+            });
+          }
         });
+      });
     });
+   
 
 
   }
