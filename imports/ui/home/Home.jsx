@@ -87,7 +87,7 @@ export default function Home() {
 
   const formatAddress = (address) => {
     if (typeof address === 'string') {
-      return address; // 만약 address가 문자열이라면 그대로 반환
+      return address; 
     }
     if (address && address.city && address.gubun) {
       return `${address.city} ${address.gubun}`;
