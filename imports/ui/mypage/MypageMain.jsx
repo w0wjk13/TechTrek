@@ -33,8 +33,8 @@ const MypageMain = () => {
     return <div>사용자 정보를 찾을 수 없습니다.</div>;
   }
 
-  const { profile, email, createdAt } = userData;
-  const { name, nickname, phone, profilePicture, address, techStack = [], roles = [], score = {} } = profile;
+  const { profile } = userData;
+  const { nickname, profilePicture, address, techStack = [], roles = [], rating, recommendation=[] } = profile;
 
   return (
     <div className="mypage-container">
@@ -53,10 +53,32 @@ const MypageMain = () => {
 
         {/* 사용자 기본 정보 */}
         <div className="user-info">
-          <p><strong>이름:</strong> {name}</p>
-          <p><strong>닉네임:</strong> {nickname}</p>
-          <p><strong>전화번호:</strong> {phone}</p>
-          <p><strong>주소:</strong> {typeof address === 'object' ? `${address.city}, ${address.gubun}` : address}</p>
+          <div>평점: {rating}</div>
+          <div>
+  {recommendation && Object.keys(recommendation).length > 0 && (
+    <>
+      <strong>추천:</strong>
+      <ul>
+        {recommendation.participation !== 0 && recommendation.participation && (
+          <li><strong>참여도:</strong> {recommendation.participation}</li>
+        )}
+        {recommendation.teamwork !== 0 && recommendation.teamwork && (
+          <li><strong>팀워크:</strong> {recommendation.teamwork}</li>
+        )}
+        {recommendation.leadership !== 0 && recommendation.leadership && (
+          <li><strong>리더십:</strong> {recommendation.leadership}</li>
+        )}
+        {recommendation.communication !== 0 && recommendation.communication && (
+          <li><strong>커뮤니케이션:</strong> {recommendation.communication}</li>
+        )}
+        {recommendation.timeliness !== 0 && recommendation.timeliness && (
+          <li><strong>시간 준수:</strong> {recommendation.timeliness}</li>
+        )}
+      </ul>
+    </>
+  )}
+</div>
+          <p><strong>주소:</strong> {typeof address === 'object' ? `${address.city} ${address.gubun}` : address}</p>
         </div>
 
         {/* 기술 스택 */}
