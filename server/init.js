@@ -230,8 +230,7 @@ function updateUserRatingAndRecommendation(userNickname, rating, recommendation)
 
   // 평점 계산
   const ratings = Rating.find({ ratedUserId: userNickname }).fetch();
-  const averageRating = ratings.reduce((sum, rating) => sum + rating.rating, 0) / ratings.length;
-
+  const averageRating = Number((ratings.reduce((sum, rating) => sum + rating.rating, 0) / ratings.length).toFixed(1));
   // 추천 항목 계산 (각 항목별 1의 갯수)
   const recommendationCounts = {
     participation: 0,

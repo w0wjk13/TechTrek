@@ -13,23 +13,38 @@ const StudyRating = () => {
   const [ratings, setRatings] = useState({});  // 각 신청자별 별점
   const [selectedItems, setSelectedItems] = useState({});  // 각 항목의 선택 상태 (participation, teamwork 등)
   const [feedback, setFeedback] = useState({});  // 각 신청자별 피드백
-  const [alreadyRated, setAlreadyRated] = useState(new Set());
   
-  const navigate = useNavigate();
   
+  const [existingRating, setExistingRating] = useState(false);  // 이미 평가한 상태 추적
+  const [submitButtonVisible, setSubmitButtonVisible] = useState(true);  // 제출 버튼 보이기 여부
+
   useEffect(() => {
+    const currentUser = Meteor.user();
+    if (currentUser) {
+      setCurrentUserNickname(currentUser.profile?.nickname); // 현재 사용자 닉네임 저장
+      setUserId(currentUser._id);  // 현재 사용자 ID 저장
+    }
+
+    // 이미 평가한 사용자 확인
+    Meteor.call('study.getExistingRating', id, currentUser?.profile?.nickname, (error, result) => {
+      if (error) {
+        console.error('평가 상태 확인 실패:', error);
+        return;
+      }
+      
+      if (result) {
+        setExistingRating(true);  // 이미 평가한 경우
+        setSubmitButtonVisible(false);  // 평가 제출 버튼 숨기기
+        alert('이미 이 스터디를 평가하셨습니다.');
+        navigate('/mypage/project');  // 이미 평가한 경우, 프로젝트 페이지로 리디렉션
+      }
+    });
+
     // 스터디 신청자 목록 가져오기
     Meteor.call('study.getApplications', id, (error, fetchedApplications) => {
       if (error) {
         console.error('신청자 목록 조회 실패:', error);
         return;
-      }
-
-      // 현재 로그인한 사용자의 정보 가져오기
-      const currentUser = Meteor.user();
-      if (currentUser) {
-        setCurrentUserNickname(currentUser.profile?.nickname); // 현재 사용자 닉네임 저장
-        setUserId(currentUser._id);  // 현재 사용자 ID 저장
       }
 
       // 현재 사용자를 제외한 신청자만 필터링
@@ -41,7 +56,7 @@ const StudyRating = () => {
             state: applicantState,
             nickname: (app.nicknames || [])[index],  // 신청자의 닉네임
           };
-          
+
           // 현재 사용자를 제외하고 수락된 신청자만 필터링
           return applicant.state === '수락' && applicant.userId !== currentUserNickname;
         }).filter(Boolean);  // 필터링된 신청자만 남깁니다.
@@ -106,7 +121,6 @@ const StudyRating = () => {
 
   // 피드백 핸들러
   const handleFeedbackChange = (userId, value) => {
-    // 피드백 값이 null이나 undefined일 경우 빈 문자열로 처리
     setFeedback((prev) => ({
       ...prev,
       [userId]: value.trim() || '',  // trim()을 이용해 공백만 있는 피드백도 빈 문자열로 처리
@@ -115,26 +129,19 @@ const StudyRating = () => {
 
   // 평가 제출
   const handleSubmit = () => {
-    const alreadyRated = new Set(); 
     const totalApplications = filteredApplications.length * filteredApplications.reduce((acc, app) => acc + app.applicants.length, 0);
     
-    // 모든 평가 제출이 완료될 때까지 기다리는 Promise 배열
     const submitPromises = [];
 
-    // 별점이 누락된 사용자가 있을 경우 제출하지 않음
     for (const application of filteredApplications) {
       for (const applicant of application.applicants) {
-        if (alreadyRated.has(applicant.userId)) continue;
-
         const rating = ratings[applicant.userId]?.participation || 0;
 
-        // 별점이 없다면, 제출 버튼을 비활성화
         if (!rating || rating === 0) {
           alert(`${applicant.userId}님에 대한 평점을 입력해주세요.`);
-          return;  // 별점이 없는 경우 제출을 막음
+          return;
         }
 
-        alreadyRated.add(applicant.userId);
         const recommendation = {
           participation: selectedItems[applicant.userId]?.participation === 1 ? 1 : 0,
           teamwork: selectedItems[applicant.userId]?.teamwork === 1 ? 1 : 0,
@@ -142,12 +149,7 @@ const StudyRating = () => {
           communication: selectedItems[applicant.userId]?.communication === 1 ? 1 : 0,
           timeliness: selectedItems[applicant.userId]?.timeliness === 1 ? 1 : 0,
         };
-        
 
-        
-        if (typeof rating !== 'number' || rating < 1 || rating > 5) {
-          return;
-        }
         const feedbackText = feedback[applicant.userId] || ''; 
         const data = {
           studyId: id,
@@ -163,7 +165,6 @@ const StudyRating = () => {
               if (error) {
                 reject(error);
               } else {
-                
                 resolve(result);
               }
             });
@@ -171,23 +172,22 @@ const StudyRating = () => {
         );
       }
     }
-  // 모든 평가 제출이 완료되면 처리
-  Promise.all(submitPromises)
-    .then(() => {
-      if (totalApplications) {
-        alert('평가가 성공적으로 제출되었습니다!');
-        navigate('/mypage/project');
-      } else {
-        alert('평가 제출 중 오류가 발생했습니다. 다시 시도해 주세요.');
-      }
-    })
-    .catch((error) => {
-      console.error('평가 제출 중 오류 발생:', error);
-      alert('평가 제출 중 오류가 발생했습니다. 다시 시도해 주세요.');
-    });
-};
 
-const isRated = (userId) => alreadyRated.has(userId);
+    // 모든 평가 제출이 완료되면 처리
+    Promise.all(submitPromises)
+      .then(() => {
+        if (totalApplications) {
+          alert('평가가 성공적으로 제출되었습니다!');
+          navigate('/mypage/project');
+        } else {
+          alert('평가 제출 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        }
+      })
+      .catch((error) => {
+        console.error('평가 제출 중 오류 발생:', error);
+        alert('평가 제출 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      });
+  };
 
   // 별 모양 생성 함수 (사용자가 클릭하여 별점을 선택할 수 있게)
   const renderStars = (userId, category) => {
@@ -210,7 +210,6 @@ const isRated = (userId) => alreadyRated.has(userId);
       </div>
     );
   };
-
   return (
     <div>
       <h3>스터디 평가</h3>
@@ -318,12 +317,14 @@ const isRated = (userId) => alreadyRated.has(userId);
               ))}
             </div>
           ))}
+           <button onClick={handleSubmit} >평가 제출</button>
         </div>
+        
       ) : (
-        <p>수락된 신청자가 없습니다.</p>
+        <p>이미 평가한 사용자입니다. 평가 페이지에 접근할 수 없습니다.</p>
       )}
 
-      <button onClick={handleSubmit} >평가 제출</button>
+     
     </div>
   );
 };

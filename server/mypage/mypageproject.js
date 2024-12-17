@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import { Study, Application } from '/imports/api/collections';
+import { Study, Application,Rating } from '/imports/api/collections';
 
 Meteor.methods({
   // Get studies created by the logged-in user
@@ -50,7 +50,16 @@ Meteor.methods({
 
    return studiesWithCreator; 
   },
+'study.getRatedStudies'(userId) {
+    if (!userId) {
+      throw new Meteor.Error('User not found');
+    }
+    // Rating 컬렉션을 사용하여 해당 유저가 평가한 스터디 목록을 가져옴
+    const ratedStudies = Rating.find({ userId }).fetch();
 
+  // Extract the studyId from each rating and return it
+  return ratedStudies.map(rating => String(rating.studyId));
+  },
   // Get studies the current user has applied for
   'study.getAppliedStudies': function () {
     if (!this.userId) {

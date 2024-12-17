@@ -7,10 +7,15 @@ const MypageProject = () => {
   const [myStudies, setMyStudies] = useState([]);  // Created studies
   const [appliedStudies, setAppliedStudies] = useState([]);  // Applied studies
   const [loading, setLoading] = useState(true);
-  
+  const [ratedStudies, setRatedStudies] = useState([]); 
   // Current logged-in user ID
-  const currentUserId = Meteor.userId();
-
+  const currentUser = Meteor.user();
+  if (!currentUser) {
+    console.error("User not logged in");
+    return;
+  }
+  const currentUserId = currentUser._id; 
+  const currentUserNickname = currentUser.profile?.nickname;
   // Navigate hook for routing
   const navigate = useNavigate();
 
@@ -47,9 +52,28 @@ const MypageProject = () => {
       }
     };
 
+    const fetchRatedStudies = async () => {
+      if (currentUserNickname) {
+        try {
+          // 평가한 스터디 ID 목록 가져오기
+          const ratedStudies = await new Promise((resolve, reject) => {
+            Meteor.call('study.getRatedStudies', currentUserNickname, (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            });
+          });
+          
+          setRatedStudies(ratedStudies);   // 평가한 스터디 목록 상태 업데이트
+        } catch (error) {
+          console.error('Failed to fetch rated studies:', error.message);
+        }
+      }
+    };
+
     if (currentUserId) {
       fetchMyStudies();
       fetchAppliedStudies();
+      fetchRatedStudies();  //
     }
     setLoading(false);
   }, [currentUserId]);
@@ -163,7 +187,7 @@ const MypageProject = () => {
                     ))}
                   </ul>
                 </div>
-                {study.progress === '종료' && (
+                {study.progress === '종료'&& !ratedStudies.includes(String(study._id)) && (
                   <div>
                     <button onClick={() => handleReview(study._id)}>평가하기</button>
                   </div>
@@ -242,7 +266,7 @@ const MypageProject = () => {
                     ))}
                   </ul>
                 </div>
-                {study.progress === '종료' && (
+                {study.progress === '종료' && !ratedStudies.includes(String(study._id)) && (
                   <div>
                     <button onClick={() => handleReview(study._id)}>평가하기</button>
                   </div>
