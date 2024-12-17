@@ -184,10 +184,13 @@ studiesToUpdate.forEach(study => {
    
       // 나를 제외한 다른 신청자들을 평가
       applicants.forEach(application => {
-        const userNickname = application.userIds[0];  // 본인 닉네임
-        const otherApplicants = application.userIds.filter(nickname => nickname !== userNickname);
-   
-        otherApplicants.forEach(ratedUserId => {
+        const applicants = application.userIds;  // 해당 스터디에 신청한 모든 사용자
+        const studyId = application.studyId;  // 스터디 ID
+
+        // 신청자들끼리 서로 평가하도록 하기 위해 각 신청자끼리 평가를 진행
+        applicants.forEach(userNickname => {
+          applicants.forEach(ratedUserId => {
+          if (userNickname !== ratedUserId) {
           const existingRating = Rating.findOne({
             studyId: studyId,
             userId: userNickname,  // 평가한 사람
@@ -217,6 +220,8 @@ studiesToUpdate.forEach(study => {
               createdAt: new Date(),
             });
           }
+        }
+      })
         });
       });
     });
