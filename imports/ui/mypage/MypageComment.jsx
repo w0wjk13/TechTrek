@@ -130,7 +130,7 @@ const MypageComment = () => {
             <th>스터디</th>
             <th>댓글 내용</th>
             <th>작성 날짜</th>
-            <th>선택</th>
+            
             <th>
               {/* 전체 선택 체크박스 */}
               <input

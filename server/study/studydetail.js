@@ -103,7 +103,7 @@ if (Meteor.isServer) {
       { 
         $set: { 
           progress: '종료',  // 신청서의 진행 상태를 '종료'로 변경
-          endDate: endDate   // 마감일 설정
+          endDate: new Date()   // 마감일 설정
         }
       }
     );

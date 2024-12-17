@@ -251,8 +251,8 @@ const MypageProject = () => {
     <div>
       <strong>종료일:</strong> 
       {study.endDate === '미정' || isNaN(new Date(study.endDate)) 
-        ? '날짜 미정' 
-        : new Date(study.endDate).toLocaleDateString()}
+    ? '날짜 미정' 
+    : new Date(study.endDate).toLocaleDateString()}
     </div>
   </>
 )}
@@ -273,7 +273,8 @@ const MypageProject = () => {
                 )}
                 <div>
                   <button onClick={() => navigate(`/study/detail/${study._id}`)}>상세보기</button>
-                  <button onClick={() => handleCancelApplication(study._id)}>신청 취소</button> {/* 취소 버튼 */}
+                  {study.progress !== '종료' &&  (
+                  <button onClick={() => handleCancelApplication(study._id)}>신청 취소</button> )} 
                 </div>
                 
               </li>

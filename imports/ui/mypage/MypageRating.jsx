@@ -6,6 +6,13 @@ import MypageNav from './MypageNav.jsx';
 const MypageRating = () => {
   const [ratings, setRatings] = useState([]);  // 사용자 받은 평점 리스트
   const [loading, setLoading] = useState(true); // 로딩 상태
+  const [recommendationCounts, setRecommendationCounts] = useState({
+    participation: 0,
+    teamwork: 0,
+    leadership: 0,
+    communication: 0,
+    timeliness: 0
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,9 +41,24 @@ const MypageRating = () => {
         return;
       }
 
-      
-
       setRatings(result);  // 받은 평가 데이터 저장
+      const counts = {
+        participation: 0,
+        teamwork: 0,
+        leadership: 0,
+        communication: 0,
+        timeliness: 0
+      };
+      result.forEach(rating => {
+        // 각 추천 항목에 대해 값이 1이면 카운트 증가
+        for (let key in counts) {
+          if (rating.recommendation[key] === 1) {
+            counts[key]++;
+          }
+        }
+      });
+
+      setRecommendationCounts(counts); 
     });
   }, [navigate]);
 
@@ -59,11 +81,11 @@ const MypageRating = () => {
               <div><strong>평가자:</strong> {rating.userId}</div> {/* 평가자 정보 출력 */}
               <div><strong>평가 점수:</strong> {rating.rating}</div>
 
-              {/* 추천 항목 */}
+              
               <div><strong>추천 항목:</strong></div>
               <ul>
                 {Object.entries(rating.recommendation).map(([key, value]) => (
-                  value === 'Selected' ? <li key={key}>{key}</li> : null
+                  value === 1 ? <li key={key}>{key}: {value}</li> : null
                 ))}
               </ul>
                 {rating.feedback && rating.feedback.trim() !== '' && (

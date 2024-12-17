@@ -45,6 +45,7 @@ Meteor.methods({
      const application = Application.findOne({ studyId: study._id });
      study.progress = application ? application.progress : '예정'; // 신청서가 없으면 기본값 '예정'
      study.startDate = application ? application.startDate : new Date();
+     study.endDate = application ? application.endDate : new Date();
      return study;
    });
 
@@ -100,7 +101,7 @@ Meteor.methods({
       const application = applications.find(app => app.userIds.includes(nickname));
       study.progress = application ? application.progress : '예정';
       study.startDate = application ? application.startDate : new Date();
-
+      study.endDate = application ? application.endDate : new Date(); 
       return study;
     });
 

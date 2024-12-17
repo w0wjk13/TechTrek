@@ -40,6 +40,7 @@ const StudyDetail = () => {
           state: app.states[index],
           progress: app.progress, 
         startDate: app.startDate, 
+        endDate: app.endDate, 
           nickname: Meteor.users.findOne(userId)?.profile?.nickname || '알 수 없음',
         }))
       );
@@ -59,12 +60,9 @@ const StudyDetail = () => {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   };
   const handleApply = () => {
-    const isAlreadyApplied = applications.some((applicant) => applicant.userId === currentUserNickname && applicant.state === '신청');
     
-    if (isAlreadyApplied) {
-      alert('이미 신청한 상태입니다.');
-      return;
-    }
+    
+   
 
     Meteor.call('study.apply', id, (error) => {
       if (error) {
@@ -245,6 +243,9 @@ const StudyDetail = () => {
     }
   };
 
+  const isAlreadyApplied = applications.some(
+    (applicant) => applicant.userId === currentUserNickname && applicant.state 
+  );
   if (loading) {
     return <div>로딩 중...</div>;
   }
@@ -298,9 +299,9 @@ const StudyDetail = () => {
           </div>
    </>
  )}
- {applications.some(app => app.progress === '종료') && (
+ {applications.some(app => app.progress === '종료')  && (
    <div>
-     <strong>종료일:</strong> {formatDate(studyData.endDate) || '정보 없음'}
+     <strong>종료일:</strong> {formatDate(acceptedApplicants[0].endDate)}
    </div>
  )}
       <div><strong>기술 스택:</strong>
@@ -329,7 +330,7 @@ const StudyDetail = () => {
       <div><strong>내용:</strong> {content}</div>
       <div><strong>조회수:</strong> {views}</div>
 
-      {!isUserOwner && !applications.some((app) => app.userIds === currentUserNickname) && !isRecruitingClosed && (
+      {!isUserOwner && !isAlreadyApplied && !isRecruitingClosed && (
         <button onClick={handleApply}>신청하기</button>
       )}
 
