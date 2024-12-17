@@ -21,11 +21,11 @@ const randomNumber = () => {
 };
 
 const recommendation = {
-  participation: Math.floor(Math.random() * 30) + 1,
-  teamwork: Math.floor(Math.random() * 30) + 1,
-  leadership: Math.floor(Math.random() * 30) + 1,
-  communication: Math.floor(Math.random() * 30) + 1,
-  timeliness: Math.floor(Math.random() * 30) + 1,
+  participation: 0,
+  teamwork: 0,
+  leadership: 0,
+  communication: 0,
+  timeliness: 0,
 };
 
 if (Study.find().count() === 0 && Application.find().count() === 0) {
@@ -50,7 +50,7 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
         address: randomAddress(),
         techStack: techStacks.sort(() => Math.random() - 0.5).slice(0, 5),  // 랜덤으로 기술 스택 선택
         roles: ["백엔드", "프론트엔드", "풀스택"].sort(() => Math.random() - 0.5).slice(0, 1),  // 랜덤으로 역할 선택
-        rating: parseFloat((Math.random() * 4 + 1).toFixed(1)),
+        rating: 0,
         recommendation: recommendation,
       },
       createdAt: new Date(),
@@ -219,10 +219,47 @@ studiesToUpdate.forEach(study => {
               feedback: feedback,  // 피드백
               createdAt: new Date(),
             });
+            updateUserRatingAndRecommendation(ratedUserId, rating, recommendation);
           }
         }
-      })
+      });
         });
+        // 평균 평점과 추천 항목을 업데이트하는 함수
+function updateUserRatingAndRecommendation(userNickname, rating, recommendation) {
+  const user = Meteor.users.findOne({ "profile.nickname": userNickname });
+
+  // 평점 계산
+  const ratings = Rating.find({ ratedUserId: userNickname }).fetch();
+  const averageRating = ratings.reduce((sum, rating) => sum + rating.rating, 0) / ratings.length;
+
+  // 추천 항목 계산 (각 항목별 1의 갯수)
+  const recommendationCounts = {
+    participation: 0,
+    teamwork: 0,
+    leadership: 0,
+    communication: 0,
+    timeliness: 0
+  };
+
+  ratings.forEach(rating => {
+    for (let key in recommendationCounts) {
+      if (rating.recommendation[key] === 1) {
+        recommendationCounts[key]++;
+      }
+    }
+  });
+
+  // 사용자 프로필 업데이트
+  Meteor.users.update(
+    { "profile.nickname": userNickname },
+    {
+      $set: {
+        "profile.rating": averageRating.toFixed(1),
+        "profile.recommendation": recommendationCounts
+      }
+    }
+  );
+}
       });
     });
    
