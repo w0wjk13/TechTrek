@@ -3,6 +3,7 @@ import { Meteor } from "meteor/meteor";
 import { useNavigate } from "react-router-dom";
 import Data from "./../Data";
 
+
 const { citys, techStacks } = Data;
 
 const roles = ["백엔드", "프론트엔드", "풀스택"];
@@ -277,14 +278,24 @@ export default function Home() {
                 return (
                   <li key={result._id}>
                     <p>마감일: {formatDDay(result.studyClose)}</p>
-                    <span>모집상태:{result.status}</span><br />
-                    <span>지역: {formatAddress(result.address)}</span><br />
-                    <span>진행방식: {formatOnOffline(result.onOffline)}</span><br />
-                    <strong>{result.title}</strong><br /><br />
-                    <span>역할: {result.roles}</span><br />
-                    <span>기술 스택: {result.techStack && Array.isArray(result.techStack) ? result.techStack.join(", ") : "기술 스택 없음"}</span><br />
-                    <span>작성자: {result.userId}</span><br />
-                    <span>조회수: {result.views}</span>
+                    <div>모집상태: {result.status}</div>
+
+            {Array.isArray(result.onOffline) ? 
+             !result.onOffline.includes("온라인") && (
+          <div>지역: {formatAddress(result.address)}</div>
+           ) : 
+       result.onOffline !== "온라인" && (
+    <div>지역: {formatAddress(result.address)}</div>
+  )
+}
+
+<div>진행방식: {formatOnOffline(result.onOffline)}</div>
+<strong>{result.title}</strong><br /><br />
+
+<div>역할: {result.roles}</div>
+<div>기술 스택: {result.techStack && Array.isArray(result.techStack) ? result.techStack.join(", ") : "기술 스택 없음"}</div>
+<div>작성자: {result.userId}</div>
+<div>조회수: {result.views}</div>
                     <div>평점: {result.rating}</div>
                     <button onClick={() => handleViewDetail(result._id)}>상세 보기</button>
                   </li>
