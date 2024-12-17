@@ -1,5 +1,5 @@
 {
-  "name": "codecrew",
+  "name": "TechTrek",
   "private": true,
   "scripts": {
     "start": "meteor run",

@@ -109,34 +109,47 @@ Object.values(recommendation).forEach(value => {
       createdAt: new Date(),
     });
 
-  // 기존 사용자의 평균 평점 가져오기
-  const existingUser = Meteor.users.findOne({ 'profile.nickname': ratedUserId });
-  const existingAverageRating = existingUser ? existingUser.profile.rating : 0;
-  const existingRatingCount = existingUser ? existingUser.profile.ratingCount : 0;
-
   // 해당 사용자가 받은 평가 데이터 가져오기
   const ratingsData = Rating.find({ ratedUserId }).fetch();
   const totalRatings = ratingsData.reduce((sum, data) => sum + data.rating, 0);  // 평점의 합 계산
   const totalRatingCount = ratingsData.length;  // 평점 개수
+  
 
-  // 새로운 총 평점 계산
-  const newTotalRatings = totalRatings + (existingAverageRating * existingRatingCount);
-  const newTotalRatingCount = totalRatingCount + existingRatingCount;
+// 새로운 총 평점 계산
+  const newTotalRatings = totalRatings;
+  const newTotalRatingCount = totalRatingCount;
 
-  // 새로운 평균 평점 계산 후 소수점 첫째 자리로 반올림
-  const newAverageRating = newTotalRatingCount > 0 ? (newTotalRatings / newTotalRatingCount).toFixed(1) : '0.0';
+// 새로운 평균 평점 계산 (새로운 평점 총합 / 새로운 평점 개수)
+const newAverageRating = newTotalRatingCount > 0 ? parseFloat((newTotalRatings / newTotalRatingCount).toFixed(1)) : 0.0;
+ // 추천 항목 계산 (각 항목별 1의 갯수)
+ const recommendationCounts = {
+  participation: 0,
+  teamwork: 0,
+  leadership: 0,
+  communication: 0,
+  timeliness: 0
+};
 
-  // 사용자 프로필의 평균 평점 업데이트
-  Meteor.users.update(
-    { 'profile.nickname': ratedUserId },  // 평가받는 사람을 식별
-    {
-      $set: { 
-        'profile.rating': parseFloat(newAverageRating),  // 소수점 첫째 자리까지 반올림한 평균 평점 업데이트
-      }
+ratingsData.forEach(rating => {
+  for (let key in recommendationCounts) {
+    if (rating.recommendation[key] === 1) {
+      recommendationCounts[key]++;
     }
-  );
+  }
+});
 
-  return '평가 제출 성공';
+// 사용자 프로필 업데이트
+Meteor.users.update(
+  { 'profile.nickname': ratedUserId },  // 평가받는 사람을 식별
+  {
+    $set: { 
+      'profile.rating': newAverageRating,  // 소수점 첫째 자리까지 반올림한 평균 평점 업데이트
+      'profile.recommendation': recommendationCounts,  // 추천 항목 업데이트
+    }
+  }
+);
+
+return '평가 제출 성공';
 },
 
 });

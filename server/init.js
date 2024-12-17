@@ -254,7 +254,7 @@ function updateUserRatingAndRecommendation(userNickname, rating, recommendation)
     { "profile.nickname": userNickname },
     {
       $set: {
-        "profile.rating": averageRating.toFixed(1),
+        "profile.rating": averageRating,
         "profile.recommendation": recommendationCounts
       }
     }
