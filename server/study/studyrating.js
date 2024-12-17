@@ -17,16 +17,22 @@ Meteor.methods({
     if (!currentUserNickname) {
       throw new Meteor.Error('not-logged-in', '로그인된 사용자만 접근할 수 있습니다.');
     }
-
-    // 해당 사용자가 이미 평가한 상태인지 확인
-    const existingRating = Rating.findOne({ studyId, ratedUserId: currentUserNickname });
-    if (existingRating) {
-      throw new Meteor.Error('already-rated', '이미 평가한 사용자입니다. 평가 페이지에 접근할 수 없습니다.');
-    }
-  
-    const applications = Application.find({ studyId }).fetch();
-    return applications;
   },
+
+    'study.getExistingRating': function(studyId, currentUserNickname) {
+      // 평가가 이미 존재하는지 확인
+      const existingRating = Rating.findOne({ 
+        studyId, 
+        userId: { $in: [currentUserNickname] }  // 배열에서 currentUserNickname이 포함되어 있는지 확인
+      });
+      if (existingRating) {
+        throw new Meteor.Error('already-rated', '이미 평가한 사용자입니다. 평가 페이지에 접근할 수 없습니다.');
+      }
+  
+      // 평가가 없으면 신청자 목록 반환
+      const applications = Application.find({ studyId }).fetch();
+      return applications;
+    },
 
   // 특정 사용자가 수락된 신청자만 필터링하는 메서드
   'study.getAcceptedParticipantsFromApplication'(studyId) {

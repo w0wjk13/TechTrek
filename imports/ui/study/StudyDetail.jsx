@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
-import { Study, Comment, Application } from '/imports/api/collections';
+import { Study, Comment, Application,Rating } from '/imports/api/collections';
 
 const StudyDetail = () => {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const StudyDetail = () => {
   const [commentContent, setCommentContent] = useState('');  // 댓글 내용 상태
   const [editingCommentId, setEditingCommentId] = useState(null);  // 현재 수정 중인 댓글의 ID
   const [editedContent, setEditedContent] = useState('');  // 수정된 댓글 내용
-
+  const [hasRated, setHasRated] = useState(false); 
   const currentUserNickname = Meteor.user()?.profile?.nickname || '';
 
   useEffect(() => {
@@ -47,7 +47,14 @@ const StudyDetail = () => {
       setApplications(applicants);
       setLoading(false);
     });
-    
+    const checkIfUserHasRated = () => {
+      const existingRating = Rating.findOne({ studyId: id, userId: currentUserNickname });
+      if (existingRating) {
+        setHasRated(true);  // 평가한 경우
+      }
+    };
+
+    checkIfUserHasRated();
     // 조회수 증가
     Meteor.call('study.incrementViews', id, (error) => {
       if (error) console.error('조회수 증가 실패:', error);
@@ -367,7 +374,7 @@ const StudyDetail = () => {
         onChange={handleCommentChange}
         placeholder="댓글을 작성해주세요."
       />
-      <button onClick={handleSubmitComment}>댓글 작성</button>
+      <button onClick={handleSubmitComment} disabled={hasRated}>댓글 작성</button>
 
       <ul>
         {comments.map((comment) => (

@@ -17,7 +17,7 @@ const StudyRating = () => {
   
   const [existingRating, setExistingRating] = useState(false);  // 이미 평가한 상태 추적
   const [submitButtonVisible, setSubmitButtonVisible] = useState(true);  // 제출 버튼 보이기 여부
-
+  const navigate = useNavigate();
   useEffect(() => {
     const currentUser = Meteor.user();
     if (currentUser) {
@@ -28,15 +28,15 @@ const StudyRating = () => {
     // 이미 평가한 사용자 확인
     Meteor.call('study.getExistingRating', id, currentUser?.profile?.nickname, (error, result) => {
       if (error) {
-        console.error('평가 상태 확인 실패:', error);
-        return;
-      }
-      
-      if (result) {
-        setExistingRating(true);  // 이미 평가한 경우
-        setSubmitButtonVisible(false);  // 평가 제출 버튼 숨기기
-        alert('이미 이 스터디를 평가하셨습니다.');
-        navigate('/mypage/project');  // 이미 평가한 경우, 프로젝트 페이지로 리디렉션
+        if (error.error === 'already-rated') {
+          alert(error.reason);  // 이미 평가한 경우 경고 메시지
+          navigate('/mypage/project');  // 프로젝트 페이지로 리디렉션
+          return;
+        } else {
+          console.error('평가 상태 확인 실패:', error);  // 다른 오류 처리
+        }
+      } else {
+        setApplications(result);  // 신청자 목록 업데이트
       }
     });
 

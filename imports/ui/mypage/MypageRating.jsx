@@ -66,6 +66,16 @@ const MypageRating = () => {
     return <div>로딩 중...</div>;  // 로딩 상태 표시
   }
 
+  // 스터디 ID별로 평가들을 묶기
+  const groupedRatings = ratings.reduce((groups, rating) => {
+    const studyId = rating.studyId;
+    if (!groups[studyId]) {
+      groups[studyId] = [];
+    }
+    groups[studyId].push(rating);
+    return groups;
+  }, {});
+
   return (
     <div>
       <div className="mypage-nav">
@@ -73,25 +83,31 @@ const MypageRating = () => {
       </div>
       <h3>내 평가 목록</h3>
 
-      {ratings.length > 0 ? (
+      {Object.keys(groupedRatings).length > 0 ? (
         <div>
-          {ratings.map((rating, index) => (
-            <div key={index} className="rating-item">
-              <div><strong>스터디 ID:</strong> {rating.studyId}</div>
-              <div><strong>평가자:</strong> {rating.userId}</div> {/* 평가자 정보 출력 */}
-              <div><strong>평가 점수:</strong> {rating.rating}</div>
+          {Object.entries(groupedRatings).map(([studyId, studyRatings], index) => (
+            <div key={studyId}>
+              {/* 각 스터디 ID별로 구분해서 출력 */}
+              <h4>스터디 ID: {studyId}</h4>
+              {studyRatings.map((rating, idx) => (
+                <div key={idx} className="rating-item">
+                  <div><strong>평가자:</strong> {rating.userId}</div> {/* 평가자 정보 출력 */}
+                  <div><strong>평가 점수:</strong> {rating.rating}</div>
 
-              
-              <div><strong>추천 항목:</strong></div>
-              <ul>
-                {Object.entries(rating.recommendation).map(([key, value]) => (
-                  value === 1 ? <li key={key}>{key}: {value}</li> : null
-                ))}
-              </ul>
-                {rating.feedback && rating.feedback.trim() !== '' && (
-  <div><strong>코멘트:</strong>{rating.feedback}</div>
-)}
-              <div><strong>평가 작성일:</strong> {new Date(rating.createdAt).toLocaleString()}</div><hr/>
+                  <div><strong>추천 항목:</strong></div>
+                  <ul>
+                    {Object.entries(rating.recommendation).map(([key, value]) => (
+                      value === 1 ? <li key={key}>{key}: {value}</li> : null
+                    ))}
+                  </ul>
+                  
+                  {rating.feedback && rating.feedback.trim() !== '' && (
+                    <div><strong>코멘트:</strong> {rating.feedback}</div>
+                  )}
+                  <div><strong>평가 작성일:</strong> {new Date(rating.createdAt).toLocaleString()}</div>
+                  <br/>
+                </div>
+              ))}<hr />
             </div>
           ))}
         </div>
