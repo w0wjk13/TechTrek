@@ -26,7 +26,7 @@ export default () => {
           <ul className="nav-list">
             <li className="nav-item">
               <Link to="/" className="nav-link">
-                Home
+                TechTrek
               </Link>
             </li>
             <li className="nav-item">

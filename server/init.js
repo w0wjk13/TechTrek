@@ -1,4 +1,4 @@
-import { Study, Application ,Rating} from "/imports/api/collections";
+import { Study, Application ,Rating,Comment} from "/imports/api/collections";
 import Data from "../imports/ui/Data.jsx";
 
 const noimage = '/noimage.png';
@@ -148,6 +148,17 @@ randomStudyIds.forEach((studyId) => {
          
         }
       );
+      const commentContent = `신청한 사용자 ${applicant.profile.nickname}님이 스터디에 참여하고 싶습니다!`;
+      const newComment = {
+        userId: applicant._id,
+        nickname: applicant.profile.nickname,
+        content: commentContent,
+        createdAt: new Date(),
+        studyId: studyId,
+      };
+
+      // 댓글을 Comment 컬렉션에 삽입
+      Comment.insert(newComment); 
     }
   }
 
