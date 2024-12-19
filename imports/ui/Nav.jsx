@@ -21,47 +21,44 @@ export default () => {
 
   return (
     <>
-      <header>
-        <nav>
-          <ul className="nav-list">
-            <li className="nav-item">
-              <Link to="/" className="nav-link">
+    <header>
+        <nav className="navbar">
+          <div className="navbar-container">
+            {/* TechTrek 로고 디자인 */}
+            <div>
+              <Link to="/" className="techtrek-logo">
                 TechTrek
               </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/study/form" className="nav-link">
+            </div>
+
+            {/* 메뉴 항목들 */}
+            <div className="navbar-links">
+              <Link to="/study/form" className="nav-link study-create-link">
                 스터디 생성
               </Link>
-            </li>
-
-            <li className="nav-item">
-              <Link to="/mypage/main" className="nav-link">
+              <Link to="/mypage/main" className="nav-link mypage-link">
                 마이페이지
               </Link>
-            </li>
 
-            {/* 로그인 상태에 따라 메뉴 변경 */}
-            {user ? (
-              <li className="nav-item">
-                <button
-                  className="nav-link logout-button"
-                  onClick={handleLogout} // 로그아웃 처리
+              {/* 로그인 상태에 따른 메뉴 변경 */}
+              {user ? (
+                <Link
+                  to="#"
+                  className="nav-link logout-link"
+                  onClick={handleLogout}
                 >
-                  Logout
-                </button>
-              </li>
-            ) : (
-              <li className="nav-item">
-                <Link to="/login/main" className="nav-link">
-                  Login
+                  로그아웃
                 </Link>
-              </li>
-            )}
-          </ul>
+              ) : (
+                <Link to="/login/main" className="nav-link login-link">
+                  로그인
+                </Link>
+              )}
+            </div>
+          </div>
         </nav>
       </header>
-      <br /> <hr /> <br />
+      <br /> 
     </>
   );
 };

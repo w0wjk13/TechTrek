@@ -1,85 +1,501 @@
 .home-container {
   font-family: Arial, sans-serif;
   padding: 20px;
-  max-width: 800px;
+  max-width: 1500px;
   margin: 0 auto;
 }
 
-.title {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 20px;
+/* 제목 스타일 */
+.search-title {
+  text-align: left;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #4A4A4A;
+  margin-bottom: 15px;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+  background-image: linear-gradient(to right, #6C63FF, #FF6347); /* 그라디언트 효과 */
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: 100% 3px; /* 그라디언트 밑줄 */
+  padding-bottom: 5px;
 }
 
-.select-group,
-.checkbox-group,
-.radio-group {
-  margin-bottom: 20px;
+
+.location-select-container {
+  display: flex; /* 수평 배치 */
+  align-items: center; /* 세로 중앙 정렬 */
+  gap: 20px; /* 레이블과 셀렉트 박스 간의 간격 */
 }
 
-.select-group label,
-.checkbox-group label,
-.radio-group label {
+.location-select-group {
+  display: flex; /* 내부 요소를 수평으로 배치 */
+  flex-direction: row; /* 수평 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
+
+.location-label {
+  font-weight: bold; /* 글자 두께 굵게 */
+  font-size: 1.2rem; /* 글자 크기 */
+  margin-right: 10px; /* 레이블과 셀렉트 박스 간의 간격 */
+}
+
+.location-select {
+  padding: 8px;
+  font-size: 1rem; /* 글자 크기 */
+  border: 2px solid #ddd;
+  border-radius: 8px; /* 부드러운 둥근 모서리 */
+  width: 200px; /* 셀렉트 박스의 너비 */
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.location-select:focus {
+  border-color: #6C63FF; /* 포커스 시 보라색 테두리 */
+  box-shadow: 0 0 5px rgba(108, 99, 255, 0.5); /* 포커스 시 부드러운 그림자 */
+}
+
+/* 기술 스택 체크박스 그룹 */
+.tech-stack-checkbox-group {
+  margin-top: 30px;
+  width: 80%;
+}
+
+/* 기술 스택 레이블 */
+.tech-stack-label {
+  font-size: 1.2rem;
   font-weight: bold;
+  margin-bottom: 10px;
   display: block;
+}
+
+/* 기술 스택 체크리스트 */
+.tech-stack-checkbox-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* 간격을 조정하여 각 항목 사이에 여백 추가 */
+  justify-content: flex-start; /* 항목을 왼쪽에 정렬 */
+  width: 100%;
+}
+
+/* 각 체크박스 항목 */
+.tech-stack-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  width: calc(10% - 10px); /* 한 줄에 10개의 항목 배치, 항목 간 간격 고려 */
+  cursor: pointer;
+}
+
+/* 숨겨진 체크박스 */
+.tech-stack-checkbox {
+  display: none;
+}
+
+/* 클릭 가능한 항목 디자인 */
+.tech-stack-checkbox-item label {
+  font-size: 1rem;
+  padding: 8px 15px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  user-select: none;
+}
+
+/* 클릭된 상태의 스타일 */
+.tech-stack-checkbox-item input:checked + label {
+  background-color: #6C63FF; /* 선택된 항목의 배경색 */
+  color: white; /* 선택된 항목의 텍스트 색상 */
+}
+
+/* 마우스 오버 시 배경색 변경 */
+.tech-stack-checkbox-item label:hover {
+  background-color: #ddd;
+}
+
+/* 경고 메시지 */
+.tech-stack-warning {
+  font-size: 0.9rem;
+  color: #FF5733;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+
+/* 역할 체크박스 그룹 */
+.role-checkbox-group {
+  width: 100%;
+  margin-top: 20px
+}
+
+/* 역할 레이블 */
+.role-checkbox-group label {
+  font-size: 1.3rem; /* 레이블 글꼴 크기 축소 */
+  font-weight: bold;
+  margin-bottom: 15px; /* 아래 간격 줄임 */
+  display: block;
+  color: #444;
+  text-transform: uppercase; /* 레이블에 대문자 적용 */
+}
+
+/* 역할 체크박스 리스트 */
+.role-checkbox-group .role-checkbox-item {
+  display: inline-block; /* 항목을 수평으로 배치 */
+  margin-right: 15px; /* 항목 간 간격 줄임 */
+  font-size: 0.9rem; /* 항목 글꼴 크기 축소 */
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 클릭 시 확대 효과와 그림자 */
+  width: 120px; /* 카드 크기 축소 */
+  text-align: center; /* 텍스트 가운데 정렬 */
+}
+
+/* 숨겨진 체크박스 */
+.role-checkbox-group .role-checkbox-item input {
+  display: none; /* 실제 체크박스 숨김 */
+}
+
+/* 클릭 가능한 항목 디자인 */
+.role-checkbox-group .role-checkbox-item label {
+  font-size: 1rem; /* 글꼴 크기 축소 */
+  padding: 10px 12px; /* 패딩 줄임 */
+  background-color: #f5f5f5;
+  border-radius: 8px; /* 둥근 모서리 축소 */
+  color: #333;
+  border: 2px solid #ddd;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+  display: block;
+  font-weight: 500;
+}
+
+/* 체크박스를 선택했을 때 스타일 */
+.role-checkbox-group .role-checkbox-item input:checked + label {
+  background-color: #6C63FF; /* 선택된 항목의 배경색 */
+  color: white; /* 선택된 항목의 텍스트 색상 */
+  border-color: #6C63FF; /* 선택된 항목의 테두리 색상 */
+  box-shadow: 0px 4px 10px rgba(108, 99, 255, 0.3); /* 선택된 항목의 그림자 */
+}
+
+/* 마우스 오버 시 배경색 변경 */
+.role-checkbox-group .role-checkbox-item label:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.05); /* 마우스 오버 시 항목 크기 약간 커짐 */
+}
+
+/* 선택된 항목이 비활성화된 상태에서 마우스 오버 시 배경색 변경 */
+.role-checkbox-group .role-checkbox-item input:checked + label:hover {
+  background-color: #5a54d7;
+  transform: scale(1.05);
+}
+
+/* 진행 방식 체크박스 그룹 */
+.method-checkbox-group {
+  width: 100%;
+  padding: 10px 0;
+}
+
+/* 진행 방식 레이블 */
+.method-checkbox-group label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: block;
+  color: #444;
+  text-transform: uppercase; /* 레이블에 대문자 적용 */
+}
+
+/* 진행 방식 체크박스 항목 */
+.method-checkbox-group .method-checkbox-item {
+  display: inline-block; /* 항목을 수평으로 배치 */
+  margin-right: 15px; /* 항목 간 간격 좁힘 */
+  margin-bottom: 10px; /* 아래 간격 좁힘 */
+  font-size: 0.9rem; /* 폰트 크기 줄이기 */
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 클릭 시 확대 효과와 그림자 */
+  width: 120px; /* 카드 크기 줄이기 */
+  text-align: center; /* 텍스트 가운데 정렬 */
+}
+
+/* 숨겨진 체크박스 */
+.method-checkbox-group .method-checkbox-item input {
+  display: none; /* 실제 체크박스 숨김 */
+}
+
+/* 클릭 가능한 항목 디자인 */
+.method-checkbox-group .method-checkbox-item label {
+  font-size: 0.9rem; /* 레이블 폰트 크기 줄이기 */
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 25px; /* 둥근 모서리 */
+  color: #333;
+  border: 2px solid #ddd;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+  display: block;
+  font-weight: 500;
+}
+
+/* 체크박스를 선택했을 때 스타일 */
+.method-checkbox-group .method-checkbox-item input:checked + label {
+  background-color: #6C63FF; /* 선택된 항목의 배경색 */
+  color: white; /* 선택된 항목의 텍스트 색상 */
+  border-color: #6C63FF; /* 선택된 항목의 테두리 색상 */
+  box-shadow: 0px 4px 15px rgba(108, 99, 255, 0.3); /* 선택된 항목의 그림자 */
+}
+
+/* 마우스 오버 시 배경색 변경 */
+.method-checkbox-group .method-checkbox-item label:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.05); /* 마우스 오버 시 항목 크기 약간 커짐 */
+}
+
+/* 선택된 항목이 비활성화된 상태에서 마우스 오버 시 배경색 변경 */
+.method-checkbox-group .method-checkbox-item input:checked + label:hover {
+  background-color: #5a54d7;
+  transform: scale(1.05);
+}
+
+/* 검색 바 컨테이너 */
+.search-bar-container {
+  display: flex; /* 수평 배치 */
+  align-items: center; /* 세로 중앙 정렬 */
+  width: 100%;
+  max-width: 700px;
+}
+
+/* 검색 입력 그룹 */
+.search-input-group {
+  display: flex;
+  align-items: flex-start; /* 왼쪽 정렬 */
+  justify-content: flex-start; /* 왼쪽 정렬 */
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 700px; /* 최대 너비 설정 */
+  
+}
+
+/* 검색 입력 필드 */
+.search-input {
+  width: 90%; /* 입력 필드의 너비 */
+  padding: 12px 20px;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 25px; /* 부드러운 둥근 모서리 */
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #6C63FF; /* 포커스 시 보라색 테두리 */
+  box-shadow: 0 0 5px rgba(108, 99, 255, 0.5); /* 포커스 시 부드러운 그림자 */
+}
+
+/* 검색 버튼 */
+.search-action-button {
+  padding: 15px 25px; /* 패딩을 적당히 유지하면서 버튼 크기 조절 */
+  font-size: 1rem; /* 글자 크기 살짝 키움 */
+  font-weight: 400; /* 글자 두께 약간 증가 */
+  background-color: #6C63FF; /* 버튼 배경색 */
+  color: white;
+  border: none; /* 테두리 없앰 */
+  border-radius: 30px; /* 더 둥근 모서리 */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* 변환 효과 추가 */
+  display: flex; /* 플렉스 박스를 사용하여 내부 요소를 수평 정렬 */
+  justify-content: center; /* 텍스트 중앙 정렬 */
+  align-items: center; /* 수직으로 중앙 정렬 */
+  text-align: center; /* 텍스트 가운데 정렬 */
+  white-space: nowrap; /* 텍스트가 줄 바꿈 없이 한 줄로 표시되도록 설정 */
+  margin-bottom: 15px;
+
+}
+
+/* 마우스 오버 시 스타일 */
+.search-action-button:hover {
+  background-color: #5a54d7; /* 마우스 오버 시 배경색 */
+  transform: scale(1.05); /* 버튼 크기 확대 */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
+}
+
+/* 클릭 시 스타일 */
+.search-action-button:active {
+  background-color: #4e45c0; /* 클릭 시 더 어두운 배경색 */
+  transform: scale(1); /* 클릭 시 크기 리셋 */
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2); /* 클릭 시 더 강한 그림자 효과 */
+}
+
+/* Container for the toggle options */
+.toggle-group {
+  display: flex;
+  gap: 10px; /* Space between the labels and separators */
+  margin: 20px 0;
+  padding: 10px;
+}
+
+/* Basic style for the toggle labels */
+.toggle-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #4a4a4a;
+  cursor: pointer;
+  transition: color 0.3s, font-weight 0.3s, text-decoration 0.3s;
+  padding-bottom: 5px; /* Space for the underline effect */
+}
+
+/* Hover effect for each label */
+.toggle-label:hover {
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+/* Style for the active (selected) label */
+.toggle-label[style*="textDecoration: underline"] {
+  color: #3b82f6;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* Style for the separator */
+.separator {
+  font-size: 18px;
+  color: #b0b0b0; /* Light gray color for the separator */
+  margin: 0 10px; /* Spacing around the separator */
+}
+
+/* 버튼 기본 스타일 */
+.view-mode-toggle {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.view-mode-button {
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.view-mode-button.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* 리스트와 카드 뷰 스타일 */
+.search-results-list.card {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.search-results-list.list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.search-result-item {
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.card .result-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.list-item .result-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.result-due-date,
+.result-status,
+.result-location,
+.result-mode {
+  font-size: 1rem;
   margin-bottom: 5px;
 }
 
-select,
-input[type="checkbox"],
-input[type="radio"] {
-  padding: 8px;
-  margin: 5px 0;
-}
-
-.checkbox-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.checkbox-item {
-  display: flex;
-  align-items: center;
-}
-
-.selected-tech {
+.result-detail-button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
   margin-top: 10px;
-  font-size: 1rem;
+}
+
+.result-detail-button:hover {
+  background-color: #0056b3;
+}
+
+/* 페이지네이션 컨테이너 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  font-size: 16px;
   color: #333;
 }
 
-.search-button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px 20px;
-  border: none;
+/* 각 페이지 번호 텍스트 스타일 */
+.pagination span {
   cursor: pointer;
-  font-size: 1rem;
-  width: 100%;
-  border-radius: 5px;
+  transition: all 0.3s ease;
+  padding: 5px 10px;
+  color: #007bff;
+  font-weight: normal;
+  border-radius: 5px;  /* 테두리 둥글게 처리 */
 }
 
-.search-button:hover {
-  background-color: #45a049;
+/* 페이지 번호 텍스트 hover 상태 */
+.pagination span:hover {
+  background-color: #f0f0f0;  /* 배경색 변경 */
 }
 
-.search-results {
-  margin-top: 20px;
+/* 활성화된 페이지 텍스트 스타일 */
+.pagination span.active {
+  font-weight: bold;
+  color: #fff;
+  background-color: #007bff;  /* 활성화된 페이지 배경색 */
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);  /* 그림자 효과 */
+  text-decoration: none;
 }
 
-.search-results ul {
-  list-style-type: none;
-  padding-left: 0;
+/* 비활성화된 텍스트 스타일 */
+.pagination span.disabled {
+  color: #aaa;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
-.search-results li {
-  padding: 10px;
-  background-color: #f9f9f9;
-  margin-bottom: 10px;
-  border-radius: 5px;
+/* 검색 결과 없음 메시지 스타일 */
+.no-results {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333; /* 텍스트 색상 */
+  text-align: center;
+  margin-top: 50px;
+  gap: 8px; /* 아이콘과 텍스트 사이 간격 */
 }
 
-.search-results li:hover {
-  background-color: #f1f1f1;
+/* 아이콘 스타일 */
+.no-results .icon {
+  font-size: 32px;
+  color: #f39c12; /* 따뜻한 노란색 */
 }
