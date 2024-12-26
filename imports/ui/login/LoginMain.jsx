@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { useTracker } from "meteor/react-meteor-data";
-import { Link, useNavigate, useLocation } from "react-router-dom";  // useLocation 추가
+import { Link, useNavigate, useLocation } from "react-router-dom"; 
+import "../../../client/css/login/LoginMain.css";
 
 export default () => {
   const { user } = useTracker(() => {

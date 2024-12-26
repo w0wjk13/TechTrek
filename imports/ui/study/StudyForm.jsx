@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { useNavigate } from 'react-router-dom';
 import Data from "../Data";
 import { useTracker } from 'meteor/react-meteor-data';  // useTracker import 추가
+import "../../../client/css/study/StudyForm.css";
 
 const { citys, techStacks } = Data;
 
@@ -145,25 +146,26 @@ const StudyForm = () => {
 
   return (
     <div className="study-create-form">
-      <h1>스터디 생성</h1>
+      <h1 className="study-create-title">스터디 생성</h1>
 
       {/* Fields for Study Creation */}
-      <div>
-        <label>모집 마감일</label>
+      <div className="study-close-date-field">
+        <label className="study-close-date-label">모집 마감일</label>
         <input
           type="date"
           value={studyClose}
           onChange={(e) => setStudyClose(e.target.value)}
           min={getMinDate()}
           max={getMaxDate()}
+          className="study-close-date-input"
         />
       </div>
 
-      <div>
-        <label>모집 인원</label>
+      <div className="study-count-field">
+        <label className="study-count-label">스터디 인원</label>
         <select
           value={studyCount}
-          onChange={(e) => setStudyCount(e.target.value)}
+          onChange={(e) => setStudyCount(e.target.value)} className="study-count-select"
         >
           {[...Array(9)].map((_, index) => (
             <option key={index + 2} value={index + 2}>{index + 2}</option>
@@ -172,14 +174,14 @@ const StudyForm = () => {
       </div>
 
       <div style={{ display: onOffline === "온라인" ? "none" : "block" }}>
-        <label>지역</label>
+        <label className="study-location-label">지역</label>
         <select
           value={selectedCity}
           onChange={(e) => {
             setSelectedCity(e.target.value);
             setSelectedGubun('');
           }}
-          
+          className="study-location-select"
         >
           <option value="">선택하세요</option>
           {cityList.map((city, index) => (
@@ -193,7 +195,7 @@ const StudyForm = () => {
         <select
           value={selectedGubun}
           onChange={(e) => setSelectedGubun(e.target.value)}
-          
+          className="study-district-select"
         >
           <option value="">선택하세요</option>
           {cityList
@@ -205,8 +207,8 @@ const StudyForm = () => {
       </div>
 
       {/* Tech Stack Selection */}
-      <div>
-        <label>기술 스택 (최대 5개 선택)</label>
+      <div className="tech-stack-field">
+        <label className="tech-stack-label">기술 스택 (최대 5개 선택)</label>
         <div className="tech-stack-buttons">
           {techStacks.map((tech) => (
             <button
@@ -223,8 +225,8 @@ const StudyForm = () => {
       </div>
 
       {/* On/Offline Selection */}
-      <div>
-        <label>진행 방식</label>
+      <div className="on-offline-selection-field">
+        <label className="on-offline-selection-label">진행 방식</label>
         <div className="on-offline-selection">
           <label>
             <input
@@ -233,6 +235,7 @@ const StudyForm = () => {
               value="온라인"
               checked={onOffline === "온라인"} defaultChecked
               onChange={(e) => setOnOffline(e.target.value)}
+              className="on-offline-radio-input"
             />
             온라인
           </label>
@@ -243,6 +246,7 @@ const StudyForm = () => {
               value="오프라인"
               checked={onOffline === "오프라인"}
               onChange={(e) => setOnOffline(e.target.value)}
+              className="on-offline-radio-input"
             />
             오프라인
           </label>
@@ -253,6 +257,7 @@ const StudyForm = () => {
               value="온/오프라인"
               checked={onOffline === "온/오프라인"}
               onChange={(e) => setOnOffline(e.target.value)}
+              className="on-offline-radio-input"
             />
             온/오프라인
           </label>
@@ -260,8 +265,8 @@ const StudyForm = () => {
       </div>
 
       {/* Roles */}
-      <div>
-        <label>요구하는 역할</label>
+      <div className="role-selection-field">
+        <label className="role-selection-label">요구하는 역할</label>
         <div className="role-radio-buttons">
           <label>
             <input
@@ -269,7 +274,7 @@ const StudyForm = () => {
               name="role"
               value="백엔드" defaultChecked
               checked={roles.includes("백엔드")}
-              onChange={handleRolesChange}
+              onChange={handleRolesChange} className="role-radio-input"
             />
             백엔드
           </label>
@@ -279,7 +284,7 @@ const StudyForm = () => {
               name="role"
               value="프론트엔드"
               checked={roles.includes("프론트엔드")}
-              onChange={handleRolesChange}
+              onChange={handleRolesChange} className="role-radio-input"
             />
             프론트엔드
           </label>
@@ -289,7 +294,7 @@ const StudyForm = () => {
               name="role"
               value="풀스택"
               checked={roles.includes("풀스택")}
-              onChange={handleRolesChange}
+              onChange={handleRolesChange} className="role-radio-input"
             />
             풀스택
           </label>
@@ -297,8 +302,8 @@ const StudyForm = () => {
       </div>
 
       {/* Stars */}
-      <div>
-        <label>요구하는 평점</label>
+      <div className="star-rating-field">
+        <label className="star-rating-label">요구하는 평점</label>
         <div className="star-rating">
           {[1, 2, 3, 4, 5].map((star) => (
             <span
@@ -317,27 +322,27 @@ const StudyForm = () => {
       </div>
 
       {/* Title and Content */}
-      <div>
-        <label>제목</label>
+      <div className="study-title-field">
+        <label className="study-title-label">제목</label>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="스터디 제목"
+          placeholder="스터디 제목"  className="study-title-input"
         />
       </div>
 
-      <div>
-        <label>내용</label>
+      <div className="study-content-field">
+        <label className="study-content-label">내용</label>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="스터디 내용"
+          placeholder="스터디 내용" className="study-content-textarea"
         />
       </div>
 
       {/* Submit Button */}
-      <button onClick={handleSubmit}>스터디 생성</button>
+      <button onClick={handleSubmit} className="submit-button">스터디 생성</button>
     </div>
   );
 };

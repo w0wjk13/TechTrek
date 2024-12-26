@@ -14,7 +14,7 @@
   margin-bottom: 15px;
   text-transform: capitalize;
   letter-spacing: 0.5px;
-  background-image: linear-gradient(to right, #6C63FF, #FF6347); /* 그라디언트 효과 */
+  background-image: linear-gradient(to right, #4F92B8, #F7C93B); /* 그라디언트 효과 */
   background-repeat: no-repeat;
   background-position: bottom;
   background-size: 100% 3px; /* 그라디언트 밑줄 */
@@ -51,8 +51,8 @@
 }
 
 .location-select:focus {
-  border-color: #6C63FF; /* 포커스 시 보라색 테두리 */
-  box-shadow: 0 0 5px rgba(108, 99, 255, 0.5); /* 포커스 시 부드러운 그림자 */
+  border-color: #4F92B8; /* 포커스 시 보라색 테두리 */
+  box-shadow: 0 0 5px rgba(53, 122, 146, 0.3); /* 포커스 시 부드러운 그림자 */
 }
 
 /* 기술 스택 체크박스 그룹 */
@@ -106,7 +106,7 @@
 
 /* 클릭된 상태의 스타일 */
 .tech-stack-checkbox-item input:checked + label {
-  background-color: #6C63FF; /* 선택된 항목의 배경색 */
+  background-color: #4F92B8; /* 선택된 항목의 배경색 */
   color: white; /* 선택된 항목의 텍스트 색상 */
 }
 
@@ -118,7 +118,7 @@
 /* 경고 메시지 */
 .tech-stack-warning {
   font-size: 0.9rem;
-  color: #FF5733;
+  color: #ff416c;
   margin-top: 10px;
   font-weight: bold;
 }
@@ -136,7 +136,7 @@
   font-weight: bold;
   margin-bottom: 15px; /* 아래 간격 줄임 */
   display: block;
-  color: #444;
+  color: #4A4A4A;
   text-transform: uppercase; /* 레이블에 대문자 적용 */
 }
 
@@ -173,10 +173,10 @@
 
 /* 체크박스를 선택했을 때 스타일 */
 .role-checkbox-group .role-checkbox-item input:checked + label {
-  background-color: #6C63FF; /* 선택된 항목의 배경색 */
+  background-color: #4F92B8; /* 선택된 항목의 배경색 */
   color: white; /* 선택된 항목의 텍스트 색상 */
-  border-color: #6C63FF; /* 선택된 항목의 테두리 색상 */
-  box-shadow: 0px 4px 10px rgba(108, 99, 255, 0.3); /* 선택된 항목의 그림자 */
+  border-color: #357A92; /* 선택된 항목의 테두리 색상 */
+ 
 }
 
 /* 마우스 오버 시 배경색 변경 */
@@ -187,7 +187,7 @@
 
 /* 선택된 항목이 비활성화된 상태에서 마우스 오버 시 배경색 변경 */
 .role-checkbox-group .role-checkbox-item input:checked + label:hover {
-  background-color: #5a54d7;
+  background-color: #4F92B8;
   transform: scale(1.05);
 }
 
@@ -203,7 +203,7 @@
   font-weight: bold;
   margin-bottom: 10px;
   display: block;
-  color: #444;
+  color: #4A4A4A;
   text-transform: uppercase; /* 레이블에 대문자 적용 */
 }
 
@@ -241,10 +241,10 @@
 
 /* 체크박스를 선택했을 때 스타일 */
 .method-checkbox-group .method-checkbox-item input:checked + label {
-  background-color: #6C63FF; /* 선택된 항목의 배경색 */
+  background-color: #4F92B8; /* 선택된 항목의 배경색 */
   color: white; /* 선택된 항목의 텍스트 색상 */
-  border-color: #6C63FF; /* 선택된 항목의 테두리 색상 */
-  box-shadow: 0px 4px 15px rgba(108, 99, 255, 0.3); /* 선택된 항목의 그림자 */
+  border-color: #357A92; /* 선택된 항목의 테두리 색상 */
+  
 }
 
 /* 마우스 오버 시 배경색 변경 */
@@ -255,7 +255,7 @@
 
 /* 선택된 항목이 비활성화된 상태에서 마우스 오버 시 배경색 변경 */
 .method-checkbox-group .method-checkbox-item input:checked + label:hover {
-  background-color: #5a54d7;
+  background-color: #4F92B8;
   transform: scale(1.05);
 }
 
@@ -290,8 +290,8 @@
 }
 
 .search-input:focus {
-  border-color: #6C63FF; /* 포커스 시 보라색 테두리 */
-  box-shadow: 0 0 5px rgba(108, 99, 255, 0.5); /* 포커스 시 부드러운 그림자 */
+  border-color: #4F92B8; /* 포커스 시 보라색 테두리 */
+  box-shadow: 0 0 5px rgba(79, 146, 184, 0.3); /* 포커스 시 부드러운 그림자 */
 }
 
 /* 검색 버튼 */
@@ -299,7 +299,7 @@
   padding: 15px 25px; /* 패딩을 적당히 유지하면서 버튼 크기 조절 */
   font-size: 1rem; /* 글자 크기 살짝 키움 */
   font-weight: 400; /* 글자 두께 약간 증가 */
-  background-color: #6C63FF; /* 버튼 배경색 */
+  background-color: #4F92B8; /* 버튼 배경색 */
   color: white;
   border: none; /* 테두리 없앰 */
   border-radius: 30px; /* 더 둥근 모서리 */
@@ -316,14 +316,14 @@
 
 /* 마우스 오버 시 스타일 */
 .search-action-button:hover {
-  background-color: #5a54d7; /* 마우스 오버 시 배경색 */
+  background-color: #4F92B8; /* 마우스 오버 시 배경색 */
   transform: scale(1.05); /* 버튼 크기 확대 */
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
 }
 
 /* 클릭 시 스타일 */
 .search-action-button:active {
-  background-color: #4e45c0; /* 클릭 시 더 어두운 배경색 */
+  background-color: #4F92B8; /* 클릭 시 더 어두운 배경색 */
   transform: scale(1); /* 클릭 시 크기 리셋 */
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2); /* 클릭 시 더 강한 그림자 효과 */
 }
@@ -382,7 +382,7 @@
 }
 
 .view-mode-button.active {
-  background-color: #007bff;
+  background-color: #4F92B8;
   color: #fff;
 }
 
@@ -427,7 +427,7 @@
 
 .result-detail-button {
   padding: 8px 16px;
-  background-color: #007bff;
+  background-color: #4F92B8;
   color: white;
   border: none;
   cursor: pointer;
@@ -436,7 +436,7 @@
 }
 
 .result-detail-button:hover {
-  background-color: #0056b3;
+  background-color: #3b82f6;
 }
 
 /* 페이지네이션 컨테이너 */
@@ -455,7 +455,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   padding: 5px 10px;
-  color: #007bff;
+  color: #4F92B8;
   font-weight: normal;
   border-radius: 5px;  /* 테두리 둥글게 처리 */
 }
@@ -469,8 +469,8 @@
 .pagination span.active {
   font-weight: bold;
   color: #fff;
-  background-color: #007bff;  /* 활성화된 페이지 배경색 */
-  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);  /* 그림자 효과 */
+  background-color: #4F92B8;  /* 활성화된 페이지 배경색 */
+  box-shadow: 0 2px 4px rgba(79, 146, 184, 0.2);  /* 그림자 효과 */
   text-decoration: none;
 }
 

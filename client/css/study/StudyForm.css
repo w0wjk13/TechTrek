@@ -1,0 +1,230 @@
+/* 전체 폼 컨테이너 */
+.study-create-form {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px;
+    border-radius: 12px;
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* 제목 스타일 */
+  .study-create-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: #000; /* 텍스트 색상은 검정색 */
+  }
+  
+  /* 각 입력 필드 컨테이너 */
+  .study-close-date-field,
+  .study-count-field,
+  .study-location-field,
+  .study-district-field,
+  .tech-stack-field,
+  .on-offline-selection-field,
+  .role-selection-field,
+  .star-rating-field,
+  .study-title-field,
+  .study-content-field {
+    margin-bottom: 25px;
+  }
+  
+  /* 레이블 스타일 */
+  .study-close-date-label,
+  .study-count-label,
+  .study-location-label,
+  .study-district-label,
+  .tech-stack-label,
+  .on-offline-selection-label,
+  .role-selection-label,
+  .star-rating-label,
+  .study-title-label,
+  .study-content-label {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: #000; /* 텍스트 색상은 검정색 */
+  }
+  
+  /* 인풋 스타일 */
+  .study-close-date-input,
+  .study-count-select,
+  .study-location-select,
+  .study-district-select,
+  .study-title-input,
+  .study-content-textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    margin-top: 8px;
+    background-color: #f0f0f0;
+    transition: border-color 0.3s ease;
+  }
+  
+  .study-close-date-input:focus,
+  .study-count-select:focus,
+  .study-location-select:focus,
+  .study-district-select:focus,
+  .study-title-input:focus,
+  .study-content-textarea:focus {
+    border-color: #3B9AE1; /* 데자뷰 블루 */
+    outline: none;
+  }
+  
+  /* 텍스트 영역 스타일 */
+  .study-content-textarea {
+    height: 180px;
+    resize: vertical;
+  }
+  
+  /* 선택된 버튼 스타일 */
+  .study-count-select,
+  .study-location-select,
+  .study-district-select {
+    max-width: 250px;
+    margin-top: 8px;
+    background-color: #fff;
+    border-color: #ccc;
+  }
+  
+  /* 기술 스택 버튼 스타일 */
+  .tech-stack-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .tech-stack-button {
+    padding: 10px 20px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 14px;
+    color: #000; /* 텍스트 색상은 검정색 */
+  }
+  
+  .tech-stack-button.selected {
+    background-color: #3B9AE1; /* 데자뷰 블루 */
+    color: white;
+  }
+  
+  .tech-stack-button:disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+  }
+  
+  /* 온/오프라인 선택 라디오 버튼 스타일 */
+  .on-offline-selection {
+    display: flex;
+    gap: 20px;
+    font-size: 16px;
+  }
+  
+  .on-offline-radio-input {
+    margin-right: 5px;
+  }
+  
+  .on-offline-radio-input:checked + label {
+    font-weight: bold;
+    color: #3B9AE1; /* 데자뷰 블루 */
+  }
+  
+  /* 역할 선택 라디오 버튼 스타일 */
+  .role-radio-buttons {
+    display: flex;
+    gap: 20px;
+    font-size: 16px;
+  }
+  
+  .role-radio-input {
+    margin-right: 5px;
+  }
+  
+  .role-radio-input:checked + label {
+    font-weight: bold;
+    color: #3B9AE1; /* 데자뷰 블루 */
+  }
+  
+  /* 별점 스타일 */
+  .star-rating {
+    font-size: 24px;
+  }
+  
+  .star-rating span {
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  .star-rating .filled {
+    color: #FFD700;
+  }
+  
+  .star-rating .empty {
+    color: #D3D3D3;
+  }
+  
+  /* 제출 버튼 스타일 */
+  .submit-button {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background-color: #3B9AE1; /* 데자뷰 블루 */
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: background-color 0.3s;
+    text-align: center;
+  }
+  
+  .submit-button:hover {
+    background-color: #3187C2; /* 데자뷰 블루 - hover 시 어두운 색상 */
+  }
+  
+  /* 구와 지역 선택 폼을 온라인일 경우 숨김 */
+  .study-location-field,
+  .study-district-field {
+    display: block;
+  }
+  
+  .study-location-field[style*="none"],
+  .study-district-field[style*="none"] {
+    display: none;
+  }
+  
+  /* 추가 스타일 */
+  .study-location-field,
+  .study-district-field {
+    border: 2px solid #f1f1f1;
+    padding: 12px;
+    background-color: #fff;
+    border-radius: 8px;
+  }
+  
+  .study-location-field select,
+  .study-district-field select {
+    font-size: 16px;
+    padding: 8px;
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  
+  /* 포커스 상태 스타일 */
+  .study-location-field select:focus,
+  .study-district-field select:focus {
+    border-color: #3B9AE1; /* 데자뷰 블루 */
+    outline: none;
+  }
+  
