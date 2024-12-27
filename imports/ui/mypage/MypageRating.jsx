@@ -77,24 +77,23 @@ const MypageRating = () => {
   }, {});
 
   return (
-    <div>
-      <div className="mypage-nav">
-        <MypageNav />
-      </div>
-      <h3>내 평가 목록</h3>
+    <div className="mypage-nav">
+      <MypageNav />
+      <div className="myrating">
+      <div className="myrating-title">평가 목록</div>
 
       {Object.keys(groupedRatings).length > 0 ? (
-        <div>
+        <div className="myrating-list">
           {Object.entries(groupedRatings).map(([studyId, studyRatings], index) => (
-            <div key={studyId}>
+            <div key={studyId} className="myrating-study-item">
               {/* 각 스터디 ID별로 구분해서 출력 */}
-              <h4>스터디 ID: {studyId}</h4>
+              <div className="myrating-study-id" onClick={() => navigate(`/study/detail/${studyId}`)}> {studyRatings[0].studyTitle}</div>
               {studyRatings.map((rating, idx) => (
-                <div key={idx} className="rating-item">
-                  <div><strong>평가자:</strong> {rating.userId}</div> {/* 평가자 정보 출력 */}
-                  <div><strong>평가 점수:</strong> {rating.rating}</div>
+                <div key={idx} className="myrating-rating-item">
+                  <div className="myrating-user"><strong>평가자:</strong> {rating.userId}</div> {/* 평가자 정보 출력 */}
+                  <div className="myrating-score"><strong>평가 점수:</strong> {rating.rating}</div>
 
-                  <div><strong>추천 항목:</strong></div>
+                  <div className="myrating-recommendations"><strong>추천 항목:</strong></div>
                   <ul>
                     {Object.entries(rating.recommendation).map(([key, value]) => (
                       value === 1 ? <li key={key}>{key}: {value}</li> : null
@@ -102,18 +101,19 @@ const MypageRating = () => {
                   </ul>
                   
                   {rating.feedback && rating.feedback.trim() !== '' && (
-                    <div><strong>코멘트:</strong> {rating.feedback}</div>
+                    <div className="myrating-feedback"><strong>코멘트:</strong> {rating.feedback}</div>
                   )}
-                  <div><strong>평가 작성일:</strong> {new Date(rating.createdAt).toLocaleString()}</div>
+                  <div className="myrating-created-at"><strong>평가 작성일:</strong> {new Date(rating.createdAt).toLocaleString()}</div>
                   <br/>
                 </div>
-              ))}<hr />
+              ))}<hr className="myrating-divider" />
             </div>
           ))}
         </div>
       ) : (
-        <p>받은 평가가 없습니다.</p>
+        <p className="myrating-no-feedback">받은 평가가 없습니다.</p>
       )}
+    </div>
     </div>
   );
 };
