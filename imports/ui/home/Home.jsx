@@ -119,19 +119,19 @@ export default function Home() {
 
   return (
     <div className="home-container">
-     <h1 className="search-title text-left text-3xl font-semibold text-gray-700 mb-4 border-b-4 border-indigo-500 pb-1 capitalize tracking-wide">
+     <h1 className="home-search-title">
     스터디 검색
     </h1>
 
-      <div className="location-select-container">
-      <label htmlFor="city" className="location-label">지역</label>
-    <div className="location-select-group">
+      <div className="home-location-select-container">
+      <label htmlFor="city" className="home-location-label">지역</label>
+    <div className="home-location-select-group">
       
       <select
         id="city"
         value={selectedCity}
         onChange={(e) => setSelectedCity(e.target.value)}
-        className="location-select"
+        className="home-location-select"
       >
         <option value="">선택하세요</option>
         {citys.map((city, index) => (
@@ -142,13 +142,13 @@ export default function Home() {
       </select>
     </div>
 
-    <div className="location-select-group">
+    <div className="home-location-select-group">
     
       <select
         id="gubun"
         value={selectedGubun}
         onChange={(e) => setSelectedGubun(e.target.value)}
-        className="location-select"
+        className="home-location-select"
       >
         <option value="">선택하세요</option>
         {selectedCity &&
@@ -163,16 +163,16 @@ export default function Home() {
     </div>
   </div>
 
-  <div className="tech-stack-checkbox-group">
-  <label className="tech-stack-label">기술 스택 </label>
-  <div className="tech-stack-checkbox-list">
+ <div className="home-tech-stack-checkbox-group">
+  <label className="home-tech-stack-label">기술 스택</label>
+  <div className="home-tech-stack-checkbox-list">
     {techStacks.map((stack, index) => (
-      <div key={index} className="tech-stack-checkbox-item">
+      <div key={index} className="home-tech-stack-checkbox-item">
         <input
           type="checkbox"
           id={stack}
           value={stack}
-          className="tech-stack-checkbox"
+          className="home-tech-stack-checkbox"
           checked={techStack.includes(stack)}
           onChange={(e) => {
             const value = e.target.value;
@@ -190,13 +190,13 @@ export default function Home() {
       </div>
     ))}
   </div>
-  {techStack.length >= 5 && <p className="tech-stack-warning">최대 5개까지 선택 가능합니다.</p>}
+  {techStack.length >= 5 && <p className="home-tech-stack-warning">최대 5개까지 선택 가능합니다.</p>}
 </div>
 
-<div className="role-checkbox-group">
+<div className="home-role-checkbox-group">
   <label>역할</label>
   {roles.map((role, index) => (
-    <div key={index} className="role-checkbox-item">
+    <div key={index} className="home-role-checkbox-item">
       <input
         type="checkbox"
         id={role}
@@ -214,9 +214,9 @@ export default function Home() {
   ))}
 </div>
 
-<div className="method-checkbox-group">
+<div className="home-method-checkbox-group">
   <label>진행 방식</label>
-  <div className="method-checkbox-item">
+  <div className="home-method-checkbox-item">
     <input
       type="checkbox"
       id="online"
@@ -231,7 +231,7 @@ export default function Home() {
     />
     <label htmlFor="online">온라인</label>
   </div>
-  <div className="method-checkbox-item">
+  <div className="home-method-checkbox-item">
     <input
       type="checkbox"
       id="offline"
@@ -246,7 +246,7 @@ export default function Home() {
     />
     <label htmlFor="offline">오프라인</label>
   </div>
-  <div className="method-checkbox-item">
+  <div className="home-method-checkbox-item">
     <input
       type="checkbox"
       id="onOffline"
@@ -263,41 +263,41 @@ export default function Home() {
   </div>
 </div>
 
-<div className="search-bar-container">
-<div className="search-input-group">
+<div className="home-search-bar-container">
+<div className="home-search-input-group">
   <input
     type="text"
     id="searchTitle"
     value={searchQuery}
     onChange={(e) => setSearchQuery(e.target.value)}
     placeholder="스터디 제목을 입력해보세요"
-    className="search-input"
+    className="home-search-input"
   />
 </div>
-<button onClick={handleSearch} className="search-action-button">검색하기</button>
+<button onClick={handleSearch} className="home-search-action-button">검색하기</button>
 </div>
 
-      <div className="search-results">
+      <div className="home-search-results">
 
-      <div class="toggle-group">
+      <div class="home-toggle-group">
   <label 
-    class="toggle-label"
+    class="home-toggle-label"
     onClick={() => handleSortChange('recent')}
     style={sortOption === 'recent' ? { fontWeight: 'bold', color: '#3b82f6' } : {}}
   >
     최근 등록순
   </label>
-  <span class="separator">|</span>
+  <span class="home-separator">|</span>
   <label 
-    class="toggle-label"
+    class="home-toggle-label"
     onClick={() => handleSortChange('views')}
     style={sortOption === 'views' ? { fontWeight: 'bold', color: '#3b82f6' } : {}}
   >
     조회순
   </label>
-  <span class="separator">|</span>
+  <span class="home-separator">|</span>
   <label 
-    class="toggle-label"
+    class="home-toggle-label"
     onClick={() => handleSortChange('deadline')}
     style={sortOption === 'deadline' ? { fontWeight: 'bold', color: '#3b82f6' } : {}}
   >
@@ -305,7 +305,7 @@ export default function Home() {
   </label>
 </div>
 
-<div className="view-mode-toggle">
+<div className="home-view-mode-toggle">
         <button onClick={() => toggleViewMode('card')} className={viewMode === 'card' ? 'active' : ''}>
           카드 뷰
         </button>
@@ -316,44 +316,44 @@ export default function Home() {
 
         {searchResults.length > 0 ? (
           <>
-             <ul className={`search-results-list ${viewMode}`}>
+             <ul className={`home-search-results-list ${viewMode}`}>
           {searchResults.map((result) => {
             const user = Meteor.users.findOne(result.userId);
             const username = user?.profile?.nickname || user?.username || "알 수 없음";
             return (
-              <li key={result._id} className="search-result-item">
-                <p className="result-due-date">마감일: {formatDDay(result.studyClose)}</p>
-                <div className="result-status">모집상태: {result.status}</div>
+              <li key={result._id} className="home-search-result-item">
+                <p className="home-result-due-date">마감일: {formatDDay(result.studyClose)}</p>
+                <div className="home-result-status">모집상태: {result.status}</div>
 
                 {Array.isArray(result.onOffline) ?
                   !result.onOffline.includes("온라인") && (
-                    <div className="result-location">지역: {formatAddress(result.address)}</div>
+                    <div className="home-result-location">지역: {formatAddress(result.address)}</div>
                   ) : 
                   result.onOffline !== "온라인" && (
-                    <div className="result-location">지역: {formatAddress(result.address)}</div>
+                    <div className="home-result-location">지역: {formatAddress(result.address)}</div>
                   )
                 }
 
-                <div className="result-mode">진행방식: {formatOnOffline(result.onOffline)}</div>
-                <strong className="result-title">{result.title}</strong><br /><br />
+                <div className="home-result-mode">진행방식: {formatOnOffline(result.onOffline)}</div>
+                <strong className="home-result-title">{result.title}</strong><br /><br />
 
-                <div className="result-roles">역할: {result.roles}</div>
-                <div className="result-tech-stack">기술 스택: {result.techStack && Array.isArray(result.techStack) ? result.techStack.join(", ") : "기술 스택 없음"}</div>
-                <div className="result-author">작성자: {result.userId}</div>
-                <div className="result-views">조회수: {result.views}</div>
-                <div className="result-rating">평점: {result.rating}</div>
-                <button onClick={() => handleViewDetail(result._id)} className="result-detail-button">상세 보기</button>
+                <div className="home-result-roles">역할: {result.roles}</div>
+                <div className="home-result-tech-stack">기술 스택: {result.techStack && Array.isArray(result.techStack) ? result.techStack.join(", ") : "기술 스택 없음"}</div>
+                <div className="home-result-author">작성자: {result.userId}</div>
+                <div className="home-result-views">조회수: {result.views}</div>
+                <div className="home-result-rating">평점: {result.rating}</div>
+                <button onClick={() => handleViewDetail(result._id)} className="home-result-detail-button">상세 보기</button>
               </li>
             );
           })}
         </ul>
 
             {/* Pagination Controls */}
-            <div className="pagination">
+            <div className="home-pagination">
   {/* Previous Link */}
   <span
     onClick={() => handlePageChange(currentPage - 1)}
-    className={currentPage === 1 ? "disabled" : "pagination-link"}
+    className={currentPage === 1 ? "disabled" : "home-pagination-link"}
   >
     이전
   </span>
@@ -363,7 +363,7 @@ export default function Home() {
     <span
       key={index + 1}
       onClick={() => handlePageChange(index + 1)}
-      className={index + 1 === currentPage ? "active pagination-link" : "pagination-link"}
+      className={index + 1 === currentPage ? "active pagination-link" : "home-pagination-link"}
     >
       {index + 1}
     </span>
@@ -372,7 +372,7 @@ export default function Home() {
   {/* Next Link */}
   <span
     onClick={() => handlePageChange(currentPage + 1)}
-    className={currentPage === totalPages ? "disabled" : "pagination-link"}
+    className={currentPage === totalPages ? "disabled" : "home-pagination-link"}
   >
     다음
   </span>
@@ -380,8 +380,8 @@ export default function Home() {
 
           </>
         ) : (
-          <div class="no-results">
-          <span class="icon">⚠️</span>
+          <div class="home-no-results">
+          <span class="home-icon">⚠️</span>
           <span>검색 결과가 없습니다.</span>
         </div>
         )}

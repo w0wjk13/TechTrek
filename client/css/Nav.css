@@ -1,16 +1,17 @@
 /* 네비게이션 바 스타일 */
 .navbar {
   display: flex;
-  justify-content: center; /* 네비게이션 바를 중앙 정렬 */
+  justify-content: center; /* 중앙 정렬 */
   align-items: center;
-  padding: 15px 30px;
+  padding: 15px 45px;
   background-color: transparent; /* 배경을 투명하게 설정 */
   color: #333;
   position: relative;
   width: 100%; /* 전체 너비를 차지하도록 설정 */
   z-index: 100; /* 네비게이션 바가 다른 요소 위로 오도록 설정 */
-  border: 1px solid black;
+  margin-left: 400px; /* 네비게이션 바를 오른쪽으로 조금 이동 */
 }
+
 
 /* navbar-container 스타일 */
 .navbar-container {

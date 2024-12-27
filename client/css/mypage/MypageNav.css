@@ -1,0 +1,48 @@
+/* 마이페이지 네비게이션 바 컨테이너 */
+.mypage-navbar-container {
+  width: 100%;
+  background-color: #4F92B8; /* 데자뷰 블루 */
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* 마이페이지 네비게이션 바 */
+.mypage-navbar {
+  width: 100%;
+  max-width: 1200px; /* 최대 너비 설정 */
+  display: flex;
+  justify-content: space-around;
+}
+
+/* 마이페이지 네비게이션 리스트 */
+.mypage-navbar-list {
+  list-style: none;
+  display: flex;
+  margin: 10;
+  padding: 0;
+}
+
+/* 마이페이지 네비게이션 항목 */
+.mypage-navbar-item {
+  margin: 0 55px;
+}
+
+/* 마이페이지 네비게이션 링크 */
+.mypage-navbar-link {
+  text-decoration: none;
+  font-size: 18px;
+  color: white; /* 기본 링크 색상 */
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+/* 마이페이지 링크 hover 효과 */
+.mypage-navbar-link:hover {
+  color: #f0f0f0; /* hover 시 색상 */
+}
+
+/* 마이페이지 링크 클릭 상태 */
+.mypage-navbar-link:active {
+  color: #a0c2d6; /* 클릭 시 색상 */
+}

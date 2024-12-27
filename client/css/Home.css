@@ -6,7 +6,7 @@
 }
 
 /* 제목 스타일 */
-.search-title {
+.home-search-title {
   text-align: left;
   font-size: 2.2rem;
   font-weight: 600;
@@ -22,25 +22,25 @@
 }
 
 
-.location-select-container {
+.home-location-select-container {
   display: flex; /* 수평 배치 */
   align-items: center; /* 세로 중앙 정렬 */
   gap: 20px; /* 레이블과 셀렉트 박스 간의 간격 */
 }
 
-.location-select-group {
+.home-location-select-group {
   display: flex; /* 내부 요소를 수평으로 배치 */
   flex-direction: row; /* 수평 정렬 */
   align-items: center; /* 수직 중앙 정렬 */
 }
 
-.location-label {
+.home-location-label {
   font-weight: bold; /* 글자 두께 굵게 */
   font-size: 1.2rem; /* 글자 크기 */
   margin-right: 10px; /* 레이블과 셀렉트 박스 간의 간격 */
 }
 
-.location-select {
+.home-location-select {
   padding: 8px;
   font-size: 1rem; /* 글자 크기 */
   border: 2px solid #ddd;
@@ -50,19 +50,19 @@
   transition: all 0.3s ease;
 }
 
-.location-select:focus {
+.home-location-select:focus {
   border-color: #4F92B8; /* 포커스 시 보라색 테두리 */
   box-shadow: 0 0 5px rgba(53, 122, 146, 0.3); /* 포커스 시 부드러운 그림자 */
 }
 
 /* 기술 스택 체크박스 그룹 */
-.tech-stack-checkbox-group {
+.home-tech-stack-checkbox-group {
   margin-top: 30px;
   width: 80%;
 }
 
 /* 기술 스택 레이블 */
-.tech-stack-label {
+.home-tech-stack-label {
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 10px;
@@ -70,7 +70,7 @@
 }
 
 /* 기술 스택 체크리스트 */
-.tech-stack-checkbox-list {
+.home-tech-stack-checkbox-list {
   display: flex;
   flex-wrap: wrap;
   gap: 10px; /* 간격을 조정하여 각 항목 사이에 여백 추가 */
@@ -79,7 +79,7 @@
 }
 
 /* 각 체크박스 항목 */
-.tech-stack-checkbox-item {
+.home-tech-stack-checkbox-item {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -89,12 +89,12 @@
 }
 
 /* 숨겨진 체크박스 */
-.tech-stack-checkbox {
-  display: none;
+.home-tech-stack-checkbox {
+  display: none !important;
 }
 
 /* 클릭 가능한 항목 디자인 */
-.tech-stack-checkbox-item label {
+.home-tech-stack-checkbox-item label {
   font-size: 1rem;
   padding: 8px 15px;
   background-color: #f0f0f0;
@@ -105,18 +105,18 @@
 }
 
 /* 클릭된 상태의 스타일 */
-.tech-stack-checkbox-item input:checked + label {
+.home-tech-stack-checkbox-item input:checked + label {
   background-color: #4F92B8; /* 선택된 항목의 배경색 */
   color: white; /* 선택된 항목의 텍스트 색상 */
 }
 
 /* 마우스 오버 시 배경색 변경 */
-.tech-stack-checkbox-item label:hover {
+.home-tech-stack-checkbox-item label:hover {
   background-color: #ddd;
 }
 
 /* 경고 메시지 */
-.tech-stack-warning {
+.home-tech-stack-warning {
   font-size: 0.9rem;
   color: #ff416c;
   margin-top: 10px;
@@ -125,13 +125,13 @@
 
 
 /* 역할 체크박스 그룹 */
-.role-checkbox-group {
+.home-role-checkbox-group {
   width: 100%;
   margin-top: 20px
 }
 
 /* 역할 레이블 */
-.role-checkbox-group label {
+.home-role-checkbox-group label {
   font-size: 1.3rem; /* 레이블 글꼴 크기 축소 */
   font-weight: bold;
   margin-bottom: 15px; /* 아래 간격 줄임 */
@@ -141,7 +141,7 @@
 }
 
 /* 역할 체크박스 리스트 */
-.role-checkbox-group .role-checkbox-item {
+.home-role-checkbox-group .home-role-checkbox-item {
   display: inline-block; /* 항목을 수평으로 배치 */
   margin-right: 15px; /* 항목 간 간격 줄임 */
   font-size: 0.9rem; /* 항목 글꼴 크기 축소 */
@@ -152,12 +152,12 @@
 }
 
 /* 숨겨진 체크박스 */
-.role-checkbox-group .role-checkbox-item input {
+.home-role-checkbox-group .home-role-checkbox-item input {
   display: none; /* 실제 체크박스 숨김 */
 }
 
 /* 클릭 가능한 항목 디자인 */
-.role-checkbox-group .role-checkbox-item label {
+.home-role-checkbox-group .home-role-checkbox-item label {
   font-size: 1rem; /* 글꼴 크기 축소 */
   padding: 10px 12px; /* 패딩 줄임 */
   background-color: #f5f5f5;
@@ -172,7 +172,7 @@
 }
 
 /* 체크박스를 선택했을 때 스타일 */
-.role-checkbox-group .role-checkbox-item input:checked + label {
+.home-role-checkbox-group .home-role-checkbox-item input:checked + label {
   background-color: #4F92B8; /* 선택된 항목의 배경색 */
   color: white; /* 선택된 항목의 텍스트 색상 */
   border-color: #357A92; /* 선택된 항목의 테두리 색상 */
@@ -180,25 +180,25 @@
 }
 
 /* 마우스 오버 시 배경색 변경 */
-.role-checkbox-group .role-checkbox-item label:hover {
+.home-role-checkbox-group .home-role-checkbox-item label:hover {
   background-color: #e0e0e0;
   transform: scale(1.05); /* 마우스 오버 시 항목 크기 약간 커짐 */
 }
 
 /* 선택된 항목이 비활성화된 상태에서 마우스 오버 시 배경색 변경 */
-.role-checkbox-group .role-checkbox-item input:checked + label:hover {
+.home-role-checkbox-group .home-role-checkbox-item input:checked + label:hover {
   background-color: #4F92B8;
   transform: scale(1.05);
 }
 
 /* 진행 방식 체크박스 그룹 */
-.method-checkbox-group {
+.home-method-checkbox-group {
   width: 100%;
   padding: 10px 0;
 }
 
 /* 진행 방식 레이블 */
-.method-checkbox-group label {
+.home-method-checkbox-group label {
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 10px;
@@ -208,7 +208,7 @@
 }
 
 /* 진행 방식 체크박스 항목 */
-.method-checkbox-group .method-checkbox-item {
+.home-method-checkbox-group .home-method-checkbox-item {
   display: inline-block; /* 항목을 수평으로 배치 */
   margin-right: 15px; /* 항목 간 간격 좁힘 */
   margin-bottom: 10px; /* 아래 간격 좁힘 */
@@ -220,12 +220,12 @@
 }
 
 /* 숨겨진 체크박스 */
-.method-checkbox-group .method-checkbox-item input {
+.home-method-checkbox-group .home-method-checkbox-item input {
   display: none; /* 실제 체크박스 숨김 */
 }
 
 /* 클릭 가능한 항목 디자인 */
-.method-checkbox-group .method-checkbox-item label {
+.home-method-checkbox-group .home-method-checkbox-item label {
   font-size: 0.9rem; /* 레이블 폰트 크기 줄이기 */
   padding: 10px;
   background-color: #f5f5f5;
@@ -240,7 +240,7 @@
 }
 
 /* 체크박스를 선택했을 때 스타일 */
-.method-checkbox-group .method-checkbox-item input:checked + label {
+.home-method-checkbox-group .home-method-checkbox-item input:checked + label {
   background-color: #4F92B8; /* 선택된 항목의 배경색 */
   color: white; /* 선택된 항목의 텍스트 색상 */
   border-color: #357A92; /* 선택된 항목의 테두리 색상 */
@@ -248,19 +248,19 @@
 }
 
 /* 마우스 오버 시 배경색 변경 */
-.method-checkbox-group .method-checkbox-item label:hover {
+.home-method-checkbox-group .home-method-checkbox-item label:hover {
   background-color: #e0e0e0;
   transform: scale(1.05); /* 마우스 오버 시 항목 크기 약간 커짐 */
 }
 
 /* 선택된 항목이 비활성화된 상태에서 마우스 오버 시 배경색 변경 */
-.method-checkbox-group .method-checkbox-item input:checked + label:hover {
+.home-method-checkbox-group .home-method-checkbox-item input:checked + label:hover {
   background-color: #4F92B8;
   transform: scale(1.05);
 }
 
 /* 검색 바 컨테이너 */
-.search-bar-container {
+.home-search-bar-container {
   display: flex; /* 수평 배치 */
   align-items: center; /* 세로 중앙 정렬 */
   width: 100%;
@@ -268,7 +268,7 @@
 }
 
 /* 검색 입력 그룹 */
-.search-input-group {
+.home-search-input-group {
   display: flex;
   align-items: flex-start; /* 왼쪽 정렬 */
   justify-content: flex-start; /* 왼쪽 정렬 */
@@ -279,7 +279,7 @@
 }
 
 /* 검색 입력 필드 */
-.search-input {
+.home-search-input {
   width: 90%; /* 입력 필드의 너비 */
   padding: 12px 20px;
   font-size: 1rem;
@@ -289,13 +289,13 @@
   transition: all 0.3s ease;
 }
 
-.search-input:focus {
+.home-search-input:focus {
   border-color: #4F92B8; /* 포커스 시 보라색 테두리 */
   box-shadow: 0 0 5px rgba(79, 146, 184, 0.3); /* 포커스 시 부드러운 그림자 */
 }
 
 /* 검색 버튼 */
-.search-action-button {
+.home-search-action-button {
   padding: 15px 25px; /* 패딩을 적당히 유지하면서 버튼 크기 조절 */
   font-size: 1rem; /* 글자 크기 살짝 키움 */
   font-weight: 400; /* 글자 두께 약간 증가 */
@@ -315,21 +315,21 @@
 }
 
 /* 마우스 오버 시 스타일 */
-.search-action-button:hover {
+.home-search-action-button:hover {
   background-color: #4F92B8; /* 마우스 오버 시 배경색 */
   transform: scale(1.05); /* 버튼 크기 확대 */
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
 }
 
 /* 클릭 시 스타일 */
-.search-action-button:active {
+.home-search-action-button:active {
   background-color: #4F92B8; /* 클릭 시 더 어두운 배경색 */
   transform: scale(1); /* 클릭 시 크기 리셋 */
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2); /* 클릭 시 더 강한 그림자 효과 */
 }
 
 /* Container for the toggle options */
-.toggle-group {
+.home-toggle-group {
   display: flex;
   gap: 10px; /* Space between the labels and separators */
   margin: 20px 0;
@@ -337,7 +337,7 @@
 }
 
 /* Basic style for the toggle labels */
-.toggle-label {
+.home-toggle-label {
   font-size: 16px;
   font-weight: 500;
   color: #4a4a4a;
@@ -347,33 +347,33 @@
 }
 
 /* Hover effect for each label */
-.toggle-label:hover {
+.home-toggle-label:hover {
   color: #3b82f6;
   font-weight: 600;
 }
 
 /* Style for the active (selected) label */
-.toggle-label[style*="textDecoration: underline"] {
+.home-toggle-label[style*="textDecoration: underline"] {
   color: #3b82f6;
   font-weight: 600;
   text-decoration: underline;
 }
 
 /* Style for the separator */
-.separator {
+.home-separator {
   font-size: 18px;
   color: #b0b0b0; /* Light gray color for the separator */
   margin: 0 10px; /* Spacing around the separator */
 }
 
 /* 버튼 기본 스타일 */
-.view-mode-toggle {
+.home-view-mode-toggle {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
 }
 
-.view-mode-button {
+.home-view-mode-button {
   padding: 10px 20px;
   border: 1px solid #ccc;
   background-color: #fff;
@@ -381,51 +381,51 @@
   transition: background-color 0.3s, color 0.3s;
 }
 
-.view-mode-button.active {
+.home-view-mode-button.active {
   background-color: #4F92B8;
   color: #fff;
 }
 
 /* 리스트와 카드 뷰 스타일 */
-.search-results-list.card {
+.home-search-results-list.card {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1rem;
 }
 
-.search-results-list.list {
+.home-search-results-list.list {
   list-style-type: none;
   padding: 0;
 }
 
-.search-result-item {
+.home-search-result-item {
   padding: 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
   margin-bottom: 1rem;
 }
 
-.card .result-title {
+.home-card .home-result-title {
   font-size: 1.25rem;
   font-weight: bold;
   margin-bottom: 10px;
 }
 
-.list-item .result-title {
+.home-list-item .home-result-title {
   font-size: 1.25rem;
   font-weight: bold;
   margin-bottom: 10px;
 }
 
-.result-due-date,
-.result-status,
-.result-location,
-.result-mode {
+.home-result-due-date,
+.home-result-status,
+.home-result-location,
+.home-result-mode {
   font-size: 1rem;
   margin-bottom: 5px;
 }
 
-.result-detail-button {
+.home-result-detail-button {
   padding: 8px 16px;
   background-color: #4F92B8;
   color: white;
@@ -435,12 +435,12 @@
   margin-top: 10px;
 }
 
-.result-detail-button:hover {
+.home-result-detail-button:hover {
   background-color: #3b82f6;
 }
 
 /* 페이지네이션 컨테이너 */
-.pagination {
+.home-pagination {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -451,7 +451,7 @@
 }
 
 /* 각 페이지 번호 텍스트 스타일 */
-.pagination span {
+.home-pagination span {
   cursor: pointer;
   transition: all 0.3s ease;
   padding: 5px 10px;
@@ -461,12 +461,12 @@
 }
 
 /* 페이지 번호 텍스트 hover 상태 */
-.pagination span:hover {
+.home-pagination span:hover {
   background-color: #f0f0f0;  /* 배경색 변경 */
 }
 
 /* 활성화된 페이지 텍스트 스타일 */
-.pagination span.active {
+.home-pagination span.active {
   font-weight: bold;
   color: #fff;
   background-color: #4F92B8;  /* 활성화된 페이지 배경색 */
@@ -475,14 +475,14 @@
 }
 
 /* 비활성화된 텍스트 스타일 */
-.pagination span.disabled {
+.home-pagination span.disabled {
   color: #aaa;
   cursor: not-allowed;
   pointer-events: none;
 }
 
 /* 검색 결과 없음 메시지 스타일 */
-.no-results {
+.home-no-results {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -495,7 +495,7 @@
 }
 
 /* 아이콘 스타일 */
-.no-results .icon {
+.home-no-results .icon {
   font-size: 32px;
   color: #f39c12; /* 따뜻한 노란색 */
 }

@@ -1,0 +1,419 @@
+.mypage-content {
+    width: 100%;
+    max-width: 1200px;
+    border-radius: 10px;
+    padding: 20px;
+    /* 중앙 정렬 */
+    margin: 0 auto; /* 가로 중앙 정렬 */
+  }
+
+  /* 프로필 섹션 스타일 */
+.profile-section {
+  display: flex;
+  align-items: center;  /* 수직으로 가운데 정렬 */
+  justify-content: center;  /* 수평으로 가운데 정렬 */
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.profile-image-container {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px; /* 이미지와 텍스트 사이에 공간을 추가 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%; /* 이미지 원형으로 만들기 */
+  overflow: hidden; /* 원형 영역을 벗어난 부분을 잘라냄 */
+  background-color: #f0f0f0;  /* 이미지가 없는 경우 배경색 */
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지 비율에 맞게 자르기 */
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.profile-nickname {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  text-align: center;
+}
+/* 프로필 섹션 스타일 */
+.profile-section {
+    display: flex;
+    align-items: center;  /* 수직으로 가운데 정렬 */
+    justify-content: center;  /* 수평으로 가운데 정렬 */
+    padding: 20px;
+    margin: 20px 0;
+    /* 배경색 제거 */
+    border-radius: 10px; /* 원형 이미지와 텍스트 주변을 둥글게 */
+  }
+  
+  .profile-image-container {
+    width: 100px;
+    height: 100px;
+    margin-right: 20px; /* 이미지와 텍스트 사이에 공간을 추가 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%; /* 이미지 원형으로 만들기 */
+    overflow: hidden; /* 원형 영역을 벗어난 부분을 잘라냄 */
+  }
+  
+  .profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 이미지 비율에 맞게 자르기 */
+  }
+  
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .profile-nickname {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;  /* 닉네임 색상 */
+    margin: 0;
+    text-align: center;
+  }
+  
+  /* Progress Bar 전체 컨테이너 */
+.progress-bar-container {
+    position: relative; /* 위치 지정 */
+    width: 100%;
+  }
+  
+  /* Progress Bar */
+  .progress-bar {
+    width: 100%;
+    height: 20px; /* Progress Bar의 높이 */
+    background-color: #e0e0e0; /* 기본 배경색 */
+    border-radius: 10px;
+    position: relative; /* 자식 요소들이 겹칠 수 있도록 설정 */
+  }
+  
+  /* Progress Bar의 채워진 부분 */
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    position: relative; /* 텍스트가 해당 부분 위에 겹치도록 설정 */
+  }
+  
+  /* 평점 텍스트 (내 평점) */
+  .rating-text {
+    position: absolute;
+    top: -25px; /* Progress Bar 바로 위에 배치 */
+    right: 0; /* Progress Bar의 끝 점에 배치 */
+    transform: translateX(50%); /* 끝 점 위로 텍스트 위치 */
+    color: white; /* 텍스트 색상 */
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 2px 5px; /* 텍스트 주변에 여백 추가 */
+    background-color: rgba(0, 0, 0, 0.6); /* 배경색 추가 */
+    border-radius: 5px; /* 텍스트 배경 둥글게 */
+  }
+  
+  /* 평점 구간 표시 */
+  .rating-scale {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+  }
+  
+  /* 각 평점 점 */
+  .rating-point {
+    font-size: 1rem;
+    color: #4A4A4A;
+  }
+  
+  /* 평점이 높은 부분을 강조 */
+  .rating-point.highlight {
+    color: #4F92B8; /* 하이라이트 색상 */
+  }
+  
+
+ 
+  /* 사용자 추천 영역 */
+  .user-recommendation {
+    width: 100%;
+    max-width: 1000px;  /* 최대 너비 설정 */
+    margin: 0 auto;
+    margin-top: 20px;
+    padding: 20px;
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    line-height: 1.4;
+    background-color: transparent; /* 배경 제거 */
+  }
+  
+  /* 추천 항목 리스트 */
+  .recommendation-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;  /* 수평 정렬 */
+    justify-content: space-between;  /* 항목 사이에 일정한 간격 */
+    flex-wrap: wrap;  /* 화면 크기에 맞게 항목이 줄바꿈되도록 설정 */
+    gap: 15px;  /* 항목 사이의 간격 */
+  }
+  
+  /* 각 추천 항목 스타일 */
+  .recommendation-item {
+    display: flex;
+  align-items: center;
+  padding: 12px 20px;  /* 패딩을 넉넉하게 조정 */
+  background-color: #FFFAF0;  /* 배경을 연한 파란색으로 설정 (#4F92B8와 잘 어울리는 색상) */
+  border-radius: 8px;  /* 둥근 모서리 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* 부드러운 그림자 */
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  font-size: 1rem;  /* 텍스트 크기 설정 */
+  color: #333;  /* 기본 글자 색상 */
+  }
+  
+  /* 아이콘 스타일 */
+  .recommendation-item .icon {
+    font-size: 1.5rem; /* 아이콘 크기 축소 */
+    margin-right: 10px;
+    color: #5f6368; /* 아이콘 색상 */
+  }
+  
+  /* 항목 제목 스타일 */
+  .recommendation-item strong {
+    font-size: 1rem; /* 텍스트 크기 조정 */
+    color: #333;
+    font-weight: 500;
+    margin-right: 10px;
+    text-transform: capitalize;
+  }
+  
+  /* 항목 값 스타일 */
+  .recommendation-item span {
+    color: #757575;
+    font-size: 0.9rem; /* 텍스트 크기 축소 */
+    font-weight: 400;
+  }
+  
+/* 기술 스택 영역 */
+.tech-stack {
+    width: 100%;
+    max-width: 1100px;
+    margin-left: -30px;      /* 왼쪽 여백 제거 */
+    margin-right: auto; 
+    padding: 30px;
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    line-height: 1.6;
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  /* 기술 스택 제목 */
+  .tech-stack-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  
+  /* 기술 스택 리스트 */
+  .tech-stack-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  /* 기술 스택 항목 */
+  .tech-stack-item {
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    border-left: 4px solid #4F92B8;  /* 좌측에 색상 구분선 */
+    padding-left: 20px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+  }
+  
+  /* 구분선 및 항목 간격 */
+  .tech-stack-item:not(:last-child) {
+    margin-right: 30px;  /* 항목 간의 간격 */
+  }
+  
+  .tech-stack-item span {
+    color: #777;  /* 기본 텍스트 색상 */
+    font-weight: 400;
+  }
+  
+  /* 기술 스택이 없을 경우 메시지 */
+  .no-tech-stack {
+    text-align: center;
+    font-size: 1rem;
+    color: #777;
+    background-color: #f1f1f1;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+  }
+  
+  /* 전체 컨테이너 */
+.roles {
+    width: 100%;
+    max-width: 400px;
+    margin: 20px -3px;
+    font-family: 'Arial', sans-serif; /* 기본 서체 */
+    text-align: center;
+  }
+  
+  /* 제목 스타일 */
+  .roles-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333; /* 짙은 회색 */
+    margin-left: 20px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    padding-bottom: 10px;
+    text-align: left;
+  }
+  
+  /* 역할 리스트 스타일 */
+  .roles-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-left: 0;
+  }
+  
+  /* 각 역할 항목 */
+  .role-item {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #333; /* 기본 텍스트 색상 */
+    padding: 3px 20px;  /* 패딩을 넉넉하게 조정 */
+    border-left: 4px solid #4F92B8; /* 왼쪽에 구분선 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  /* 역할이 없을 때 메시지 */
+  .no-roles {
+    font-size: 16px;
+    color: #888;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border-radius: 4px;
+  }
+  
+  /* 전체 프로젝트 이력 영역 */
+.completed-studies {
+  width: 100%;
+  max-width: 900px;  /* 최대 너비 설정 */
+  margin: 40px -25px;    /* 상하 마진을 주고 좌우 여백 제거 */
+  padding: 20px;
+  font-family: 'Arial', sans-serif; /* 기본 서체 */
+  color: #333; /* 기본 텍스트 색상 */
+  text-align: left;  /* 왼쪽 정렬 */
+  background-color: transparent; /* 배경 없음 */
+}
+
+/* 타이틀 스타일 */
+.completed-studies-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;  /* 깊은 회색으로 타이틀 강조 */
+  margin-bottom: 30px;  /* 제목과 리스트 간 간격 */
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-bottom: 2px solid #4F92B8; /* 대표 색상 (4F92B8) 구분선 */
+  padding-bottom: 12px;
+  text-align: left;
+}
+
+/* 프로젝트 이력 리스트 */
+.completed-studies-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 각 프로젝트 이력 항목 */
+.completed-study-item {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  border-left: 6px solid #4F92B8; /* 대표 색상 (4F92B8) 왼쪽 구분선 */
+  background-color: #f8f9fa;  /* 연한 배경색 */
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;  /* 호버 애니메이션 */
+  cursor: pointer;  /* 클릭 가능 표시 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* 카드 그림자 */
+}
+
+/* 프로젝트 제목 */
+.study-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  transition: color 0.3s ease-in-out;  /* 제목 색상 변화 */
+  cursor: pointer;
+}
+
+/* 제목 hover 효과 */
+.study-title:hover {
+  color: #4F92B8;  /* hover 시 더 어두운 파란색으로 변화 */
+}
+
+/* 프로젝트 날짜 영역 */
+.study-dates {
+  display: flex; /* 수평으로 배치 */
+  gap: 10px;  /* 항목 사이 간격 */
+  font-size: 1rem;
+  color: #333; /* 날짜 색상 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
+
+/* 날짜 항목 스타일 */
+.study-start-date span,
+.study-end-date span {
+  font-weight: 600;
+  color: #333;  /* 날짜 부분은 검정색 */
+}
+
+/* 참여한 스터디가 없을 때 메시지 */
+.no-completed-studies {
+  font-size: 1.2rem;
+  color: #888;
+  text-align: left;
+  padding: 18px;
+  margin-top: 20px;
+  background-color: #f1f1f1;  /* 연한 회색 배경 */
+  border-radius: 8px;
+  border: 1px solid #ddd;  /* 얇은 경계선 */
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* 부드러운 그림자 */
+}
+
