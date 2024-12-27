@@ -105,7 +105,7 @@ const MypageMain = () => {
       <div 
         className="progress-bar-fill" 
         style={{
-          width: `${(rating / 5) * 100}%`, 
+          width: `${(rating / 5.5) * 100}%`,
           backgroundColor: getRatingColor(rating)
         }}
       >

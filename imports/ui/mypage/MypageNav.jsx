@@ -8,7 +8,7 @@ const Navbar = () => {
       <nav className="mypage-navbar">
         <ul className="mypage-navbar-list">
           <li className="mypage-navbar-item">
-            <Link to="/mypage/main" className="mypage-navbar-link">마이 페이지</Link>
+            <Link to="/mypage/main" className="mypage-navbar-link">이력</Link>
           </li>
           <li className="mypage-navbar-item">
             <Link to="/mypage/user" className="mypage-navbar-link">회원정보 수정</Link>
@@ -20,7 +20,7 @@ const Navbar = () => {
             <Link to="/mypage/comment" className="mypage-navbar-link">코멘트</Link>
           </li>
           <li className="mypage-navbar-item">
-            <Link to="/mypage/rating" className="mypage-navbar-link">내평가</Link>
+            <Link to="/mypage/rating" className="mypage-navbar-link">평가</Link>
           </li>
         </ul>
       </nav>

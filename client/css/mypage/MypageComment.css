@@ -1,0 +1,142 @@
+/* mycmt--comments: 전체 레이아웃 */
+.mycmt--comments {
+    display: flex;
+  flex-direction: column;
+  height: 100vh;  /* 화면 높이 100% */
+  padding: 100px;
+  margin: 0; /* 기본 마진을 제거 */
+  align-items: center; /* 수평 중앙 정렬 */
+  justify-content: flex-start;
+  }
+ 
+  /* mycmt--comments-header: 댓글 목록 헤더 */
+  .mycmt--comments-header {
+    font-size: 24px;  /* 적당히 크고 눈에 띄는 폰트 크기 */
+    font-weight: 700;  /* 굵은 폰트 */
+    color: #2F3640;  /* 다크 그레이 색상 */
+    background-color: transparent;  /* 배경색 없앰 */
+    padding: 20px 30px;
+    text-align: center;  /* 왼쪽 정렬 */
+    width: 100%;
+    max-width: 600px;  /* 최대 너비 제한 */
+    border-bottom: 4px solid #4F92B8;  /* 아래쪽에 세로 라인 추가 */
+    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;  /* 현대적이고 세련된 서체 */
+    text-transform: capitalize;  /* 첫 글자 대문자 */
+    letter-spacing: 1px;  /* 글자 간격 */
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);  /* 부드러운 그림자 */
+    transition: all 0.3s ease-in-out;  /* 부드러운 트랜지션 효과 */
+}
+  
+.mycmt-comment-count {
+  font-size: 20px;  /* 조금 더 큰 글씨 크기 */
+  color: #2F3640;  /* 짙은 네이비 색상 */
+  text-align: left;  /* 텍스트 왼쪽 정렬 */
+  font-weight: 600;  /* 진한 텍스트 */
+  background-color: transparent;  /* 배경을 투명으로 설정 */
+  max-width: 200px;  /* 최대 너비 제한 */
+  font-family: 'Roboto', sans-serif;  /* 세련된 서체 */
+  box-shadow: none;  /* 그림자 제거 */
+  transition: all 0.3s ease-in-out;  /* 부드러운 트랜지션 효과 */
+  margin-top: 30px;
+  margin-left: -750px;  /* 왼쪽 끝으로 이동 */
+  position: relative; /* 테이블 상단에 배치되도록 */
+}
+
+ /* 테이블 스타일 */
+.mycmt-comments-table {
+  width: 100%;
+  max-width: 900px; /* 최대 너비 제한 */
+  margin-top: 5px;
+  background-color: #fff; /* 배경색 */
+  border-radius: 12px; /* 둥근 테두리 */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+  border-collapse: collapse; /* 테이블 내부 경계선 합침 */
+  overflow: hidden; /* 내용이 테두리를 넘지 않도록 설정 */
+}
+
+/* 테이블 헤더 스타일 */
+.mycmt-comments-table thead {
+  background-color: #4F92B8; /* 헤더 배경색 */
+  color: white; /* 헤더 글자 색상 */
+  font-weight: 700;
+  font-size: 18px;
+  text-align: left;
+  padding: 12px 18px;
+}
+
+.mycmt-comments-table th {
+  padding: 12px 18px;
+  font-weight: 700;
+  font-size: 16px;
+  text-transform: uppercase; /* 대문자화 */
+  letter-spacing: 1px; /* 글자 간격 */
+}
+
+/* 테이블 바디 스타일 */
+.mycmt-comments-table td {
+  padding: 12px 18px;
+  font-size: 14px;
+  color: #555; /* 텍스트 색상 */
+  text-align: left;
+  line-height: 1.6;
+  border-top: 1px solid #f2f2f2; /* 구분선 */
+}
+
+/* 체크박스 스타일 */
+.mycmt-comments-table td input[type="checkbox"] {
+  margin: 0;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* 스터디 제목 스타일 */
+.mycmt-study-title {
+  color: #4F92B8;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.mycmt-study-title:hover {
+  text-decoration: underline; /* 마우스 오버 시 밑줄 */
+  color: #357EA8; /* 마우스 오버시 색상 변경 */
+}
+
+/* 전체 선택 체크박스 스타일 */
+.mycmt-select-all-checkbox {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* 삭제 버튼 스타일 */
+.mycmt-delete-button {
+  background-color: #FF4B5C;
+  color: white;
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px; /* 둥근 모서리 */
+  cursor: pointer;
+  margin-top: 30px;
+  width: 100%;
+  max-width: 220px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mycmt-delete-button:hover {
+  background-color: #e03a4b; /* 삭제 버튼 hover 색상 */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* hover 시 그림자 증가 */
+}
+
+/* 마우스 커서 스타일 */
+.mycmt-study-title {
+  cursor: pointer;
+}

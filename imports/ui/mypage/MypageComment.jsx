@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { useNavigate } from 'react-router-dom'; // useNavigate 훅 임포트
+import MypageNav from './MypageNav.jsx';
 
 const MypageComment = () => {
   const [userComments, setUserComments] = useState([]);
@@ -43,7 +44,7 @@ const MypageComment = () => {
         }));
 
         // 댓글을 작성 날짜가 오래된 순으로 정렬
-        const sortedComments = commentsWithStudyInfo.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        const sortedComments = commentsWithStudyInfo.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         setUserComments(sortedComments);
         setLoading(false);
@@ -114,19 +115,22 @@ const MypageComment = () => {
   }
 
   return (
-    <div className="mypage-comments">
-      <h1>{currentUserNickname}님의 댓글</h1>
+   
+    <div className="mycmt--comments-nav">
+       <MypageNav />
+       <div className="mycmt--comments">
+      <div className="mycmt--comments-header">{currentUserNickname}님의 댓글</div>
       
-      <div>
+     
         {/* 댓글 개수 출력 */}
-        <p>총 댓글 수: {userComments.length}</p>
-      </div>
+        <div className="mycmt-comment-count">총 댓글 수: {userComments.length}</div>
+    
 
-      <table>
+      <table className="mycmt-comments-table">
         <thead>
           <tr>
            
-            <th>순위</th>
+            <th>번호</th>
             <th>스터디</th>
             <th>댓글 내용</th>
             <th>작성 날짜</th>
@@ -136,7 +140,7 @@ const MypageComment = () => {
               <input
                 type="checkbox"
                 checked={selectAll} // 전체 선택 여부에 따라 체크 상태 설정
-                onChange={handleSelectAll} // 전체 선택 토글
+                onChange={handleSelectAll} className="mycmt-select-all-checkbox"
               />
             </th>
           </tr>
@@ -147,7 +151,7 @@ const MypageComment = () => {
               
               <td>{index + 1}</td>  {/* 순위 표시 (1, 2, 3, ...) */}
               <td>
-                <span 
+                <span className="mycmt-study-title"
                   style={{ color: 'blue', cursor: 'pointer' }} 
                   onClick={() => handleStudyClick(comment.studyId)} // 스터디 제목 클릭 시 이동
                 >
@@ -161,13 +165,15 @@ const MypageComment = () => {
                   type="checkbox"
                   checked={selectedComments.includes(comment._id)} // 체크 상태
                   onChange={() => handleCommentSelect(comment._id)} // 선택 토글
+                   className="mycmt-comment-checkbox"
                 />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <button onClick={handleDeleteSelected}>삭제하기</button>
+      <button onClick={handleDeleteSelected} className="mycmt-delete-button">삭제하기</button>
+    </div>
     </div>
   );
 };
