@@ -210,7 +210,7 @@ console.log(currentNickname);
 
   // 모집 인원보다 신청자가 많을 수 없다는 조건
   if (totalParticipants > study.studyCount) {
-    throw new Meteor.Error('too-many-participants', `최대 ${study.studyCount+1}명까지 신청할 수 있습니다.`);
+    throw new Meteor.Error('too-many-participants', `최대 ${study.studyCount}명까지 신청할 수 있습니다.`);
   }
 },
     // 신청 거절 메서드

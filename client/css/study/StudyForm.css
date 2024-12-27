@@ -1,230 +1,603 @@
 /* 전체 폼 컨테이너 */
 .study-create-form {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 30px;
-    border-radius: 12px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px;
+  font-family: 'Inter', sans-serif; /* 모던한 웹용 폰트 */
+}
 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    font-family: 'Arial', sans-serif;
+/* 모집 마감일 필드 디자인 */
+.study-close-date-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px; /* 아래 여백을 좀 더 넉넉하게 */
+  width: 20%;  /* 너비를 80%로 조정 */
+  max-width: 500px;  /* 최대 너비를 500px로 설정 */
+}
+
+.study-close-date-label {
+  font-size: 18px;  /* 라벨 텍스트 크기 */
+  font-weight: 600;
+  color: #333;  /* 라벨 텍스트 색상 */
+  margin-bottom: 12px; /* 라벨과 입력 필드 간의 여백 */
+  text-align: left; /* 레이블을 왼쪽으로 정렬 */
+}
+
+.study-close-date-input {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 16px;
+  color: #333;
+  background-color: #f7f7f7; /* 배경색 */
+  border: 2px solid #ccc; /* 기본 테두리 색상 */
+  border-radius: 10px; /* 둥근 모서리 */
+  box-sizing: border-box; /* padding 포함된 크기 */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* 부드러운 전환 효과 */
+}
+
+.study-close-date-input:focus {
+  border-color: #4F92B8;  /* 데자뷰 블루에 가까운 색상으로 포커스 시 테두리 색상 */
+  box-shadow: 0 0 10px rgba(79, 146, 184, 0.3);  /* 포커스 시 데자뷰 블루의 그림자 */
+  outline: none; /* 기본 아웃라인 제거 */
+}
+
+.study-close-date-input::-webkit-calendar-picker-indicator {
+  background-color: transparent;
+  border: none;
+  color: #4F92B8; /* 달력 아이콘 색상 변경 */
+}
+
+.study-close-date-input::placeholder {
+  color: #aaa; /* 플레이스홀더 텍스트 색상 */
+}
+
+.study-close-date-input:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+/* 날짜 선택 박스 스타일 */
+input[type="date"] {
+  -webkit-appearance: none; /* 기본 날짜 선택기 스타일 제거 */
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* 스터디 인원 선택 필드 디자인 */
+.study-count-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px; /* 아래 여백 추가 */
+  width: 20%;  /* 너비를 80%로 조정 */
+  max-width: 500px;  /* 최대 너비를 500px로 설정 */
+}
+
+.study-count-label {
+  font-size: 18px;  /* 라벨 텍스트 크기 */
+  font-weight: 600;
+  color: #333;  /* 텍스트 색상 */
+  margin-bottom: 12px; /* 라벨과 선택 필드 간의 여백 */
+  text-align: left; /* 라벨을 왼쪽으로 정렬 */
+}
+
+.study-count-select {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 16px;
+  color: #333;  /* 텍스트 색상 */
+  background-color: #f7f7f7;  /* 배경 색상 */
+  border: 2px solid #ccc;  /* 기본 테두리 색상 */
+  border-radius: 10px;  /* 둥근 모서리 */
+  appearance: none;  /* 기본 셀렉트 박스 스타일 제거 */
+  -webkit-appearance: none;  /* Webkit 기반 브라우저에서 기본 스타일 제거 */
+  -moz-appearance: none;  /* Firefox에서 기본 스타일 제거 */
+  box-sizing: border-box; /* padding 포함된 크기 */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;  /* 부드러운 전환 효과 */
+}
+
+/* 선택된 인풋 스타일 */
+.study-count-select:focus {
+  border-color: #4F92B8;  /* 데자뷰 블루 포커스 색상 */
+  box-shadow: 0 0 10px rgba(79, 146, 184, 0.3);  /* 포커스 시 그림자 효과 */
+  outline: none;  /* 기본 아웃라인 제거 */
+}
+
+.study-count-select option {
+  padding: 12px 20px; /* 옵션 텍스트의 여백 */
+  font-size: 16px;
+  color: #333; /* 옵션 텍스트 색상 */
+  background-color: #fff;  /* 옵션 배경 색상 */
+}
+
+.study-count-select:disabled {
+  background-color: #e9ecef; /* 비활성화 상태 배경 */
+  cursor: not-allowed; /* 비활성화 시 마우스 커서 */
+}
+
+/* 지역 및 구분 선택 컨테이너 */
+.study-location-container {
+  display: flex;
+  flex-wrap: wrap; /* 화면 크기에 맞춰서 감싸지도록 설정 */
+  gap: 16px; /* 셀렉트 박스 간 간격 */
+  margin-bottom: 24px;  /* 아래 여백 추가 */
+}
+
+/* 지역 라벨 */
+.study-location-label {
+  font-size: 18px;  
+  font-weight: 600;
+  color: #333; 
+  margin-bottom: 12px;
+  text-align: left; 
+}
+
+/* 지역 셀렉트 박스 */
+.study-location-select,
+.study-district-select {
+  width: 20%;  /* 각 셀렉트 박스의 너비를 45%로 설정 */
+  padding: 10px 16px;
+  font-size: 14px;
+  color: #333;
+  background-color: #f7f7f7;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 24px;
+}
+
+/* 포커스 시 스타일 */
+.study-location-select:focus,
+.study-district-select:focus {
+  border-color: #4F92B8;  /* 데자뷰 블루 포커스 색상 */
+  box-shadow: 0 0 10px rgba(79, 146, 184, 0.3);
+  outline: none;
+}
+
+/* 옵션 스타일 */
+.study-location-select option,
+.study-district-select option {
+  padding: 10px 16px;
+  font-size: 14px;
+  color: #333;
+  background-color: #fff;
+}
+
+/* 선택이 안된 경우 스타일 */
+.study-location-select:disabled,
+.study-district-select:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+/* 기술 스택 필드 컨테이너 */
+.tech-stack-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+/* 라벨 스타일 */
+.tech-stack-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+/* 버튼들이 들어갈 컨테이너 */
+.tech-stack-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;  /* 버튼들 간의 간격 */
+}
+
+/* 각 기술 스택 버튼 스타일 */
+.tech-stack-buttons button {
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #333;
+  background-color: #f7f7f7;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+  width: auto; /* 버튼의 기본 크기 */
+}
+
+/* 버튼 선택 시 스타일 */
+.tech-stack-buttons button.selected {
+  background-color: #4F92B8;  /* 데자뷰 블루 배경색 */
+  color: white;  /* 글자 색상 흰색 */
+  border-color: #4F92B8;  /* 테두리 색상 */
+}
+
+/* 버튼 비활성화 시 스타일 (5개 이상 선택한 경우) */
+.tech-stack-buttons button:disabled {
+  background-color: #e9ecef;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+/* 버튼 호버 효과 */
+.tech-stack-buttons button:hover:not(.selected):not(:disabled) {
+  background-color: #e0e0e0;  /* 호버 시 배경색 변화 */
+  border-color: #4F92B8;  /* 호버 시 테두리 색상 */
+}
+
+.on-offline-selection-field {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.on-offline-selection-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.on-offline-selection {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-start;
+}
+
+.on-offline-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  padding: 12px 24px;
+  background-color: #f4f4f4;
+  border: 2px solid #ddd;
+  border-radius: 30px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.on-offline-radio-label:hover {
+  background-color: #e0e0e0;
+  border-color: #4F92B8; /* 데자뷰 블루의 밝은 색 */
+}
+
+.on-offline-radio-input {
+  appearance: none;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  background-color: #fff;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.on-offline-radio-input:checked {
+  background-color: #4F92B8; /* 데자뷰 블루 */
+  border-color: #4F92B8;
+  box-shadow: 0 0 0 6px rgba(0, 118, 214, 0.2);
+}
+
+.on-offline-radio-input:checked + .on-offline-radio-label {
+  background-color: #4F92B8; /* 데자뷰 블루 */
+  color: #fff;
+  border-color: #4F92B8; /* 선택된 항목 테두리 색상도 데자뷰 블루로 적용 */
+}
+
+.on-offline-radio-input:checked + .on-offline-radio-label::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background-color: #fff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.on-offline-radio-input:checked + .on-offline-radio-label::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(0, 118, 214, 0.3); /* 데자뷰 블루의 연한 색 */
+  transform: translate(-50%, -50%);
+  animation: scaleUp 0.4s ease-out;
+}
+
+@keyframes scaleUp {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
   }
-  
-  /* 제목 스타일 */
-  .study-create-title {
-    text-align: center;
-    font-size: 36px;
-    font-weight: bold;
-    margin-bottom: 40px;
-    color: #000; /* 텍스트 색상은 검정색 */
+  100% {
+    transform: translate(-50%, -50%) scale(1);
   }
-  
-  /* 각 입력 필드 컨테이너 */
-  .study-close-date-field,
-  .study-count-field,
-  .study-location-field,
-  .study-district-field,
-  .tech-stack-field,
-  .on-offline-selection-field,
-  .role-selection-field,
-  .star-rating-field,
-  .study-title-field,
-  .study-content-field {
-    margin-bottom: 25px;
+}
+
+.role-selection-field {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.role-selection-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.role-radio-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-start;
+}
+
+.role-radio-buttons label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  padding: 12px 24px;
+  background-color: #f4f4f4;
+  border: 2px solid #ddd;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.role-radio-buttons label:hover {
+  background-color: #e0e0e0;
+  border-color: #4F92B8; /* 데자뷰 블루 */
+}
+
+.role-radio-input {
+  appearance: none;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  background-color: #fff;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.role-radio-input:checked {
+  background-color: #4F92B8; /* 데자뷰 블루 */
+  border-color: #4F92B8;
+  box-shadow: 0 0 0 6px rgba(0, 118, 214, 0.2);
+}
+
+.role-radio-input:checked + label {
+  background-color: #4F92B8; /* 데자뷰 블루 */
+  color: #fff;
+  border-color: #4F92B8; /* 선택된 항목 테두리 색상 */
+}
+
+.role-radio-input:checked + label::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background-color: #fff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.role-radio-input:checked + label::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(0, 118, 214, 0.3); /* 데자뷰 블루의 연한 색 */
+  transform: translate(-50%, -50%);
+  animation: scaleUp 0.4s ease-out;
+}
+
+@keyframes scaleUp {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
   }
-  
-  /* 레이블 스타일 */
-  .study-close-date-label,
-  .study-count-label,
-  .study-location-label,
-  .study-district-label,
-  .tech-stack-label,
-  .on-offline-selection-label,
-  .role-selection-label,
-  .star-rating-label,
-  .study-title-label,
-  .study-content-label {
-    display: block;
-    font-size: 18px;
-    margin-bottom: 10px;
-    font-weight: 500;
-    color: #000; /* 텍스트 색상은 검정색 */
+  100% {
+    transform: translate(-50%, -50%) scale(1);
   }
-  
-  /* 인풋 스타일 */
-  .study-close-date-input,
-  .study-count-select,
-  .study-location-select,
-  .study-district-select,
-  .study-title-input,
-  .study-content-textarea {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border: 2px solid #ddd;
-    border-radius: 6px;
-    margin-top: 8px;
-    background-color: #f0f0f0;
-    transition: border-color 0.3s ease;
-  }
-  
-  .study-close-date-input:focus,
-  .study-count-select:focus,
-  .study-location-select:focus,
-  .study-district-select:focus,
-  .study-title-input:focus,
-  .study-content-textarea:focus {
-    border-color: #3B9AE1; /* 데자뷰 블루 */
-    outline: none;
-  }
-  
-  /* 텍스트 영역 스타일 */
-  .study-content-textarea {
-    height: 180px;
-    resize: vertical;
-  }
-  
-  /* 선택된 버튼 스타일 */
-  .study-count-select,
-  .study-location-select,
-  .study-district-select {
-    max-width: 250px;
-    margin-top: 8px;
-    background-color: #fff;
-    border-color: #ccc;
-  }
-  
-  /* 기술 스택 버튼 스타일 */
-  .tech-stack-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-  }
-  
-  .tech-stack-button {
-    padding: 10px 20px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    background-color: #f5f5f5;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    font-size: 14px;
-    color: #000; /* 텍스트 색상은 검정색 */
-  }
-  
-  .tech-stack-button.selected {
-    background-color: #3B9AE1; /* 데자뷰 블루 */
-    color: white;
-  }
-  
-  .tech-stack-button:disabled {
-    background-color: #e0e0e0;
-    cursor: not-allowed;
-  }
-  
-  /* 온/오프라인 선택 라디오 버튼 스타일 */
-  .on-offline-selection {
-    display: flex;
-    gap: 20px;
-    font-size: 16px;
-  }
-  
-  .on-offline-radio-input {
-    margin-right: 5px;
-  }
-  
-  .on-offline-radio-input:checked + label {
-    font-weight: bold;
-    color: #3B9AE1; /* 데자뷰 블루 */
-  }
-  
-  /* 역할 선택 라디오 버튼 스타일 */
-  .role-radio-buttons {
-    display: flex;
-    gap: 20px;
-    font-size: 16px;
-  }
-  
-  .role-radio-input {
-    margin-right: 5px;
-  }
-  
-  .role-radio-input:checked + label {
-    font-weight: bold;
-    color: #3B9AE1; /* 데자뷰 블루 */
-  }
-  
-  /* 별점 스타일 */
-  .star-rating {
-    font-size: 24px;
-  }
-  
-  .star-rating span {
-    cursor: pointer;
-    transition: color 0.3s;
-  }
-  
-  .star-rating .filled {
-    color: #FFD700;
-  }
-  
-  .star-rating .empty {
-    color: #D3D3D3;
-  }
-  
-  /* 제출 버튼 스타일 */
-  .submit-button {
-    display: block;
-    width: 100%;
-    padding: 14px;
-    background-color: #3B9AE1; /* 데자뷰 블루 */
-    color: white;
-    font-size: 20px;
-    font-weight: bold;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 30px;
-    transition: background-color 0.3s;
-    text-align: center;
-  }
-  
-  .submit-button:hover {
-    background-color: #3187C2; /* 데자뷰 블루 - hover 시 어두운 색상 */
-  }
-  
-  /* 구와 지역 선택 폼을 온라인일 경우 숨김 */
-  .study-location-field,
-  .study-district-field {
-    display: block;
-  }
-  
-  .study-location-field[style*="none"],
-  .study-district-field[style*="none"] {
-    display: none;
-  }
-  
-  /* 추가 스타일 */
-  .study-location-field,
-  .study-district-field {
-    border: 2px solid #f1f1f1;
-    padding: 12px;
-    background-color: #fff;
-    border-radius: 8px;
-  }
-  
-  .study-location-field select,
-  .study-district-field select {
-    font-size: 16px;
-    padding: 8px;
-    width: 100%;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-  }
-  
-  /* 포커스 상태 스타일 */
-  .study-location-field select:focus,
-  .study-district-field select:focus {
-    border-color: #3B9AE1; /* 데자뷰 블루 */
-    outline: none;
-  }
-  
+}
+
+.star-rating-field {
+  margin: 20px 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.star-rating-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.star-rating {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.star-rating span {
+  cursor: pointer;
+  font-size: 30px;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.star-rating span:hover {
+  transform: scale(1.2);
+  color: #FFD700; /* Hover 시 금색으로 변경 */
+}
+
+.star-rating span.active {
+  color: #FFD700; /* 선택된 별은 금색으로 */
+}
+
+.star-rating span.inactive {
+  color: #D3D3D3; /* 선택되지 않은 별은 회색 */
+}
+
+.study-title-field {
+  margin: 20px 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%; /* 부모 요소의 크기 */
+  max-width: 400px; /* 최대 너비 설정 (최대 400px) */ 
+}
+
+.study-title-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.study-title-input {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.study-title-input:focus {
+  border-color: #4F92B8; /* Focus 시 테두리 색 */
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.2); /* Focus 시 부드러운 그림자 */
+  outline: none;
+}
+
+.study-title-input::placeholder {
+  color: #888; /* placeholder 색상 */
+  font-style: italic;
+}
+
+.study-title-input:disabled {
+  background-color: #f0f0f0; /* 비활성화 시 배경 색 */
+  border-color: #ddd;
+}
+
+.study-content-field {
+  margin: 20px 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%; /* 부모 요소에 맞게 크기 설정 */
+  max-width: 600px; /* 최대 너비 설정 */
+}
+
+.study-content-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.study-content-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  min-height: 150px; /* 최소 높이 설정 */
+  max-height: 250px; /* 최대 높이 설정 */
+  resize: vertical; /* 수직 방향으로만 크기 조정 가능 */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.study-content-textarea:focus {
+  border-color: #4F92B8; /* 포커스 시 테두리 색 */
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.2); /* 포커스 시 부드러운 그림자 */
+  outline: none;
+}
+
+.study-content-textarea::placeholder {
+  color: #888;
+  font-style: italic;
+}
+
+.study-content-textarea:disabled {
+  background-color: #f0f0f0; /* 비활성화 시 배경 색 */
+  border-color: #ddd;
+}
+
+/* 기본 버튼 스타일 */
+.submit-button {
+  padding: 12px 24px; /* 충분한 여백 */
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #3b8ed9; /* 데자뷰 블루 */
+  color: white; /* 텍스트는 흰색 */
+  border: none;
+  border-radius: 8px; /* 둥근 모서리 */
+  cursor: pointer; /* 커서를 포인터로 */
+  transition: background-color 0.3s ease, transform 0.1s ease; /* 배경색 변화와 클릭 애니메이션 */
+  text-align: center;
+  display: inline-block;
+  width: auto;
+  min-width: 150px; /* 버튼 너비 최소 설정 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+}
+
+/* hover 상태 */
+.submit-button:hover {
+  background-color: #6aade7; /* 호버 시 버튼 색상 밝게 */
+  transform: translateY(-2px); /* 약간 위로 떠오르는 효과 */
+}
+
+/* active 상태 */
+.submit-button:active {
+  background-color: #2a6f9d; /* 클릭 시 버튼 색상 어두워짐 */
+  transform: translateY(2px); /* 클릭 시 버튼이 눌리는 효과 */
+}
+
+/* disabled 상태 */
+.submit-button:disabled {
+  background-color: #d1e3f3; /* 비활성화 시 색상 */
+  color: #a0c2d6; /* 텍스트 색상 흐릿하게 */
+  cursor: not-allowed; /* 클릭 불가능한 상태 */
+  box-shadow: none; /* 그림자 제거 */
+}

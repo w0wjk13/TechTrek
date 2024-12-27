@@ -269,6 +269,7 @@ function updateUserRatingAndRecommendation(userNickname, rating, recommendation)
       }
     }
   );
+
 }
       });
     });

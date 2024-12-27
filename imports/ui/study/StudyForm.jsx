@@ -173,8 +173,9 @@ const StudyForm = () => {
         </select>
       </div>
 
+     
       <div style={{ display: onOffline === "온라인" ? "none" : "block" }}>
-        <label className="study-location-label">지역</label>
+       <div className="study-location-label">지역</div>
         <select
           value={selectedCity}
           onChange={(e) => {
@@ -188,10 +189,7 @@ const StudyForm = () => {
             <option key={index} value={city.name}>{city.name}</option>
           ))}
         </select>
-      </div>
-
-      <div style={{ display: onOffline === "온라인" ? "none" : "block" }}>
-        <label>구</label>
+        
         <select
           value={selectedGubun}
           onChange={(e) => setSelectedGubun(e.target.value)}
@@ -228,7 +226,7 @@ const StudyForm = () => {
       <div className="on-offline-selection-field">
         <label className="on-offline-selection-label">진행 방식</label>
         <div className="on-offline-selection">
-          <label>
+          <label  className="on-offline-radio-label">
             <input
               type="radio"
               name="onOffline"
@@ -239,7 +237,7 @@ const StudyForm = () => {
             />
             온라인
           </label>
-          <label>
+          <label  className="on-offline-radio-label">
             <input
               type="radio"
               name="onOffline"
@@ -249,8 +247,8 @@ const StudyForm = () => {
               className="on-offline-radio-input"
             />
             오프라인
-          </label>
-          <label>
+          </label >
+          <label  className="on-offline-radio-label">
             <input
               type="radio"
               name="onOffline"
