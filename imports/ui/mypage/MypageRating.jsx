@@ -14,7 +14,7 @@ const MypageRating = () => {
     timeliness: 0
   });
   const navigate = useNavigate();
-
+  const [showDescription, setShowDescription] = useState(false);
   useEffect(() => {
     // 현재 로그인된 유저 가져오기
     const currentUser = Meteor.user();
@@ -76,11 +76,31 @@ const MypageRating = () => {
     return groups;
   }, {});
 
+  const descriptions = {
+    participation: '참여도는 스터디나 프로젝트에 얼마나 적극적으로 참여했는지 평가합니다.',
+    teamwork: '팀워크는 다른 사람들과 협력하며 목표를 달성하는 능력을 평가합니다.',
+    leadership: '리더십은 팀을 이끌며 주도적으로 문제를 해결하는 능력을 평가합니다.',
+    communication: '소통 능력은 의사소통을 얼마나 잘하는지 평가합니다.',
+    timeliness: '시간 관리는 주어진 시간과 기한을 얼마나 잘 지켰는지 평가합니다.'
+  };
   return (
     <div className="mypage-nav">
       <MypageNav />
       <div className="myrating">
       <div className="myrating-title">평가 목록</div>
+      <div 
+          className="myrating-tooltip-icon"
+          onClick={() => setShowDescription(!showDescription)}
+        >
+          ❔
+        </div>
+        <div className={`myrating-description ${showDescription ? 'show' : 'hide'}`}>
+        <div><strong>participation:</strong> {descriptions.participation}</div>
+        <div><strong>teamwork:</strong> {descriptions.teamwork}</div>
+       <div><strong>leadership:</strong> {descriptions.leadership}</div>
+       <div><strong>communication:</strong> {descriptions.communication}</div>
+        <div><strong>timeliness:</strong> {descriptions.timeliness}</div>
+      </div>
 
       {Object.keys(groupedRatings).length > 0 ? (
         <div className="myrating-list">
@@ -91,22 +111,32 @@ const MypageRating = () => {
               {studyRatings.map((rating, idx) => (
                 <div key={idx} className="myrating-rating-item">
                   <div className="myrating-user"><strong>평가자:</strong> {rating.userId}</div> {/* 평가자 정보 출력 */}
-                  <div className="myrating-score"><strong>평가 점수:</strong> {rating.rating}</div>
+                  <div className="myrating-score">
+            {Array.from({ length: 5 }, (_, index) => (
+          <span
+            key={index}
+           className={rating.rating > index ? 'star' : 'empty-star'}
+           >
+          ★
+           </span>
+           ))}
 
-                  <div className="myrating-recommendations"><strong>추천 항목:</strong></div>
+          </div>
+
+                  <div className="myrating-recommendations">
                   <ul>
                     {Object.entries(rating.recommendation).map(([key, value]) => (
-                      value === 1 ? <li key={key}>{key}: {value}</li> : null
+                      value === 1 ? <li key={key}>{key}</li> : null
                     ))}
                   </ul>
-                  
+                  </div>
                   {rating.feedback && rating.feedback.trim() !== '' && (
-                    <div className="myrating-feedback"><strong>코멘트:</strong> {rating.feedback}</div>
+                    <div className="myrating-feedback"><strong>🗣️</strong> {rating.feedback}</div>
                   )}
-                  <div className="myrating-created-at"><strong>평가 작성일:</strong> {new Date(rating.createdAt).toLocaleString()}</div>
-                  <br/>
+                  <div className="myrating-created-at"><strong></strong> {new Date(rating.createdAt).toLocaleString()}</div>
+                
                 </div>
-              ))}<hr className="myrating-divider" />
+              ))}
             </div>
           ))}
         </div>

@@ -9,7 +9,7 @@
   top: 50%;  /* 수직 중앙 */
   left: 50%;  /* 수평 중앙 */
   transform: translate(-50%, -50%);  /* 요소의 중심을 정확히 중앙으로 이동 */
-  border: 1px solid black;
+
   }
 
     .myrating-title {
@@ -68,40 +68,33 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* 섬세한 그림자 */
   }
   
- .myrating-study-id {
-  font-size: 1.5rem; /* 글씨 크기 */
-  font-weight: bold; /* 굵은 글씨 */
-  padding: 15px 30px; /* 내부 여백 */
-  margin: 20px 0; /* 요소 간 여백 */
-  text-align: center; /* 텍스트 가운데 정렬 */
-  border-radius: 5px; /* 둥근 모서리 */
-  font-family: 'Arial', sans-serif; /* 간결한 폰트 */
-  cursor: pointer; /* 클릭 가능 강조 */
-  position: relative; /* 밑줄을 위한 상대적 위치 설정 */
-  display: inline-block; /* 인라인 블록 */
-  transition: color 0.3s ease, transform 0.3s ease; /* 색상, 위치 애니메이션 */
-}
-
-.myrating-study-id::after {
-  content: ''; /* 밑줄 요소 */
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px; /* 밑줄 두께 */
-  background-color: #4F92B8; /* 밑줄 색상 */
-  transition: width 0.3s ease; /* 애니메이션 효과 */
-}
-
-.myrating-study-id:hover {
-  color: #2c3e50; /* 호버 시 텍스트 색상 변경 */
-  transform: translateY(-3px); /* 살짝 위로 이동하는 효과 */
-}
-
-.myrating-study-id:hover::after {
-  width: 100%; /* 호버 시 밑줄이 확장됨 */
-}
- 
+  .myrating-study-id {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    padding: 10px 0;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    position: relative;
+  }
+  
+  .myrating-study-id::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 6px;
+    background-color: #4F92B8;
+    border-radius: 10px;  /* 둥근 끝 */
+    transition: width 0.3s ease;
+  }
+  
+  .myrating-study-id:hover::after {
+    width: 100%;  /* 둥근 밑줄이 텍스트 아래로 확장 */
+  }
+  
 .myrating-user {
     font-size: 1.2rem; /* 글씨 크기 */
     font-weight: bold; /* 굵은 글씨 */
@@ -114,8 +107,142 @@
     transition: all 0.3s ease; /* 애니메이션 효과 */
   }
   
-  
-  
+/* 물음표 아이콘 디자인 */
+.myrating-tooltip-icon {
+  font-size: 18px;  /* 아이콘 크기 증가 */
+  cursor: pointer;  /* 클릭할 수 있음을 나타내는 커서 */
+  display: inline-block;  /* 인라인 요소처럼 취급 */
+  border-radius: 100%;  /* 원형으로 만들기 */
+  padding: 2px;  /* 아이콘 크기에 맞게 패딩 */
+  transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.2s ease;  /* 애니메이션 추가 */
+  margin-left: 20px;  /* 아이콘 왼쪽 여백 */
+  position: fixed;  /* 화면에 고정 */
+  top: 50px;  /* 화면 상단에서 20px 간격 */
+  right: 20px;  /* 화면 오른쪽에서 20px 간격 */
+  z-index: 10;  /* 설명 박스 아래로 가게 하기 위한 z-index */
+ 
+}
+
+.myrating-tooltip-icon:hover {
+  transform: scale(1.1);  /* 호버 시 아이콘이 살짝 커짐 */
+}
+
+/* 설명 박스 스타일 */
+.myrating-description {
+  display: none;  /* 기본적으로 숨김 */
+  padding: 15px;
+  background-color: #f9f9f9;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  margin-top: 10px;
+  max-width: 300px;  /* 설명 박스 최대 너비 */
+  position: fixed;  /* 화면에 고정 */
+  top: 70px;  /* 물음표 아이콘 바로 아래에 위치 */
+  right: -250px;  /* 오른쪽에 위치 */
+  z-index: 9999;  /* 물음표 아이콘보다 우선적으로 나오게 설정 */
+  transition: opacity 0.3s ease-in-out;  /* 부드럽게 나타나도록 설정 */
+}
+
+/* 설명 박스가 나타날 때의 애니메이션 */
+.myrating-description.show {
+  display: block;  /* 토글 시 나타나도록 설정 */
+  opacity: 1;
+}
+
+.myrating-description.hide {
+  opacity: 0;
+  display: none;
+}
+
+/* 평가 점수 컨테이너 */
+.myrating-score {
+  font-size: 1.5rem;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 8px;  /* 별과 점수 간격 */
+}
+
+/* 별 아이콘 */
+.myrating-score .star {
+  color: #ffd700;  /* 채워진 별 색상 */
+  font-size: 1.5rem;  /* 별 크기 */
+}
+
+/* 빈 별 아이콘 */
+.myrating-score .empty-star {
+  color: #d3d3d3;  /* 빈 별 색상 */
+  font-size: 1.5rem;  /* 빈 별 크기 */
+}
+
+
+
+/* 추천 항목 제목 */
+.myrating-recommendations {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 5px;
+  color: #555;
+}
+
+
+/* 추천 항목 리스트 항목 */
+.myrating-recommendations ul li {
+  font-size: 1rem;  /* 기본 글씨 크기 */
+  color: #333;  /* 텍스트 색상 어두운 그레이로 설정 */
+  margin-bottom: 10px;  /* 항목 간 여백을 조금 더 넓게 설정 */
+  position: relative;  /* 상대 위치로 설정하여 커스터마이징 */
+  padding-left: 25px;  /* 왼쪽 여백을 추가하여 리스트 스타일이 잘 보이게 함 */
+}
+
+.myrating-recommendations ul li::before {
+  content: '✔';  /* 항목 앞에 체크 마크를 추가 */
+  color: #4F92B8;  /* 체크 마크 색상 블루로 설정 */
+  position: absolute;
+  left: 0;  /* 체크 마크를 왼쪽 끝에 배치 */
+  top: 50%;  /* 항목 중앙에 맞춰서 배치 */
+  transform: translateY(-50%);  /* 세로로 정확히 중앙 배치 */
+  font-size: 1rem;  /* 체크 마크 크기 */
+}
+
+
+/* 피드백 박스 스타일 */
+.myrating-feedback {
+  padding: 12px 20px;  /* 충분한 패딩 */
+  color: #333;  /* 텍스트 색상 */
+  border: 1px solid #dcdcdc;  /* 부드러운 테두리 */
+  border-radius: 8px;  /* 둥근 모서리 */
+  background-color: transparent;  /* 배경색 없이 */
+  font-size: 1rem;  /* 기본 폰트 크기 */
+  margin-top: 20px;  /* 위쪽 여백 */
+  display: flex;  /* 아이콘과 텍스트를 가로로 배치 */
+  align-items: center;  /* 세로 가운데 정렬 */
+}
+
+/* 아이콘 스타일 */
+.myrating-feedback strong {
+  font-size: 1.3rem;  /* 아이콘 크기 */
+  margin-right: 15px;  /* 아이콘과 텍스트 간격 */
+  color: #4F92B8;  /* 아이콘 색상 */
+}
+
+/* 피드백 내용 스타일 */
+.myrating-feedback p {
+  font-size: 1rem;  /* 텍스트 크기 */
+  color: #555;  /* 텍스트 색상 */
+  margin: 0;  /* 불필요한 여백 제거 */
+  line-height: 1.5;  /* 줄 간격 */
+  word-wrap: break-word;  /* 긴 단어는 줄바꿈 */
+}
+
+/* 평가 작성일 스타일 */
+.myrating-created-at {
+  font-size: 0.9rem;
+  margin-top: 15px;
+  color: #888;
+  text-align: right;  /* 오른쪽 정렬 */
+}
+ 
   
   
   
