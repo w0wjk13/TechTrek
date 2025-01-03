@@ -106,13 +106,7 @@ const MypageComment = () => {
     navigate(`/study/detail/${studyId}`);
   };
 
-  if (loading) {
-    return <div>로딩 중...</div>;
-  }
 
-  if (!userComments.length) {
-    return <div>댓글이 없습니다.</div>;
-  }
 
   return (
    
@@ -123,9 +117,14 @@ const MypageComment = () => {
       
      
         {/* 댓글 개수 출력 */}
-        <div className="mycmt-comment-count">총 댓글 수: {userComments.length}</div>
-    
-
+       
+        {userComments.length === 0 ? (
+          <div className="mycmt-no-comments">
+            <p>받은 평가가 없습니다.</p> {/* 댓글이 없을 때 보여줄 메시지 */}
+          </div>
+        ) : (
+          <>
+   <div className="mycmt-comment-count">총 댓글 수: {userComments.length}</div>
       <table className="mycmt-comments-table">
         <thead>
           <tr>
@@ -173,6 +172,9 @@ const MypageComment = () => {
         </tbody>
       </table>
       <button onClick={handleDeleteSelected} className="mycmt-delete-button">삭제하기</button>
+      </>
+        )}
+
     </div>
     </div>
   );

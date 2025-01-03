@@ -117,44 +117,50 @@ const MypageProject = () => {
   };
   
   return (
-    <div className="mypage-container">
-      <div className="mypage-nav">
+   <div>
         <MypageNav />
-      </div>
-      <div className="mypage-content">
+       <div className="myproject-mypage-container">
+      <div className="myproject-mypage-content">
         {/* Created Studies */}
-        <h1>내가 생성한 스터디</h1>
+        <div className="myproject-section-title">내가 생성한 스터디</div>
         {myStudies.length === 0 ? (
-          <div>생성한 스터디가 없습니다.</div>
+          <div className="myproject-no-studies">생성한 스터디가 없습니다.</div>
         ) : (
-          <ul>
+          <ul className="myproject-studies-list">
             {myStudies.map((study) => (
-              <li key={study._id}>
-                <div>
-                  <strong>제목:</strong> {study.title}
-                </div>
-                <div>
-                  <strong>작성자:</strong> {study.userId}
-                </div>
-                <div>
-                  <strong>등록일:</strong> {new Date(study.createdAt).toLocaleDateString()}
-                </div>
-                <div>
+              <li key={study._id} className="myproject-study-item">
+                                <div className="myproject-study-deadline">
   {study.status !== '모집완료' && (
     <>
       <strong>모집 마감일:</strong> {new Date(study.studyClose).toLocaleDateString()}
     </>
   )}
 </div>
-                <div>
+                <div className="myproject-study-title">
+                  <strong>{study.title}</strong> 
+                </div>
+                <div className="myproject-study-user">
+                  <strong>작성자:</strong> {study.userId}
+                </div>
+                <div className="myproject-study-created-at">
+                  <strong>등록일:</strong> {new Date(study.createdAt).toLocaleDateString()}
+                </div>
+                <div className="myproject-study-deadline">
+  {study.status !== '모집완료' && (
+    <>
+      <strong>모집 마감일:</strong> {new Date(study.studyClose).toLocaleDateString()}
+    </>
+  )}
+</div>
+                <div className="myproject-study-status">
                   <strong>모집 상태:</strong> {study.status}
                 </div>
                 {study.status !== '모집완료' && (
   <>
-    <div>
+    <div className="myproject-study-count">
       <strong>모집 인원:</strong> {study.studyCount}
     </div>
-    <div>
+    <div className="myproject-study-applicant">
       <strong>신청자:</strong> {study.applicantCount}
     </div>
     
@@ -162,15 +168,15 @@ const MypageProject = () => {
 )}
 
 
-                <div>
+                <div className="myproject-study-progress">
                   <strong>진행 상태:</strong> {study.progress}
                 </div>
                 {study.progress !== '예정' && (
   <>
-    <div>
+    <div className="myproject-study-start-date">
       <strong>진행일:</strong> {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()}
     </div>
-    <div>
+    <div className="myproject-study-end-date">
       <strong>종료일:</strong> 
       {study.endDate === '미정' || isNaN(new Date(study.endDate)) 
         ? '날짜 미정' 
@@ -179,20 +185,20 @@ const MypageProject = () => {
   </>
 )}
 
-                <div>
+                <div className="myproject-study-tech-stack">
                   <strong>기술 스택:</strong>
-                  <ul>
+                  <ul className="myproject-tech-list">
                     {study.techStack.map((tech, index) => (
-                      <li key={index}>{tech}</li>
+                      <li key={index} className="myproject-tech-item">{tech}</li>
                     ))}
                   </ul>
                 </div>
                 {study.progress === '종료'&& !ratedStudies.includes(String(study._id)) && (
-                  <div>
+                  <div className="myproject-study-review-button">
                     <button onClick={() => handleReview(study._id)}>평가하기</button>
                   </div>
                 )}
-                <div>
+                <div className="myproject-study-buttons">
                   <button onClick={() => navigate(`/study/detail/${study._id}`)}>상세보기</button>
                   <button onClick={() => handleDeleteStudy(study._id)}>삭제</button> {/* 삭제 버튼 */}
                 </div>
@@ -203,52 +209,46 @@ const MypageProject = () => {
         )}
 
         {/* Applied Studies */}
-        <h1>내가 신청한 스터디</h1>
+        <div className="myproject-section-title">내가 신청한 스터디</div>
         {appliedStudies.length === 0 ? (
-          <div>신청한 스터디가 없습니다.</div>
+          <div className="myproject-no-studies">신청한 스터디가 없습니다.</div>
         ) : (
-          <ul>
+          <ul className="myproject-studies-list">
             {appliedStudies.map((study) => (
-              <li key={study._id}>
-                <div>
-                  <strong>제목:</strong> {study.title}
+              <li key={study._id} className="myproject-study-item">
+                <div className="myproject-study-title">
+                  <strong>{study.title}</strong> 
                 </div>
-                <div>
+                <div className="myproject-study-user">
                   <strong>작성자:</strong> {study.userId}
                 </div>
-                <div>
+                <div className="myproject-study-created-at">
                   <strong>등록일:</strong> {new Date(study.createdAt).toLocaleDateString()}
                 </div>
-                <div>
-  {study.status !== '모집완료' && (
-    <>
-      <strong>모집 마감일:</strong> {new Date(study.studyClose).toLocaleDateString()}
-    </>
-  )}
-</div>
-                <div>
+
+                <div className="myproject-study-status">
                   <strong>모집 상태:</strong> {study.status}
                 </div>
                 {study.status !== '모집완료' && (
   <>
-    <div>
+    <div className="myproject-study-count">
       <strong>모집 인원:</strong> {study.studyCount}
     </div>
-    <div>
+    <div className="myproject-study-applicant">
       <strong>신청자:</strong> {study.applicantCount}
     </div>
   </>
 )}
 
-                <div>
+<div className="myproject-study-progress">
                   <strong>진행 상태:</strong> {study.progress}
                 </div>
                 {study.progress !== '예정' && (
   <>
-    <div>
+    <div className="myproject-study-start-date">
       <strong>진행일:</strong> {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()}
     </div>
-    <div>
+    <div className="myproject-study-end-date">
       <strong>종료일:</strong> 
       {study.endDate === '미정' || isNaN(new Date(study.endDate)) 
     ? '날짜 미정' 
@@ -258,20 +258,20 @@ const MypageProject = () => {
 )}
 
 
-                <div>
+<div className="myproject-study-tech-stack">
                   <strong>기술 스택:</strong>
-                  <ul>
+                  <ul className="myproject-tech-list">
                     {study.techStack.map((tech, index) => (
-                      <li key={index}>{tech}</li>
+                      <li key={index} className="myproject-tech-item">{tech}</li>
                     ))}
                   </ul>
                 </div>
                 {study.progress === '종료' && !ratedStudies.includes(String(study._id)) && (
-                  <div>
+                   <div className="myproject-study-review-button">
                     <button onClick={() => handleReview(study._id)}>평가하기</button>
                   </div>
                 )}
-                <div>
+                <div className="myproject-study-buttons">
                   <button onClick={() => navigate(`/study/detail/${study._id}`)}>상세보기</button>
                   {study.progress !== '종료' &&  (
                   <button onClick={() => handleCancelApplication(study._id)}>신청 취소</button> )} 
@@ -282,6 +282,7 @@ const MypageProject = () => {
           </ul>
         )}
       </div>
+    </div>
     </div>
   );
 };

@@ -1,16 +1,19 @@
-/* myrating 스타일 (중앙 정렬 유지) */
-  .myrating {
-    font-family: 'Arial', sans-serif;
-    padding: 20px;
-    width: 80%; /* 너비를 화면 크기의 80%로 설정 */
-    max-width: 1000px;
-    box-sizing: border-box; /* 패딩을 포함한 크기 계산 */
-    position: absolute;  /* 부모 요소에 상관없이 절대 위치 */
-  top: 50%;  /* 수직 중앙 */
-  left: 50%;  /* 수평 중앙 */
-  transform: translate(-50%, -50%);  /* 요소의 중심을 정확히 중앙으로 이동 */
+.mypage-nav {
+  position: relative; /* 자식 요소들이 상대적인 위치를 가지게 함 */
+}
+.myrating {
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+  width: 80%; /* 너비를 화면 크기의 80%로 설정 */
+  max-width: 1000px;
+  box-sizing: border-box; /* 패딩을 포함한 크기 계산 */
+  margin-top: 20px;
+  position: absolute;  /* 부모 요소에 상관없이 절대 위치 */
+  top: 60%;  /* 세로로 50% */
+  left: 50%; /* 가로로 50% */
+  transform: translate(-50%, 0); /* 요소를 자기 자신의 크기만큼 이동시켜 중앙 정렬 */
+}
 
-  }
 
     .myrating-title {
     font-family: 'Arial', sans-serif;  /* 글꼴 설정 */
@@ -243,6 +246,18 @@
   text-align: right;  /* 오른쪽 정렬 */
 }
  
+.myrating-no-feedback {
+  font-size: 1.5rem; /* 글꼴 크기 */
+  color: #555; /* 텍스트 색상 */
+  text-align: center; /* 가로 중앙 정렬 */
+  margin: 0;
+  
+  /* 부모 요소에 flexbox 설정 */
+  display: flex;
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+}
+
   
   
   
