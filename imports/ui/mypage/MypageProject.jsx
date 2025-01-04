@@ -130,46 +130,42 @@ const MypageProject = () => {
             {myStudies.map((study) => (
               <li key={study._id} className="myproject-study-item">
                                 <div className="myproject-study-deadline">
-  {study.status !== '모집완료' && (
-    <>
-      <strong>모집 마감일:</strong> {new Date(study.studyClose).toLocaleDateString()}
-    </>
+  {/* 마감일 출력 */}
+  {study.status !== '모집완료' && study.studyClose ? (
+    <div className="myproject-study-deadline-date">
+      {new Date(study.studyClose).toLocaleDateString()} 마감
+    </div>
+  ) : (
+    // 마감일이 없으면 진행 상태 출력
+    study.status === '모집완료' && study.progress && (
+      <div className={`myproject-study-progress myproject-progress-${study.progress.toLowerCase()}`}>
+        스터디 {study.progress}
+      </div>
+    )
   )}
 </div>
-                <div className="myproject-study-title">
-                  <strong>{study.title}</strong> 
-                </div>
+<div 
+  className="myproject-study-title" 
+  onClick={() => navigate(`/study/detail/${study._id}`)} // 클릭 시 상세 페이지로 이동
+  style={{ cursor: 'pointer' }} // 클릭 가능하다는 시각적 표시
+>
+  <strong>{study.title}</strong>
+</div>
                 <div className="myproject-study-user">
                   <strong>작성자:</strong> {study.userId}
                 </div>
-                <div className="myproject-study-created-at">
-                  <strong>등록일:</strong> {new Date(study.createdAt).toLocaleDateString()}
-                </div>
-                <div className="myproject-study-deadline">
-  {study.status !== '모집완료' && (
-    <>
-      <strong>모집 마감일:</strong> {new Date(study.studyClose).toLocaleDateString()}
-    </>
-  )}
-</div>
+               
+           
                 <div className="myproject-study-status">
                   <strong>모집 상태:</strong> {study.status}
                 </div>
-                {study.status !== '모집완료' && (
-  <>
-    <div className="myproject-study-count">
-      <strong>모집 인원:</strong> {study.studyCount}
-    </div>
-    <div className="myproject-study-applicant">
-      <strong>신청자:</strong> {study.applicantCount}
-    </div>
-    
-  </>
-)}
-
-
-                <div className="myproject-study-progress">
-                  <strong>진행 상태:</strong> {study.progress}
+                <div className="myproject-study-tech-stack">
+                  <strong>기술 스택:</strong>
+                  <ul className="myproject-tech-list">
+                    {study.techStack.map((tech, index) => (
+                      <li key={index} className="myproject-tech-item">{tech}</li>
+                    ))}
+                  </ul>
                 </div>
                 {study.progress !== '예정' && (
   <>
@@ -185,14 +181,7 @@ const MypageProject = () => {
   </>
 )}
 
-                <div className="myproject-study-tech-stack">
-                  <strong>기술 스택:</strong>
-                  <ul className="myproject-tech-list">
-                    {study.techStack.map((tech, index) => (
-                      <li key={index} className="myproject-tech-item">{tech}</li>
-                    ))}
-                  </ul>
-                </div>
+               
                 {study.progress === '종료'&& !ratedStudies.includes(String(study._id)) && (
                   <div className="myproject-study-review-button">
                     <button onClick={() => handleReview(study._id)}>평가하기</button>
@@ -207,7 +196,7 @@ const MypageProject = () => {
             ))}
           </ul>
         )}
-
+  
         {/* Applied Studies */}
         <div className="myproject-section-title">내가 신청한 스터디</div>
         {appliedStudies.length === 0 ? (
@@ -216,63 +205,73 @@ const MypageProject = () => {
           <ul className="myproject-studies-list">
             {appliedStudies.map((study) => (
               <li key={study._id} className="myproject-study-item">
-                <div className="myproject-study-title">
-                  <strong>{study.title}</strong> 
-                </div>
+                     <div className="myproject-study-deadline">
+  {/* 마감일 출력 */}
+  {study.status !== '모집완료' && study.studyClose ? (
+    <div className="myproject-study-deadline-date">
+      {new Date(study.studyClose).toLocaleDateString()} 마감
+    </div>
+  ) : (
+    // 마감일이 없으면 진행 상태 출력
+    study.status === '모집완료' && study.progress && (
+      <div className={`myproject-study-progress myproject-progress-${study.progress.toLowerCase()}`}>
+        스터디 {study.progress}
+      </div>
+    )
+  )}
+</div>
+<div 
+  className="myproject-study-title" 
+  onClick={() => navigate(`/study/detail/${study._id}`)} // 클릭 시 상세 페이지로 이동
+  style={{ cursor: 'pointer' }} // 클릭 가능하다는 시각적 표시
+>
+  <strong>{study.title}</strong>
+</div>
                 <div className="myproject-study-user">
-                  <strong>작성자:</strong> {study.userId}
+                   {study.userId}
                 </div>
-                <div className="myproject-study-created-at">
-                  <strong>등록일:</strong> {new Date(study.createdAt).toLocaleDateString()}
-                </div>
+               
 
                 <div className="myproject-study-status">
-                  <strong>모집 상태:</strong> {study.status}
-                </div>
-                {study.status !== '모집완료' && (
-  <>
-    <div className="myproject-study-count">
-      <strong>모집 인원:</strong> {study.studyCount}
-    </div>
-    <div className="myproject-study-applicant">
-      <strong>신청자:</strong> {study.applicantCount}
-    </div>
-  </>
-)}
 
-<div className="myproject-study-progress">
-                  <strong>진행 상태:</strong> {study.progress}
-                </div>
-                {study.progress !== '예정' && (
-  <>
-    <div className="myproject-study-start-date">
-      <strong>진행일:</strong> {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()}
-    </div>
-    <div className="myproject-study-end-date">
-      <strong>종료일:</strong> 
-      {study.endDate === '미정' || isNaN(new Date(study.endDate)) 
-    ? '날짜 미정' 
-    : new Date(study.endDate).toLocaleDateString()}
-    </div>
-  </>
-)}
-
-
+  <span className={`myproject-status-${study.status}`}>{study.status}</span>
+</div>
 <div className="myproject-study-tech-stack">
-                  <strong>기술 스택:</strong>
+                  <strong>기술 스택</strong>
                   <ul className="myproject-tech-list">
                     {study.techStack.map((tech, index) => (
                       <li key={index} className="myproject-tech-item">{tech}</li>
                     ))}
                   </ul>
                 </div>
+               
+                {study.progress !== '예정' && (
+  <div className="myproject-study-period">
+    <strong>진행기간</strong>
+    <div className="myproject-study-dates">
+      <div className="myproject-study-start-date">
+        <span className={study.startDate === '미정' ? 'date-mijeong' : ''}>
+          {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()}
+        </span>
+      </div>
+      <div className="myproject-study-end-date">
+        <span className={study.endDate === '미정' || isNaN(new Date(study.endDate)) ? 'date-mijeong' : ''}>
+          {study.endDate === '미정' || isNaN(new Date(study.endDate)) ? '날짜 미정' : new Date(study.endDate).toLocaleDateString()}
+        </span>
+      </div>
+    </div>
+  </div>
+)}
+
+
+
                 {study.progress === '종료' && !ratedStudies.includes(String(study._id)) && (
                    <div className="myproject-study-review-button">
                     <button onClick={() => handleReview(study._id)}>평가하기</button>
                   </div>
                 )}
                 <div className="myproject-study-buttons">
-                  <button onClick={() => navigate(`/study/detail/${study._id}`)}>상세보기</button>
+                  
                   {study.progress !== '종료' &&  (
                   <button onClick={() => handleCancelApplication(study._id)}>신청 취소</button> )} 
                 </div>
