@@ -29,8 +29,11 @@ Meteor.methods({
      const creator = Meteor.users.findOne({ 'profile.nickname': study.userId }); // nickname 기준으로 사용자 찾기
      study.creatorName = creator ? creator.profile.nickname : '알 수 없음'; // 작성자 닉네임 설정
 
+     
      // 신청자 수 계산 (작성자 제외)
      const applications = Application.find({ studyId: study._id }).fetch();
+     const applicants = applications.map(app => app.userIds).flat(); 
+     study.applicants = applicants.filter(applicant => applicant !== study.userId);
      const applicantCount = applications.reduce((count, app) => {
       if (Array.isArray(app.userIds)) {
         const isApplicant = app.userIds.filter(userId => userId !== study.userId).length;
@@ -89,6 +92,8 @@ Meteor.methods({
       study.creatorName = creator ? creator.profile.nickname : '알 수 없음';
 
       const applications = Application.find({ studyId: study._id }).fetch();
+      const applicants = applications.map(app => app.userIds).flat(); 
+     study.applicants = applicants.filter(applicant => applicant !== study.userId);
       const applicantCount = applications.reduce((count, app) => {
         if (app.userIds && Array.isArray(app.userIds)) {
           const isApplicant = app.userIds.filter(userId => userId !== study.userId).length;

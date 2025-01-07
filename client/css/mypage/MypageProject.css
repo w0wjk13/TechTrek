@@ -58,15 +58,17 @@
 
 /* 마감일 날짜 */
 .myproject-study-deadline-date {
-  font-size: 16px;
-  font-weight: bold;
-  color: #d9534f; /* 빨간색으로 강조 */
-  font-family: 'Helvetica', sans-serif; /* 세련된 서체 */
-  background-color: #f9f9f9; /* 배경색 */
-  padding: 5px 10px; /* 여백 추가 */
-  border-radius: 5px; /* 둥근 모서리 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 미세한 그림자 효과 */
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Arial', sans-serif;
+  background-color: #FF4D4D; /* 자주색 배경 */
+  color: white; /* 텍스트 색상은 흰색 */
+  padding: 8px 12px;
+  border-radius: 5px;
+  text-align: center;
+  text-transform: uppercase;
 }
+
 
 /* 기본적인 진행 상태 스타일 */
 .myproject-study-progress {
@@ -90,11 +92,9 @@
 
 /* 종료 상태 */
 .myproject-progress-종료 {
-  background-color: #f39c12; /* 빨간색 배경 */
+  background-color: #34495e; /* 빨간색 배경 */
   color: white;  /* 흰색 텍스트 */
 }
-
-
 
 /* 스터디 제목 */
 .myproject-study-title {
@@ -133,7 +133,7 @@
 /* 작성자 정보 영역 */
 .myproject-study-user {
   font-size: 16px;                       /* 폰트 크기 */
-  font-weight: 500;                      /* 일반 글씨 두께 */
+  font-weight: 800;                      /* 일반 글씨 두께 */
   color: #34495e;                        /* 진한 회색 텍스트 */
   text-align: right;                     /* 오른쪽 정렬 */
   padding: 8px 20px;                     /* 상하 여백, 좌우 여백 */
@@ -144,37 +144,142 @@
   display: inline-block;                 /* 인라인 블록 요소 */
 }
 
-/* 모집 상태 영역 */
-.myproject-study-status {
-  font-size: 14px;                       /* 텍스트 크기 */
-  font-weight: 600;                      /* 텍스트 두께 */
-  padding: 6px 16px;                     /* 충분한 여백 */
-  display: inline-flex;                  /* 왼쪽 정렬을 위한 flex */
-  align-items: center;                   /* 수직 중앙 정렬 */
-  border-left: 4px solid transparent;    /* 왼쪽에 테두리만 */
-  text-transform: capitalize;            /* 첫 글자만 대문자 */
-  margin-right: 15px;                    /* 오른쪽 간격 */
-  color: #333;                           /* 기본 텍스트 색상 */
-  letter-spacing: 0.5px;                  /* 글자 간격 */
-  transition: all 0.3s ease;             /* 부드러운 전환 효과 */
-}
-
-/* 모집중 상태 */
+/* 모집중 상태 (왼쪽 정렬) */
 .myproject-status-모집중 {
-  color: #27ae60;                        /* 초록색 텍스트 */
-  border-left-color: #2ecc71;            /* 초록색 왼쪽 테두리 */
+  font-size: 14px;                     /* 텍스트 크기 줄이기 */
+  font-weight: 600;                    /* 글자 두께 */
+  text-align: left;                    /* 왼쪽 정렬 */
+  padding: 4px 8px;                    /* 패딩을 더 좁게 설정 */
+  border: 2px solid #3498db;           /* 파란색 테두리 */
+  border-radius: 15px;                 /* 둥근 테두리 */
+  display: inline-flex;                /* 플렉스 박스 사용 */
+  align-items: center;                 /* 수직 정렬 */
+  box-shadow: none;                    /* 그림자 제거 */
+  margin-bottom: 8px;                  /* 아래 여백 */
+  width: 110px;                                /* 아래 여백 */
 }
 
-/* 모집마감 상태 */
-.myproject-status-모집마감 {
-  color: #e74c3c;                        /* 빨간색 텍스트 */
-  border-left-color: #c0392b;            /* 빨간색 왼쪽 테두리 */
+.myproject-status-모집중::before {
+  content: "📖";                       /* 아이콘 추가 */
+  font-size: 20px;
+  margin-right: 6px;
 }
 
-/* 모집완료 상태 */
+/* 모집완료 상태 (왼쪽 정렬) */
 .myproject-status-모집완료 {
-  color: #3498db;                        /* 파란색 텍스트 */
-  border-left-color: #2980b9;            /* 파란색 왼쪽 테두리 */
+  font-size: 14px;                     /* 텍스트 크기 줄이기 */
+  font-weight: 600;                    /* 글자 두께 */
+  text-align: left;                    /* 왼쪽 정렬 */
+  padding: 4px 8px;                    /* 패딩을 더 좁게 설정 */
+  border: 2px solid #2ecc71;           /* 파란색 테두리 */
+  border-radius: 15px;                 /* 둥근 테두리 */
+  display: inline-flex;                /* 플렉스 박스 사용 */
+  align-items: center;                 /* 수직 정렬 */
+  box-shadow: none;                    /* 그림자 제거 */
+  margin-bottom: 8px;                  /* 아래 여백 */
+  width: 110px;                  /* 아래 여백 */
+}
+
+.myproject-status-모집완료::before {
+  content: "✔️";                       /* 아이콘 추가 */
+  font-size: 20px;
+  margin-right: 6px;
+}
+
+/* 모집마감 상태 (왼쪽 정렬) */
+.myproject-status-모집마감 {
+  font-size: 14px;                     /* 텍스트 크기 줄이기 */
+  font-weight: 600;                    /* 글자 두께 */
+  text-align: left;                    /* 왼쪽 정렬 */
+  padding: 4px 8px;                    /* 패딩을 더 좁게 설정 */
+  border: 2px solid #7f8c8d;           /* 파란색 테두리 */
+  border-radius: 15px;                 /* 둥근 테두리 */
+  display: inline-flex;                /* 플렉스 박스 사용 */
+  align-items: center;                 /* 수직 정렬 */
+  box-shadow: none;                    /* 그림자 제거 */
+  margin-bottom: 8px;                  /* 아래 여백 */
+  width: 110px;                   /* 아래 여백 */
+}
+
+.myproject-status-모집마감::before {
+  content: "🚫";                       /* 아이콘 추가 */
+  font-size: 20px;
+  margin-right: 6px;
+}
+
+.myproject-team-container {
+  font-family: 'Arial', sans-serif;       /* 폰트 스타일 */
+}
+
+.myproject-team-title {
+  font-size: 18px;                       /* 제목 크기 */
+  font-weight: 700;                      /* 제목 두께 */
+  color: #34495e;                        /* 제목 색상 */
+  margin-bottom: 12px;                   /* 제목과 목록 사이 여백 */
+  text-transform: uppercase;             /* 대문자화 */
+}
+
+.myproject-team-container ul {
+  display: flex;                         /* 수평 정렬 */
+  list-style-type: none;                 /* 기본 리스트 스타일 제거 */
+  padding: 0;                            /* 리스트 패딩 제거 */
+  gap: 20px;                             /* 팀원 항목 간 간격 */
+  margin: 0;                             /* 여백 제거 */
+}
+
+.myproject-team-container li {
+  display: flex;                         /* 수평 정렬을 위한 flex */
+  align-items: center;                   /* 텍스트와 아이콘 세로 중앙 정렬 */
+  background-color: #f4f6f9;             /* 배경색 */
+  padding: 8px 15px;                     /* 패딩 */
+  border-radius: 25px;                   /* 둥근 테두리 */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 애니메이션 효과 */
+}
+
+.myproject-team-container li::before {
+  content: "👥";                         /* 기본 아이콘 추가 */
+  margin-right: 8px;                     /* 아이콘과 텍스트 간 간격 */
+  font-size: 15px;                       /* 아이콘 크기 */
+}
+
+.myproject-team-container li span {
+  font-size: 16px;                       /* 팀원 이름 크기 */
+  color: #2c3e50;                        /* 팀원 이름 색상 */
+  font-weight: 500;                      /* 이름 글자 두께 */
+  letter-spacing: 0.5px;                  /* 글자 간격 */
+}
+
+.myproject-study-applicant {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+}
+
+.applicant-progress {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin-right: 20px;
+}
+
+.applicant-progress svg {
+  transform: rotate(-90deg); /* 진행 방향을 위에서 시작하도록 회전 */
+}
+
+.applicant-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 32px;
+  color: #2c3e50;
+}
+
+.applicant-count {
+  font-size: 16px;
+  font-weight: 600;
+  color: #34495e;
 }
 
 /* 진행기간 영역 */
@@ -211,13 +316,10 @@
   position: relative;                    /* 날짜 값의 위치를 위한 설정 */
 }
 
-/* 구분선 (새로운 디자인 - 점선 스타일) */
-.myproject-study-divider {
-  width: 1px;                            /* 구분선의 너비 */
-  height: 30px;                          /* 구분선의 높이 */
-  background-color: #ccc;                /* 구분선 색상 */
-  border-left: 2px dotted #aaa;          /* 점선 스타일로 구분선 */
-  margin: 0 15px;                        /* 날짜들 간의 간격 */
+.date-separator {
+  font-size: 16px;                       /* 하이픈 크기 */
+  color: #2c3e50;                        /* 텍스트 색상 */
+  font-weight: 600;                      /* 강조 텍스트 두께 */
 }
 
 /* 미정 상태 스타일 */
@@ -227,6 +329,7 @@
   font-style: italic;                    /* 기울임꼴 */
 }
 
+
 /* 평가하기 버튼 */
 .myproject-study-review-button {
   margin-top: 20px;                 /* 위쪽 여백 */
@@ -235,21 +338,24 @@
 
 /* 평가하기 버튼 */
 .myproject-study-review-button button {
-  padding: 10px 20px;               /* 버튼 내부 여백 */
-  font-size: 16px;                   /* 텍스트 크기 */
-  font-weight: 600;                  /* 텍스트 두께 */
-  color: #fff;                       /* 텍스트 색상 */
-  background-color: #3498db;         /* 기본 배경색 (파란색) */
-  border: none;                      /* 테두리 제거 */
-  border-radius: 5px;                /* 둥근 모서리 */
-  cursor: pointer;                  /* 커서 변경 */
-  transition: all 0.3s ease;         /* 부드러운 전환 효과 */
+  padding: 10px 20px;              /* 버튼 내부 여백 */
+  font-size: 14px;                  /* 텍스트 크기 */
+  font-weight: 700;                 /* 텍스트 두께 */
+  color: #34495e;                   /* 텍스트 색상 */
+  background-color: white;          /* 배경은 하얀색 */
+  border: 2px solid #34495e;        /* 테두리는 빨간색 */
+  border-radius: 30px;              /* 둥근 모서리 */
+  cursor: pointer;                 /* 클릭 가능 커서 */
+  transition: all 0.3s ease-in-out; /* 부드러운 전환 효과 */
+  text-transform: uppercase;           /* 부드러운 전환 효과 */
 }
 
 /* 버튼 호버 효과 */
 .myproject-study-review-button button:hover {
-  background-color: #2980b9;         /* 호버 시 배경색 (조금 더 어두운 파란색) */
-  transform: translateY(-2px);       /* 호버 시 버튼 약간 올려짐 */
+  background-color: #34495e;       /* 배경을 빨간색으로 */
+  color: white;                    /* 텍스트 색상을 흰색으로 */
+  transform: scale(1.05);           /* 살짝 커짐 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);      /* 호버 시 버튼 약간 올려짐 */
 }
 
 /* 버튼 비활성화 상태 */
@@ -300,30 +406,6 @@
   background-color: white;  /* 비활성화 상태에서 배경색은 유지 */
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
   /* 기술 스택 리스트 */
   .myproject-tech-list {
     display: flex;
@@ -337,6 +419,7 @@
     border-radius: 20px;
     font-size: 12px;
     color: #555;
+    margin-top: 10px;
   }
   
   

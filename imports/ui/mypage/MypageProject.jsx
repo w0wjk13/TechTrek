@@ -8,6 +8,7 @@ const MypageProject = () => {
   const [appliedStudies, setAppliedStudies] = useState([]);  // Applied studies
   const [loading, setLoading] = useState(true);
   const [ratedStudies, setRatedStudies] = useState([]); 
+
   // Current logged-in user ID
   const currentUser = Meteor.user();
   if (!currentUser) {
@@ -116,6 +117,7 @@ const MypageProject = () => {
     navigate(`/study/rating/${studyId}`);
   };
   
+  
   return (
    <div>
         <MypageNav />
@@ -152,15 +154,53 @@ const MypageProject = () => {
   <strong>{study.title}</strong>
 </div>
                 <div className="myproject-study-user">
-                  <strong>작성자:</strong> {study.userId}
+                 {study.userId}
                 </div>
                
            
-                <div className="myproject-study-status">
-                  <strong>모집 상태:</strong> {study.status}
-                </div>
+                <div className={`myproject-status-${study.status}`}>
+  {study.status}</div>
+  {/* 모집완료 상태일 경우 신청자들 표시 */}
+  {study.status === '모집완료' && study.applicants && study.applicants.length > 0 && (
+    <div className="myproject-team-container">
+      <div className="myproject-team-title">팀원</div>
+      <ul>
+        {study.applicants.map((applicant, index) => (
+          <li key={index}>{applicant}</li> // 신청자의 이름 또는 닉네임을 표시
+        ))}
+      </ul>
+    </div>
+  )}
+
+
+
+{study.status !== '모집완료' && (
+  <div className="myproject-study-applicant">
+    <div className="applicant-progress">
+      {/* SVG 원형 진행 바 */}
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="35" stroke="#ccc" strokeWidth="5" fill="none" />
+        <circle
+          cx="40"
+          cy="40"
+          r="35"
+          stroke="#3498db"
+          strokeWidth="5"
+          fill="none"
+          strokeDasharray={`${(study.applicantCount / study.studyCount) * 220} 220`}
+          strokeLinecap="round"
+        />
+      </svg>
+      <span className="applicant-icon">👥</span>
+    </div>
+    <div className="applicant-count">
+      모집인원 {study.applicantCount} / {study.studyCount}
+    </div>
+  </div>
+)}
+
                 <div className="myproject-study-tech-stack">
-                  <strong>기술 스택:</strong>
+                  <strong>기술 스택</strong>
                   <ul className="myproject-tech-list">
                     {study.techStack.map((tech, index) => (
                       <li key={index} className="myproject-tech-item">{tech}</li>
@@ -168,17 +208,22 @@ const MypageProject = () => {
                   </ul>
                 </div>
                 {study.progress !== '예정' && (
-  <>
-    <div className="myproject-study-start-date">
-      <strong>진행일:</strong> {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()}
+  <div className="myproject-study-period">
+    <strong>진행기간</strong>
+    <div className="myproject-study-dates">
+      <div className="myproject-study-start-date">
+        <span className={study.startDate === '미정' ? 'date-mijeong' : ''}>
+          {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()}
+        </span>
+      </div>
+      <span className="date-separator">-</span>
+      <div className="myproject-study-end-date">
+        <span className={study.endDate === '미정' || isNaN(new Date(study.endDate)) ? 'date-mijeong' : ''}>
+          {study.endDate === '미정' || isNaN(new Date(study.endDate)) ? '날짜 미정' : new Date(study.endDate).toLocaleDateString()}
+        </span>
+      </div>
     </div>
-    <div className="myproject-study-end-date">
-      <strong>종료일:</strong> 
-      {study.endDate === '미정' || isNaN(new Date(study.endDate)) 
-        ? '날짜 미정' 
-        : new Date(study.endDate).toLocaleDateString()}
-    </div>
-  </>
+  </div>
 )}
 
                
@@ -188,7 +233,7 @@ const MypageProject = () => {
                   </div>
                 )}
                 <div className="myproject-study-buttons">
-                  <button onClick={() => navigate(`/study/detail/${study._id}`)}>상세보기</button>
+              
                   <button onClick={() => handleDeleteStudy(study._id)}>삭제</button> {/* 삭제 버튼 */}
                 </div>
                
@@ -232,10 +277,52 @@ const MypageProject = () => {
                 </div>
                
 
-                <div className="myproject-study-status">
+                
+                <div className={`myproject-status-${study.status}`}>
+  {study.status}</div>
+  {/* 모집완료 상태일 경우 신청자들 표시 */}
+  {study.status === '모집완료' && study.applicants && study.applicants.length > 0 && (
+    <div className="myproject-team-container">
+      <div className="myproject-team-title">팀원</div>
+      <ul>
+        {study.applicants.map((applicant, index) => (
+          <li key={index}>{applicant}</li> // 신청자의 이름 또는 닉네임을 표시
+        ))}
+      </ul>
+    </div>
+  )}
 
-  <span className={`myproject-status-${study.status}`}>{study.status}</span>
-</div>
+
+
+{study.status !== '모집완료' && (
+  <div className="myproject-study-applicant">
+    <div className="applicant-progress">
+      {/* SVG 원형 진행 바 */}
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="35" stroke="#ccc" strokeWidth="5" fill="none" />
+        <circle
+          cx="40"
+          cy="40"
+          r="35"
+          stroke="#3498db"
+          strokeWidth="5"
+          fill="none"
+          strokeDasharray={`${(study.applicantCount / study.studyCount) * 220} 220`}
+          strokeLinecap="round"
+        />
+      </svg>
+      <span className="applicant-icon">👥</span>
+    </div>
+    <div className="applicant-count">
+      모집인원 {study.applicantCount} / {study.studyCount}
+    </div>
+  </div>
+)}
+
+
+
+
+
 <div className="myproject-study-tech-stack">
                   <strong>기술 스택</strong>
                   <ul className="myproject-tech-list">
@@ -254,6 +341,7 @@ const MypageProject = () => {
           {study.startDate === '미정' ? '날짜 미정' : new Date(study.startDate).toLocaleDateString()}
         </span>
       </div>
+      <span className="date-separator">-</span>
       <div className="myproject-study-end-date">
         <span className={study.endDate === '미정' || isNaN(new Date(study.endDate)) ? 'date-mijeong' : ''}>
           {study.endDate === '미정' || isNaN(new Date(study.endDate)) ? '날짜 미정' : new Date(study.endDate).toLocaleDateString()}
