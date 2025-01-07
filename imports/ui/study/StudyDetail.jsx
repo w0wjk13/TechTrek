@@ -273,53 +273,72 @@ const StudyDetail = () => {
   const canStartStudy = acceptedApplicants.length >= 1;
 
   return (
-    <div className="study-details">
-      <h1>스터디 상세 정보</h1>
-      <div><strong>제목:</strong> {title}</div>
-      <div><strong>작성자:</strong> {userId}</div>
-      <div><strong>등록일:</strong> {new Date(createdAt).toLocaleDateString()}</div>
-      {status !== '모집완료' && <div><strong>모집 마감일:</strong> {new Date(studyClose).toLocaleDateString()}</div>}
-      <div><strong>모집 상태:</strong> {status}</div>
-      {!onOffline.includes('온라인') && (
-      <div>
-        <strong>지역:</strong> {address ? `${address.city} ${address.gubun}` : '정보 없음'}
-      </div>
-      )}
-      <div><strong>진행 방식:</strong> {onOffline}</div>
-      <div><strong>역할:</strong>{roles}</div>
-      {status !== '모집완료' && (
-       
-       <div>
-         <strong>모집 인원:</strong> {studyCount}
-       </div>
-     )}
-     {status == '모집완료' && (
-       <>
-       <div>
-       <strong>스터디 인원:</strong> {acceptedApplicants.length+1}
-     </div>
-     <div>
-            <strong>진행 상태:</strong> {acceptedApplicants.length >= 1 ? acceptedApplicants[0].progress || '정보 없음' : '정보 없음'}
-          </div>
-          <div>
-            <strong>시작일:</strong> {acceptedApplicants.length >= 1 ? formatDate(acceptedApplicants[0].startDate) : '정보 없음'}
-          </div>
-   </>
- )}
- {applications.some(app => app.progress === '종료')  && (
-   <div>
-     <strong>종료일:</strong> {formatDate(acceptedApplicants[0].endDate)}
-   </div>
- )}
-      <div><strong>기술 스택:</strong>
-        <ul>
-          {studyData.techStack.map((tech, index) => <li key={index}>{tech}</li>)}
-        </ul>
-      </div>
+    <div className="studydetail-container">
+       <div className="studydetail-left-section">
+     <div className="studydetail-status">
+  {status !== '모집완료' ? (
+    <div className="studydetail-studyClose">
+      {new Date(studyClose).toLocaleDateString()} 마감
+    </div>
+  ) : (
+    <div className={`studydetail-progress ${acceptedApplicants.length >= 1 && acceptedApplicants[0].progress === '진행' ? 'progress-진행' : acceptedApplicants.length >= 1 && acceptedApplicants[0].progress === '종료' ? 'progress-종료' : ''}`}>
+    스터디 {acceptedApplicants.length >= 1 ? acceptedApplicants[0].progress || '정보 없음' : '정보 없음'}
+  </div>
+  )}
+</div>
+      <div className="studydetail-title"> {title}</div>
+      <div className="studydetail-author-status-container">
+      <div className={`studydetail-status ${status}`}>{status}</div>
+<div className="studydetail-author"> {userId}</div>
+</div>
+{!onOffline.includes('온라인') && (
+  <div className="studydetail-address">
+    지역 <span className="address-separator">|</span>{address ? `${address.city} ${address.gubun}` : '정보 없음'}
+  </div>
+)}
+<div className="studydetail-onOffline">진행 방식<span className="onOffline-separator">|</span> {onOffline}</div>
+<div className="studydetail-roles">역할<span className="roles-separator">|</span> {roles}</div>
+{status !== '모집완료' && (
+  <div className="studydetail-studyCount">
+    모집 인원<span className="studyCount-separator">|</span>  {studyCount}명
+  </div>
+)}
+{status === '모집완료' && (
+  <>
+    <div className="studydetail-studyParticipants">
+      스터디 인원<span className="studyParticipants-separator">|</span> {acceptedApplicants.length + 1}명
+    </div>
 
-      <div>
-  <strong>평점: </strong>
-  <div className="star-rating">
+    <div className="studydetail-dates">
+      <div className="studydetail-startDate">
+        진행 기간 <span className="dates-separator">|</span> {acceptedApplicants.length >= 1 ? formatDate(acceptedApplicants[0].startDate) : '정보 없음'}
+      </div>
+      
+      {applications.some(app => app.progress === '종료') && (
+        <>
+          <span className="date-separator">-</span>
+          <div className="studydetail-endDate">
+            {formatDate(acceptedApplicants[0].endDate)}
+          </div>
+        </>
+      )}
+    </div>
+  </>
+)}
+
+<div className="studydetail-techStack">
+<span className="studydetail-tech-label">기술 스택</span>
+<span className="tech-separator">|</span>
+<ul className="studydetail-tech-list">
+    {studyData.techStack.map((tech, index) => (
+      <li key={index} className="studydetail-tech">{tech}</li>
+    ))}
+  </ul>
+</div>
+
+<div className="studydetail-rating">
+  평점 <span className="rating-separator">|</span>
+  <div className="studydetail-star-rating">
     {[1, 2, 3, 4, 5].map((star) => (
       <span
         key={star}
@@ -334,76 +353,89 @@ const StudyDetail = () => {
   </div>
 </div>
 
-      <div><strong>내용:</strong> {content}</div>
-      <div><strong>조회수:</strong> {views}</div>
+<div className="studydetail-content"> {content}</div>
+<div className="studydetail-wrapper">
+  <div className="studydetail-views">
+    👀 {views}
+  </div>
+  <div className="studydetail-createdAt">
+    {new Date(createdAt).toLocaleDateString()}
+  </div>
+</div>
 
-      {!isUserOwner && !isAlreadyApplied && !isRecruitingClosed && (
-        <button onClick={handleApply}>신청하기</button>
-      )}
+{!isUserOwner && !isAlreadyApplied && !isRecruitingClosed && (
+  <button className="apply-button" onClick={handleApply}>신청하기</button>
+)}
 
-      {filteredApplications.length > 0 && (
-        <div>
-          <h3>신청자 목록</h3>
-          {isUserOwner && studyData.status === '모집중' && (
-      <div>
-        <button onClick={handleStartStudy}>스터디 시작</button>
+
+{filteredApplications.length > 0 && (
+  <div className="applicant-list">
+    <h3 className="applicant-list-title">신청자 목록</h3>
+    {isUserOwner && studyData.status === '모집중' && (
+      <div className="start-study">
+        <button className="start-study-button" onClick={handleStartStudy}>스터디 시작</button>
       </div>
     )}
     {isUserOwner && applications.some((applicant) => applicant.progress === '진행') && (
-      <div>
-        <button onClick={handleEndStudy}>스터디 종료</button>
+      <div className="end-study">
+        <button className="end-study-button" onClick={handleEndStudy}>스터디 종료</button>
       </div>
     )}
-          {filteredApplications.filter((applicant) => applicant.state !== '거절').map((applicant) => (
-            <div key={applicant.userId}>
-              <strong>{applicant.userId}</strong> - {applicant.state}
-              {isUserOwner && applicant.state === '신청' && (
-                <>
-                  <button onClick={() => handleAccept(applicant.userId)}>수락</button>
-                  <button onClick={() => handleReject(applicant.userId)}>거절</button>
-                </>
-              )}
-            </div>
-          ))}
+    {filteredApplications.filter((applicant) => applicant.state !== '거절').map((applicant) => (
+      <div key={applicant.userId} className="applicant-item">
+        <strong className="applicant-name">{applicant.userId}</strong> - <span className="applicant-state">{applicant.state}</span>
+        {isUserOwner && applicant.state === '신청' && (
+          <div className="applicant-actions">
+            <button className="accept-button" onClick={() => handleAccept(applicant.userId)}>수락</button>
+            <button className="reject-button" onClick={() => handleReject(applicant.userId)}>거절</button>
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+)}
+<div className="comment-section">
+  <div className="comment-title">댓글</div>
+  <textarea
+    className="comment-textarea"
+    value={commentContent}
+    onChange={handleCommentChange}
+    placeholder="댓글을 작성해주세요."
+  />
+  <button className="comment-submit-button" onClick={handleSubmitComment} disabled={hasRated}>댓글 작성</button>
+</div>
+
+<ul className="comments-list">
+  {comments.map((comment) => (
+    <li key={comment._id} className="comment-item">
+      <strong className="comment-nickname">{comment.nickname}</strong> ({new Date(comment.createdAt).toLocaleString()})
+      {editingCommentId === comment._id ? (
+        <div className="edit-comment-box">
+          <textarea
+            className="edit-comment-textarea"
+            value={editedContent}
+            onChange={(e) => setEditedContent(e.target.value)}
+            placeholder="수정된 댓글 내용을 입력하세요"
+          />
+          <button className="save-edited-comment-button" onClick={handleSaveEditedComment}>수정 저장</button>
         </div>
+      ) : (
+        <p className="comment-content">{comment.content}</p>
       )}
+      {/* 수정 버튼 */}
+      {comment.nickname === currentUserNickname && editingCommentId !== comment._id && (
+        <button className="edit-comment-button" onClick={() => handleEditComment(comment._id, comment.content)}>수정</button>
+      )}
+      {/* 삭제 버튼 */}
+      {comment.nickname === currentUserNickname && (
+        <button className="delete-comment-button" onClick={() => handleDeleteComment(comment._id)}>삭제</button>
+      )}
+    </li>
+  ))}
+</ul>
 
-      <h3>댓글</h3>
-      <textarea
-        value={commentContent}
-        onChange={handleCommentChange}
-        placeholder="댓글을 작성해주세요."
-      />
-      <button onClick={handleSubmitComment} disabled={hasRated}>댓글 작성</button>
-
-      <ul>
-        {comments.map((comment) => (
-          <li key={comment._id}>
-            <strong>{comment.nickname}</strong> ({new Date(comment.createdAt).toLocaleString()})
-            {editingCommentId === comment._id ? (
-              <div>
-                {/* 댓글 수정 input 박스 */}
-                <textarea
-                  value={editedContent}
-                  onChange={(e) => setEditedContent(e.target.value)}
-                  placeholder="수정된 댓글 내용을 입력하세요"
-                />
-                <button onClick={handleSaveEditedComment}>수정 저장</button>
-              </div>
-            ) : (
-              <p>{comment.content}</p>
-            )}
-            {/* 수정 버튼 */}
-            {comment.nickname === currentUserNickname && editingCommentId !== comment._id && (
-              <button onClick={() => handleEditComment(comment._id, comment.content)}>수정</button>
-            )}
-            {/* 삭제 버튼 */}
-            {comment.nickname === currentUserNickname && (
-              <button onClick={() => handleDeleteComment(comment._id)}>삭제</button>
-            )}
-          </li>
-        ))}
-      </ul>
+    </div>
+    
     </div>
   );
 };

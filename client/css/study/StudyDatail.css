@@ -1,0 +1,420 @@
+.studydetail-container {
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+
+  }
+
+  /* 제목 스타일 */
+.studydetail-title {
+    font-size: 32px; /* 제목 크기 */
+    font-weight: bold; /* 두꺼운 글씨 */
+    color: #2c3e50; /* 진한 회색 */
+    margin-bottom: 20px; /* 아래쪽 여백 */
+    padding: 10px; /* 안쪽 여백 */
+    text-align: center; /* 텍스트 가운데 정렬 */
+  }
+
+.studydetail-author-status-container {
+    display: flex;                       /* 요소들을 수평으로 정렬 */
+    justify-content: flex-end;          /* 왼쪽 정렬 */
+    gap: 15px;                            /* 요소들 간의 간격 */
+    align-items: center;                  /* 수직 중앙 정렬 */
+    font-family: 'Arial', sans-serif;
+  } 
+/* 작성자 이름 스타일 */
+.studydetail-author {
+    font-size: 18px; /* 글씨 크기 */
+    font-weight: 500; /* 일반보다 약간 두꺼운 글씨 */
+    color: #34495e; /* 약간 어두운 회색 */
+    margin-bottom: 10px; /* 아래쪽 여백 */
+    padding: 0; /* 여백 제거 */
+    float: right; /* 오른쪽으로 요소 이동 */
+  }
+  
+  .studydetail-recruitment {
+    display: flex;                     /* 요소들을 수평으로 정렬 */
+    justify-content: flex-start;        /* 왼쪽 정렬 */
+    gap: 15px;                          /* 요소들 간의 간격 */
+    align-items: center;                /* 수직 중앙 정렬 */
+    font-family: 'Arial', sans-serif;
+  }
+  /* 모집중 상태 (왼쪽 정렬) */
+.studydetail-status.모집중 {
+    font-size: 16px;                       /* 텍스트 크기 */
+    font-weight: bold;                     /* 글자 두께 */
+    text-align: left;                      /* 왼쪽 정렬 */
+    padding: 5px 15px;                     /* 패딩 */
+    border: 2px solid #007bff;             /* 녹색 테두리 */
+    border-radius: 20px;                   /* 둥근 테두리 */
+    display: inline-flex;                  /* 플렉스 박스 사용 */
+    align-items: center;                   /* 수직 정렬 */
+    box-shadow: none;                      /* 그림자 제거 */
+    margin-bottom: 8px;                    /* 아래 여백 */
+    color: black;                          /* 텍스트 색상 */
+  }
+  
+  .studydetail-status.모집중::before {
+    content: "📖";                         /* 아이콘 */
+    font-size: 20px;                       /* 아이콘 크기 */
+    margin-right: 8px;                     /* 아이콘과 텍스트 간격 */
+  }
+  
+  /* 모집완료 상태 (왼쪽 정렬) */
+  .studydetail-status.모집완료 {
+    font-size: 16px;                       /* 텍스트 크기 */
+    font-weight: bold;                     /* 글자 두께 */
+    text-align: left;                      /* 왼쪽 정렬 */
+    padding: 5px 15px;                     /* 패딩 */
+    border: 2px solid #28a745;            /* 파란색 테두리 */
+    border-radius: 20px;                   /* 둥근 테두리 */
+    display: inline-flex;                  /* 플렉스 박스 사용 */
+    align-items: center;                   /* 수직 정렬 */
+    box-shadow: none;                      /* 그림자 제거 */
+    margin-bottom: 8px;                    /* 아래 여백 */
+    color: black;                          /* 텍스트 색상 */
+  }
+  
+  .studydetail-status.모집완료::before {
+    content: "✔️";                         /* 아이콘 */
+    font-size: 20px;                       /* 아이콘 크기 */
+    margin-right: 8px;                     /* 아이콘과 텍스트 간격 */
+  }
+  
+  /* 모집마감 상태 (왼쪽 정렬) */
+  .studydetail-status.모집마감 {
+    font-size: 16px;                       /* 텍스트 크기 */
+    font-weight: bold;                     /* 글자 두께 */
+    text-align: left;                      /* 왼쪽 정렬 */
+    padding: 5px 15px;                     /* 패딩 */
+    border: 2px solid #dc3545;             /* 빨간색 테두리 */
+    border-radius: 20px;                   /* 둥근 테두리 */
+    display: inline-flex;                  /* 플렉스 박스 사용 */
+    align-items: center;                   /* 수직 정렬 */
+    box-shadow: none;                      /* 그림자 제거 */
+    margin-bottom: 8px;                    /* 아래 여백 */
+    color: black;                          /* 텍스트 색상 */
+  }
+  
+  .studydetail-status.모집마감::before {
+    content: "🚫";                         /* 아이콘 */
+    font-size: 20px;                       /* 아이콘 크기 */
+    margin-right: 8px;                     /* 아이콘과 텍스트 간격 */
+  }
+  
+  /* 마감일 텍스트 스타일 */
+.studydetail-studyClose {
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Arial', sans-serif;
+    background-color: #FF4D4D;          /* 빨간색 배경 */
+    color: white;                       /* 텍스트 색상 */
+    padding: 8px 12px;
+    border-radius: 5px;
+    text-align: center;
+    text-transform: uppercase;
+    width: 130px;
+  } 
+
+  /* 진행 중 상태 */
+.studydetail-progress.progress-진행 {
+    background-color: #4caf50; /* 녹색 배경 */
+    color: white;  /* 흰색 텍스트 */
+    padding: 5px 10px;
+    border-radius: 5px;  /* 둥근 모서리 */
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  /* 종료 상태 */
+  .studydetail-progress.progress-종료 {
+    background-color: #34495e; /* 회색 배경 */
+    color: white;  /* 흰색 텍스트 */
+    padding: 5px 10px;
+    border-radius: 5px;  /* 둥근 모서리 */
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  /* 기본 상태 - 정보 없음 */
+  .studydetail-progress {
+    font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 5px;
+  background-color: #f1f1f1;  /* 기본 배경색 */
+  color: #333;  /* 기본 텍스트 색 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  width: 110px;
+  }
+  
+  
+/* 지역 정보 스타일 */
+.studydetail-address {
+    font-size: 18px;                      /* 텍스트 크기 */
+    font-weight: 800;                     /* 글자 두께 */
+    color: #555;                          /* 텍스트 색상 (부드러운 어두운 회색) */
+    padding: 5px 10px;                    /* 내부 여백 */
+    text-align: left;                     /* 텍스트 왼쪽 정렬 */
+    margin-top: 10px;                     /* 상단 여백 */
+    text-transform: uppercase;            /* 텍스트 대문자로 표시 */
+    display: flex;                        /* 수평 정렬을 위해 flex 사용 */
+    align-items: center;                  /* 텍스트와 값 수직 중앙 정렬 */
+  }
+  
+  /* 구분선 스타일 */
+  .studydetail-address .address-separator {
+    margin: 0 10px;                       /* "지역"과 값 사이 여백 */
+    color: #ccc;                          /* 구분선 색상 */
+    font-size: 18px;                      /* 구분선 크기 */
+    font-weight: bold;                    /* 구분선 두께 */
+  }
+  
+  /* '정보 없음' 텍스트 스타일 */
+  .studydetail-address:empty {
+    color: #999;                          /* '정보 없음' 텍스트는 회색 */
+    font-style: italic;                   /* 이탤릭체로 강조 */
+  }
+
+  /* 진행 방식 정보 스타일 */
+.studydetail-onOffline {
+    font-size: 18px;                      /* 텍스트 크기 */
+    font-weight: 800;                     /* 글자 두께 */
+    color: #555;                          /* 텍스트 색상 (부드러운 어두운 회색) */
+    padding: 5px 10px;                    /* 내부 여백 */
+    text-align: left;                     /* 텍스트 왼쪽 정렬 */
+    margin-top: 5px;                     /* 상단 여백 */
+    text-transform: uppercase;            /* 텍스트 대문자로 표시 */
+    display: flex;                        /* 수평 정렬을 위해 flex 사용 */
+    align-items: center;                  /* 텍스트와 값 수직 중앙 정렬 */
+  }
+  
+  /* 구분선 스타일 */
+  .studydetail-onOffline .address-separator {
+    margin: 0 10px;                       /* "진행 방식"과 값 사이 여백 */
+    color: #ccc;                          /* 구분선 색상 */
+    font-size: 18px;                      /* 구분선 크기 */
+    font-weight: bold;                    /* 구분선 두께 */
+  }
+
+  /* 역할 정보 스타일 */
+.studydetail-roles {
+    font-size: 18px;                      /* 텍스트 크기 */
+    font-weight: 800;                     /* 글자 두께 */
+    color: #555;                          /* 텍스트 색상 (부드러운 어두운 회색) */
+    padding: 5px 10px;                    /* 내부 여백 */
+    text-align: left;                     /* 텍스트 왼쪽 정렬 */
+    margin-top: 5px;                     /* 상단 여백 */
+    text-transform: uppercase;            /* 텍스트 대문자로 표시 */
+    display: flex;                        /* 수평 정렬을 위해 flex 사용 */
+    align-items: center;                  /* 텍스트와 값 수직 중앙 정렬 */
+  }
+  
+  /* 구분선 스타일 */
+  .studydetail-roles .address-separator {
+    margin: 0 10px;                       /* "역할"과 값 사이 여백 */
+    color: #ccc;                          /* 구분선 색상 */
+    font-size: 18px;                      /* 구분선 크기 */
+    font-weight: bold;                    /* 구분선 두께 */
+  }
+
+  /* 모집 인원 정보 스타일 */
+.studydetail-studyCount {
+    font-size: 18px;                      /* 텍스트 크기 */
+    font-weight: 800;                     /* 글자 두께 */
+    color: #555;                          /* 텍스트 색상 (부드러운 어두운 회색) */
+    padding: 5px 10px;                    /* 내부 여백 */
+    text-align: left;                     /* 텍스트 왼쪽 정렬 */
+    margin-top: 5px;                     /* 상단 여백 */
+    text-transform: uppercase;            /* 텍스트 대문자로 표시 */
+    display: flex;                        /* 수평 정렬을 위해 flex 사용 */
+    align-items: center;                  /* 텍스트와 값 수직 중앙 정렬 */
+  }
+  
+  /* 구분선 스타일 */
+  .studydetail-studyCount .address-separator {
+    margin: 0 10px;                       /* "모집 인원"과 값 사이 여백 */
+    color: #ccc;                          /* 구분선 색상 */
+    font-size: 18px;                      /* 구분선 크기 */
+    font-weight: bold;                    /* 구분선 두께 */
+  }
+
+  /* 스터디 인원 정보 스타일 */
+.studydetail-studyParticipants {
+    font-size: 18px;                      /* 텍스트 크기 */
+    font-weight: 800;                     /* 글자 두께 */
+    color: #555;                          /* 텍스트 색상 (부드러운 어두운 회색) */
+    padding: 5px 10px;                    /* 내부 여백 */
+    text-align: left;                     /* 텍스트 왼쪽 정렬 */
+    margin-top: 5px;                     /* 상단 여백 */
+    text-transform: uppercase;            /* 텍스트 대문자로 표시 */
+    display: flex;                        /* 수평 정렬을 위해 flex 사용 */
+    align-items: center;                  /* 텍스트와 값 수직 중앙 정렬 */
+  }
+  
+ /* 여러 구분선 클래스 한 번에 정의 */
+.address-separator,
+.onOffline-separator,
+.roles-separator,
+.studyCount-separator,
+.studyParticipants-separator,
+.dates-separator,
+.tech-separator, 
+.studydetail-rating, 
+.rating-separator {
+  margin: 0 10px;           /* 구분선과 값 사이 여백 */
+  color: #ccc;              /* 구분선 색상 */
+  font-size: 18px;          /* 구분선 크기 */
+  font-weight: bold;        /* 구분선 두께 */
+}
+
+
+  /* 날짜들을 수평으로 배치할 컨테이너 */
+.studydetail-dates {
+    display: flex;                        /* 수평 정렬 */
+    align-items: center;                  /* 중앙 정렬 */
+    gap: 10px;                            /* 요소들 간의 간격 */
+  }
+  
+  /* 시작 날짜 스타일 */
+  .studydetail-startDate {
+    font-size: 18px;
+    font-weight: 800;
+    color: #555;
+    padding: 5px 10px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* 종료 날짜 스타일 */
+  .studydetail-endDate {
+    font-size: 18px;
+    font-weight: 800;
+    color: #555;
+    padding: 5px 10px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* 구분선 스타일 */
+  .date-separator {
+    color: #555;                          /* 구분선 색상 변경: 어두운 회색 */
+    font-size: 18px;                      /* 구분선 크기 */
+    font-weight: bold;                    /* 구분선 두께 */
+  }
+
+  /* 기술 스택 전체 컨테이너 */
+.studydetail-techStack {
+    display: flex;                    /* 수평 정렬을 위해 flex 사용 */
+    align-items: center;              /* 항목들을 수직 중앙 정렬 */
+    font-size: 18px;                  /* 글자 크기 */
+    font-weight: bold;                /* 글자 두께 */
+    color: #555;                      /* 글자 색 */
+  }
+  
+  /* "기술 스택" 텍스트 스타일 */
+  .studydetail-tech-label {
+    font-size: 18px;                      /* 텍스트 크기 */
+    font-weight: 800;                     /* 글자 두께 */
+    color: #555;                          /* 텍스트 색상 (부드러운 어두운 회색) */
+    padding: 5px 10px;                    /* 내부 여백 */
+    text-align: left;                     /* 텍스트 왼쪽 정렬 */
+    margin-top: 5px;                     /* 상단 여백 */
+    text-transform: uppercase;            /* 텍스트 대문자로 표시 */
+    display: flex;                        /* 수평 정렬을 위해 flex 사용 */
+    align-items: center;       /* 대문자로 변경 */
+  }
+  
+  /* 리스트 스타일 */
+  .studydetail-tech-list {
+    list-style-type: none;            /* 기본 목록 스타일 제거 */
+    padding: 0;                       /* 패딩 제거 */
+    margin: 0;                        /* 마진 제거 */
+    display: flex;                    /* 수평 정렬 */
+    gap: 10px;                        /* 항목 간 간격 */
+  }
+  
+  /* 각 항목 스타일 */
+  .studydetail-tech {
+    background-color: #f2f2f2;        /* 배경색 */
+    border-radius: 5px;                /* 둥근 테두리 */
+    padding: 5px 10px;                 /* 내부 여백 */
+    color: #333;                       /* 글자 색 */
+    font-size: 16px;                   /* 글자 크기 */
+  }
+
+  /* 평점 전체 컨테이너 */
+.studydetail-rating {
+    font-size: 18px;                      /* 텍스트 크기 */
+    font-weight: 800;                     /* 글자 두께 */
+    color: #555;                          /* 텍스트 색상 (부드러운 어두운 회색) */
+    padding: 5px -10px;                    /* 내부 여백 */
+    text-align: left;                     /* 텍스트 왼쪽 정렬 */
+    margin-top: 5px;                     /* 상단 여백 */
+    text-transform: uppercase;            /* 텍스트 대문자로 표시 */
+    display: flex;                        /* 수평 정렬을 위해 flex 사용 */
+    align-items: center;                    
+  }
+   
+  /* 별점 표시 컨테이너 */
+  .studydetail-star-rating {
+    display: flex;                    /* 별들을 수평으로 배치 */
+    align-items: center;              /* 중앙 정렬 */
+  }
+  
+  /* 별 스타일: 기본적으로 크기와 색상 지정 */
+  .studydetail-star-rating span {
+    font-size: 24px;                  /* 별 크기 */
+    margin-right: 5px;                /* 별들 간 간격 */
+    color: #D3D3D3;                   /* 기본 색상 (회색) */
+  }
+  
+  /* 스터디 상세 내용 */
+  .studydetail-content {
+    font-size: 15px;                  /* 텍스트 크기 */
+    font-weight: 500;                 /* 일반 텍스트 두께 */
+    color: #333;                      /* 텍스트 색상 (어두운 회색) */
+    line-height: 1.6;                 /* 줄 간격 (가독성 향상) */
+    padding: 15px;                    /* 내용과 경계 사이 여백 */
+    margin-top: 20px;                 /* 상단 여백 */
+    margin-bottom: 20px;  
+    word-break: break-word;           /* 긴 단어가 잘리지 않게 자동으로 줄바꿈 */
+    white-space: pre-wrap;            /* 공백, 줄바꿈 등 텍스트가 보이는 그대로 표시 */
+  }
+
+/* 전체 컨테이너 스타일 */
+.studydetail-wrapper {
+    display: flex;               /* 수평 정렬 */
+    align-items: center;         /* 수직 중앙 정렬 */
+    justify-content: flex-end; /* 왼쪽 정렬 */
+  }
+  
+  /* 조회수 디자인 */
+  .studydetail-views {
+    display: inline-flex;        /* 수평 배치 */
+    gap: 10px;                   /* 요소들 간의 간격 */
+    align-items: center;         /* 수직 중앙 정렬 */
+    font-size: 16px;             /* 폰트 크기 */
+    color: #555;                 /* 텍스트 색상 */
+    padding: 5px 10px;           /* 여백 */
+  }
+  
+  /* 날짜 디자인 */
+  .studydetail-createdAt {
+    font-size: 16px;             /* 폰트 크기 */
+    font-weight: 500;            /* 글자 두께 */
+    color: #888;                 /* 텍스트 색상 */
+    padding: 5px -10px;           /* 여백 */
+    text-align: left;            /* 왼쪽 정렬 */
+  }
+  .studydetail-views::after {
+    content: "|";               /* 구분선 텍스트 */
+    font-size: 18px;            /* 구분선 크기 */
+    color: #ccc;                /* 구분선 색상 */
+    font-weight: bold;          /* 구분선 두께 */
+  }
