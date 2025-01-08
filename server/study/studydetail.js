@@ -52,10 +52,16 @@ if (Meteor.isServer) {
         throw new Meteor.Error('study-not-found', '스터디를 찾을 수 없습니다.');
       }
 
+      const userProfile = Meteor.users.findOne(this.userId);
+
+  // Get the nickname (either from profile or default to username) and profile image
+  const nickname = userProfile?.profile?.nickname || userProfile?.username || '알 수 없음';
+  const profilePicture = userProfile?.profile?.profilePicture || '';
+
       const newComment = {
         userId: this.userId,
-        nickname: Meteor.user()?.profile?.nickname || Meteor.user()?.username || '알 수 없음',
-        content: commentContent,
+        nickname: nickname,
+        content: profilePicture,
         createdAt: new Date(),
         studyId: studyId,
       };
@@ -161,6 +167,7 @@ console.log(currentNickname);
     throw new Meteor.Error('application-not-found', '신청 정보가 없습니다.');
   }
 
+  
   return '스터디 신청이 완료되었습니다.';
 },
 

@@ -30,19 +30,32 @@ const StudyDetail = () => {
 
       // 해당 스터디의 댓글 정보 가져오기
       const studyComments = Comment.find({ studyId: id }).fetch();
-      setComments(studyComments);
+      const commentsWithProfilePicture = studyComments.map(comment => {
+        const userProfile = Meteor.users.findOne(comment.userId); // 해당 사용자의 프로필 정보 가져오기
+        return {
+          ...comment,
+          profilePicture: userProfile?.profile?.profilePicture || null // 프로필 이미지가 없다면 null
+        };
+      });
+      
+      setComments(commentsWithProfilePicture);
 
       // 해당 스터디에 신청한 사용자들 가져오기
       const studyApplications = Application.find({ studyId: id }).fetch();
       const applicants = studyApplications.flatMap((app) => 
-        app.userIds.map((userId, index) => ({
-          userId,
-          state: app.states[index],
-          progress: app.progress, 
-        startDate: app.startDate, 
-        endDate: app.endDate, 
-          nickname: Meteor.users.findOne(userId)?.profile?.nickname || '알 수 없음',
-        }))
+        app.userIds.map((userId, index) => {
+          const user = Meteor.users.findOne({ "profile.nickname": userId });  // nickname으로 사용자 찾기
+      
+          return {
+            userId,
+            state: app.states[index],
+            progress: app.progress,
+            startDate: app.startDate,
+            endDate: app.endDate,
+            nickname: user?.profile?.nickname || '알 수 없음',
+            rating: user?.profile?.rating || '평점 없음',  // 평점이 없으면 '평점 없음' 출력
+          };
+        })
       );
       setApplications(applicants);
       setLoading(false);
@@ -272,6 +285,12 @@ const StudyDetail = () => {
   const acceptedApplicants = filteredApplications.filter((applicant) => applicant.state === '수락');
   const canStartStudy = acceptedApplicants.length >= 1;
 
+  // 수정 취소 함수
+const handleCancelEditComment = () => {
+  setEditingCommentId(null);  // 수정 모드 해제
+  setEditedContent('');        // 입력란 초기화
+};
+
   return (
     <div className="studydetail-container">
        <div className="studydetail-left-section">
@@ -363,52 +382,26 @@ const StudyDetail = () => {
   </div>
 </div>
 
-{!isUserOwner && !isAlreadyApplied && !isRecruitingClosed && (
-  <button className="apply-button" onClick={handleApply}>신청하기</button>
-)}
-
-
-{filteredApplications.length > 0 && (
-  <div className="applicant-list">
-    <h3 className="applicant-list-title">신청자 목록</h3>
-    {isUserOwner && studyData.status === '모집중' && (
-      <div className="start-study">
-        <button className="start-study-button" onClick={handleStartStudy}>스터디 시작</button>
-      </div>
-    )}
-    {isUserOwner && applications.some((applicant) => applicant.progress === '진행') && (
-      <div className="end-study">
-        <button className="end-study-button" onClick={handleEndStudy}>스터디 종료</button>
-      </div>
-    )}
-    {filteredApplications.filter((applicant) => applicant.state !== '거절').map((applicant) => (
-      <div key={applicant.userId} className="applicant-item">
-        <strong className="applicant-name">{applicant.userId}</strong> - <span className="applicant-state">{applicant.state}</span>
-        {isUserOwner && applicant.state === '신청' && (
-          <div className="applicant-actions">
-            <button className="accept-button" onClick={() => handleAccept(applicant.userId)}>수락</button>
-            <button className="reject-button" onClick={() => handleReject(applicant.userId)}>거절</button>
-          </div>
-        )}
-      </div>
-    ))}
-  </div>
-)}
 <div className="comment-section">
-  <div className="comment-title">댓글</div>
+  <div className="comment-title">댓글<span className="comment-count">{comments.length}</span></div>
+  <div className="comment-input-container">
   <textarea
     className="comment-textarea"
     value={commentContent}
     onChange={handleCommentChange}
     placeholder="댓글을 작성해주세요."
   />
-  <button className="comment-submit-button" onClick={handleSubmitComment} disabled={hasRated}>댓글 작성</button>
+  <button className="comment-submit-button" onClick={handleSubmitComment} disabled={hasRated}>등록</button>
 </div>
-
+</div>
 <ul className="comments-list">
   {comments.map((comment) => (
     <li key={comment._id} className="comment-item">
-      <strong className="comment-nickname">{comment.nickname}</strong> ({new Date(comment.createdAt).toLocaleString()})
+      <div className="comment-header">
+      <img src={comment.profilePicture} alt={comment.nickname} className="comment-profile-image" />
+        <span className="comment-nickname">{comment.nickname}</span>
+        <span className="comment-created-at">({new Date(comment.createdAt).toLocaleString()})</span>
+      </div>
       {editingCommentId === comment._id ? (
         <div className="edit-comment-box">
           <textarea
@@ -417,25 +410,88 @@ const StudyDetail = () => {
             onChange={(e) => setEditedContent(e.target.value)}
             placeholder="수정된 댓글 내용을 입력하세요"
           />
-          <button className="save-edited-comment-button" onClick={handleSaveEditedComment}>수정 저장</button>
-        </div>
+          <div className="edit-comment-buttons">
+  <button className="save-edited-comment-button" onClick={handleSaveEditedComment}>저장</button>
+  <button className="cancel-edit-comment-button" onClick={handleCancelEditComment}>취소</button>
+</div>
+</div>
       ) : (
+        <div className="comment-details-box">
         <p className="comment-content">{comment.content}</p>
+        <div className="comment-buttons">
+        {/* 수정 버튼 */}
+        {comment.nickname === currentUserNickname && editingCommentId !== comment._id && (
+          <button className="edit-comment-button" onClick={() => handleEditComment(comment._id, comment.content)}>수정</button>
+        )}
+        {/* 삭제 버튼 */}
+        {comment.nickname === currentUserNickname && editingCommentId !== comment._id &&(
+          <button className="delete-comment-button" onClick={() => handleDeleteComment(comment._id)}>삭제</button>
+        )}
+        </div></div>
       )}
-      {/* 수정 버튼 */}
-      {comment.nickname === currentUserNickname && editingCommentId !== comment._id && (
-        <button className="edit-comment-button" onClick={() => handleEditComment(comment._id, comment.content)}>수정</button>
-      )}
-      {/* 삭제 버튼 */}
-      {comment.nickname === currentUserNickname && (
-        <button className="delete-comment-button" onClick={() => handleDeleteComment(comment._id)}>삭제</button>
-      )}
+     
     </li>
   ))}
 </ul>
 
     </div>
-    
+    <div className="studydetail-right-section">
+    {/* 신청하기 버튼 */}
+    {!isUserOwner && !isAlreadyApplied && !isRecruitingClosed && (
+      <button className="apply-button" onClick={handleApply}>
+        신청하기
+      </button>
+    )}
+
+    {/* 신청자 목록 */}
+    {filteredApplications.length > 0 && (
+      <div className="applicant-list">
+        <h3 className="applicant-list-title">신청자 목록</h3>
+        <div className="study-action-buttons">
+        {isUserOwner && studyData.status === '모집중' && (
+          <div className="start-study">
+            <button className="start-study-button" onClick={handleStartStudy}>
+              스터디 시작
+            </button>
+          </div>
+        )}
+        {isUserOwner && applications.some((applicant) => applicant.progress === '진행') && (
+          <div className="end-study">
+            <button className="end-study-button" onClick={handleEndStudy}>
+              스터디 종료
+            </button>
+          </div>
+        )}</div>
+        {filteredApplications
+          .filter((applicant) => applicant.state !== '거절')
+          .map((applicant) => (
+            <div key={applicant.userId} className="applicant-item">
+              <div className="applicant-card">
+      <div className="applicant-name">
+        <strong>{applicant.userId}</strong>
+        <div className="applicant-rating">
+         평점 {applicant.rating}
+        </div>
+      </div>
+    </div>
+              <span className={`applicant-state ${applicant.state}`}>{applicant.state}</span>
+              {isUserOwner && applicant.state === '신청' && (
+                <div className="applicant-actions">
+                  <button className="accept-button" onClick={() => handleAccept(applicant.userId)}>
+                  <span className="accept-button-icon">✔️</span>
+                  <span className="accept-button-text">수락</span>
+                  </button>
+                  <button className="reject-button" onClick={() => handleReject(applicant.userId)}>
+                  <span className="reject-button-icon">❌</span>
+                  <span className="reject-button-text">거절</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+      </div>
+    )}
+  </div>
     </div>
   );
 };

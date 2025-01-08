@@ -2,9 +2,20 @@
     padding: 20px;
     max-width: 900px;
     margin: 0 auto;
-
+    position: relative;
   }
 
+  .studydetail-left-section {
+    transform: translateX(-40px);
+  }
+
+  .studydetail-right-section {
+    position: absolute;
+    top: 120px;    /* 상단에서 20px 아래로 이동 */
+    right: 0px;
+    transform: translate(300px, 100px);
+    border: 1px solid black;
+  }
   /* 제목 스타일 */
 .studydetail-title {
     font-size: 32px; /* 제목 크기 */
@@ -392,6 +403,8 @@
     display: flex;               /* 수평 정렬 */
     align-items: center;         /* 수직 중앙 정렬 */
     justify-content: flex-end; /* 왼쪽 정렬 */
+    margin-top: 20px;
+    margin-bottom: 10px;
   }
   
   /* 조회수 디자인 */
@@ -418,3 +431,476 @@
     color: #ccc;                /* 구분선 색상 */
     font-weight: bold;          /* 구분선 두께 */
   }
+
+  .comment-section {
+    border-top: 2px solid #ccc; /* 상단에 보더 추가 */
+    padding-top: 15px;  /* 상단 여백을 조금 더 넉넉하게 설정 */
+    padding-bottom: 15px;  /* 하단 여백 추가 */
+  }
+
+  .comment-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .comment-count {
+    font-size: 18px; /* 글자 크기 약간 키움 */
+    color: #4F92B8; /* 댓글 수를 강조할 수 있는 색상  */
+    font-weight: 600; /* 글자 두께를 좀 더 강조 */
+    margin-left: 8px; /* 왼쪽 여백을 더 넉넉하게 */
+    letter-spacing: 1px; /* 글자 간격을 약간 넓혀서 가독성 개선 */
+    text-transform: uppercase; /* 글자를 대문자로 변환 */
+    display: inline-block; /* 수평으로 정렬되도록 설정 */
+  }
+  
+  /* 댓글 입력 컨테이너 */
+.comment-input-container {
+  display: flex;
+  justify-content: flex-start;  /* 요소들을 왼쪽으로 정렬 */
+  width: 100%;
+  max-width: 600px;
+  padding: 10px;
+  gap: 10px;  /* 입력란과 버튼 사이에 간격 추가 */
+}
+
+/* 댓글 입력란 */
+.comment-textarea {
+  width: 100%;
+  height: 40px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: none; /* 크기 조정 불가 */
+  transition: border-color 0.3s ease;
+}
+
+.comment-textarea:focus {
+  outline: none;
+  border-color: #4F92B8; /* 포커스 시 녹색 테두리 */
+}
+
+/* 댓글 제출 버튼 */
+.comment-submit-button {
+  padding: 10px 20px;
+  background-color: #4F92B8; /* 버튼 배경 색상 - 파란색 */
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  width: 100px;  /* 버튼 너비 증가 */
+}
+
+/* 버튼 클릭 시 */
+.comment-submit-button:active {
+  transform: scale(0.98); /* 클릭 시 살짝 눌리는 효과 */
+}
+
+/* 버튼 비활성화 상태 */
+.comment-submit-button:disabled {
+  background-color: #ccc; /* 비활성화 시 회색 */
+  cursor: not-allowed; /* 클릭 불가 표시 */
+}
+
+/* 댓글 리스트 */
+.comments-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 댓글 항목 */
+.comment-item {
+  background-color: #f9f9f9; /* 배경색 변경 */
+  border: 1px solid #ddd;  /* 테두리 색상 */
+  border-radius: 8px; /* 둥근 모서리 */
+  margin-bottom: 20px;  /* 각 댓글 간 간격 */
+  padding: 15px;
+  display: flex;
+  flex-direction: column;  /* 댓글 내용과 버튼을 세로로 배치 */
+}
+
+/* 댓글 헤더 */
+.comment-header {
+  display: flex;
+  justify-content: flex-start; /* 왼쪽 정렬 */
+  align-items: center; /* 세로 정렬 */
+  margin-bottom: 12px; /* 아래쪽 간격 */
+  font-size: 14px;
+  color: #333; /* 기본 텍스트 색상 */
+}
+
+.comment-profile-image {
+  width: 40px; /* 프로필 이미지의 가로 크기 */
+  height: 40px; /* 프로필 이미지의 세로 크기 */
+  border-radius: 50%; /* 원 모양으로 만들기 */
+  object-fit: cover; /* 이미지를 잘라서 꽉 채우기 */
+  border: 2px solid #ddd; /* 얇은 테두리 */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* 가벼운 그림자 추가 */
+  margin-right: 5px;
+}
+
+/* 닉네임 */
+.comment-nickname {
+  font-weight: bold; /* 볼드체로 강조 */
+  color: #333; /* 닉네임 색상 */
+  font-size: 16px; /* 크기 약간 키우기 */
+  margin-right: 8px; /* 닉네임과 날짜 사이 간격 */
+}
+
+/* 작성일 */
+.comment-created-at {
+  font-size: 12px; /* 작은 글씨 */
+  color: #888; /* 작성일 색상 회색 */
+  font-style: italic; /* 이탤릭체로 강조 */
+}
+
+/* 수정 댓글 박스 */
+.edit-comment-box {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 댓글 수정 입력란 */
+.edit-comment-textarea {
+  width: 100%;
+  font-size: 16px; /* 적당한 텍스트 크기 */
+  color: #333; /* 텍스트 색상 */
+  background-color: #fff; /* 흰색 배경 */
+  border: 2px solid #ccc; /* 연한 회색 테두리 */
+  border-radius: 10px; /* 부드러운 둥근 모서리 */
+  resize: none; /* 크기 조절을 없앰 */
+  box-sizing: border-box; /* 패딩을 포함한 크기 계산 */
+  transition: all 0.3s ease; /* 애니메이션 효과 */
+  line-height: 1.5; /* 줄 간격 조정 */
+  font-family: 'Arial', sans-serif; /* 더 현대적인 서체 */
+}
+
+/* 포커스 시 스타일 */
+.edit-comment-textarea:focus {
+  outline: none; /* 기본 포커스 스타일 제거 */
+  border-color: #343a40; 
+  border-width: 1px;
+}
+
+/* 플레이스홀더 텍스트 스타일 */
+.edit-comment-textarea::placeholder {
+  color: #888; /* 밝은 회색 플레이스홀더 */
+  font-size: 15px; /* 조금 더 작은 크기 */
+  font-style: italic; /* 이탤릭체 스타일 */
+}
+
+/* 댓글 수정 버튼들 */
+.edit-comment-buttons {
+  display: flex;
+  gap: 10px; /* 버튼들 사이 간격 */
+  justify-content: center; /* 왼쪽 정렬 */
+  margin-top: 10px;
+}
+
+/* 저장 버튼 */
+.save-edited-comment-button {
+  padding: 12px 24px; /* 여백을 적당히 */
+  background-color: #343a40; /* 녹색 배경 (성공적인 작업을 나타내는 색상) */
+  color: white;
+  border: none;
+  border-radius: 50px; /* 둥근 모서리 */
+  font-size: 16px; /* 버튼 크기 */
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease; /* 모든 효과에 대한 부드러운 전환 */
+  text-align: center;
+  width: 80px; 
+  
+}
+
+.save-edited-comment-button:disabled {
+  background-color: #b2dfdb; /* 비활성화 시 연한 색 */
+  cursor: not-allowed;
+}
+
+/* 취소 버튼 */
+.cancel-edit-comment-button {
+  padding: 12px 24px;
+  background-color: #6c757d; /* 빨간색 배경 (취소를 나타내는 색상) */
+  color: white;
+  border: none;
+  border-radius: 50px; /* 둥근 모서리 */
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  width: 80px;
+}
+
+.cancel-edit-comment-button:active {
+  transform: scale(0.98); /* 클릭 시 눌린 느낌 */
+}
+
+.cancel-edit-comment-button:disabled {
+  background-color: #f1f1f1; /* 비활성화 시 연한 색 */
+  cursor: not-allowed;
+}
+
+/* 댓글 항목을 감싸는 컨테이너 */
+.comment-details-box {
+  display: flex;
+  justify-content: space-between; /* 내용과 버튼들이 수평으로 배치되게 함 */
+  align-items: center; /* 콘텐츠와 버튼들이 세로로 가운데 정렬되도록 */
+  gap: 10px; /* 콘텐츠와 버튼 사이의 간격 */
+}
+
+/* 댓글 내용 */
+.comment-content {
+  flex-grow: 1; /* 댓글 내용이 버튼보다 더 많이 차지하도록 */
+  font-size: 16px;
+  color: #333;
+  margin-right: 10px; /* 버튼과의 간격 추가 */
+}
+
+/* 버튼들 */
+.comment-buttons {
+  display: flex;
+  gap: 10px; /* 버튼 간의 간격 */
+  align-items: center; /* 버튼들이 세로로 가운데 정렬되도록 */
+}
+
+/* 수정 버튼 */
+.edit-comment-button {
+  padding: 8px 16px;
+  background-color: #343a40; /* 파란색 배경 */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* 삭제 버튼 */
+.delete-comment-button {
+  padding: 8px 16px;
+  background-color: #6c757d; /* 빨간색 배경 */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.studydetail-right-section {
+  width: 35%; /* 부모 요소의 50% 너비 */
+  height: auto; /* 높이는 내용에 맞게 자동으로 조정 */
+  max-height: 800px; /* 최대 높이 설정 */
+  overflow-y: auto; /* 세로 스크롤 추가 */
+  padding: 30px;  /* 여백 */
+  background-color: #ffffff;  /* 배경색 */
+  border-radius: 15px;  /* 둥근 모서리 */
+  border: 1px solid #dcdcdc;  /* 회색 테두리 */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); 
+}
+
+.applicant-list-title {
+  font-size: 20px;  /* 글자 크기 */
+  font-weight: 600;  /* 볼드체로 강조 */
+  color: #333;  /* 어두운 회색 텍스트 색상 */
+  background-color: #f1f1f1;  /* 부드러운 회색 배경 */
+  padding: 12px 20px;  /* 텍스트와 테두리 사이에 여백 */
+  border-radius: 8px;  /* 둥근 모서리 */
+  border: 1px solid #ddd;  /* 테두리 색상 */
+  margin-bottom: 15px;  /* 아래쪽 간격 추가 */
+  text-align: center;  /* 텍스트 중앙 정렬 */
+}
+
+/* 스터디 액션 버튼들이 수평으로 정렬되도록 */
+.study-action-buttons {
+  display: flex;
+  justify-content: center; /* 버튼들을 중앙에 배치 */
+}
+
+/* 스터디 시작 버튼 */
+.start-study-button {
+  padding: 5px 5px; /* 버튼 크기 */
+  font-size: 13px; /* 글자 크기 */
+  font-weight: 700; /* 볼드체로 강조 */
+  border: 2px solid transparent; /* 테두리 초기화 */
+  border-radius: 8px; /* 둥근 모서리 */
+  cursor: pointer; /* 클릭 시 포인터 표시 */
+  transition: all 0.3s ease-in-out; /* 애니메이션 효과 */
+  width: 90px; /* 너비 설정 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  background-color: #4caf50; /* 초록색 배경 */
+  color: #e0e0e0; /* 글자 색상 */
+  margin-bottom: 15px;
+}
+
+.start-study-button:disabled {
+  background-color: #e0e0e0; /* 비활성화 시 회색 */
+  cursor: not-allowed; /* 비활성화 시 커서 변경 */
+}
+
+/* 스터디 종료 버튼 */
+.end-study-button {
+  padding: 12px 24px; /* 버튼 크기 */
+  font-size: 16px; /* 글자 크기 */
+  font-weight: 600; /* 볼드체로 강조 */
+  border: 2px solid transparent; /* 테두리 초기화 */
+  border-radius: 8px; /* 둥근 모서리 */
+  cursor: pointer; /* 클릭 시 포인터 표시 */
+  transition: all 0.3s ease-in-out; /* 애니메이션 효과 */
+  width: 180px; /* 너비 설정 */
+  text-align: center;
+  background-color: #34495e; 
+  color: white; /* 글자 색상 */
+  margin-bottom: 15px;
+}
+
+.end-study-button:disabled {
+  background-color: #e0e0e0; /* 비활성화 시 회색 */
+  cursor: not-allowed; /* 비활성화 시 커서 변경 */
+}
+
+.applicant-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.applicant-item:hover {
+  background-color: #f0f4f8; /* 호버 시 배경색을 밝은 회색으로 변경 */
+}
+
+.applicant-name {
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative; /* 자식 요소의 위치를 부모 기준으로 설정 */
+}
+
+.applicant-rating {
+  font-size: 16px;
+  color: #1976D2; /* 녹색 */
+  margin-top: 5px;
+  font-weight: bold;
+  position: absolute;
+  top: 100%; /* 이름 아래로 위치 */
+  left: 0;
+  opacity: 0;  /* 처음에는 보이지 않게 */
+  visibility: hidden;  /* 보이지 않도록 설정 */
+  transition: opacity 0.3s ease, visibility 0s 0.3s; /* 서서히 보이도록 설정 */
+}
+
+.applicant-name:hover .applicant-rating {
+  opacity: 1;  /* 마우스를 올리면 평점이 보이도록 */
+  visibility: visible;  /* 마우스를 올리면 보이게 설정 */
+  transition: opacity 0.3s ease, visibility 0s; /* 서서히 나타나도록 설정 */
+}
+
+
+.applicant-state {
+  font-size: 14px;
+  font-weight: 500;
+  padding: 2px 4px;
+  margin-left: 5px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+/* 상태에 따른 색상 적용 */
+.applicant-state.신청 {
+  border: 2px solid #1976D2;
+  color: #1976D2; /* 텍스트 색은 흰색 */
+}
+
+.applicant-state.수락 {
+  border: 2px solid #388E3C; 
+  color: #388E3C; /* 텍스트 색은 흰색 */
+}
+
+.applicant-state.거절 {
+  border: 2px solid #9E9E9E; 
+  color: #9E9E9E; /* 텍스트 색은 흰색 */
+}
+
+/* 버튼 스타일 */
+.applicant-actions button {
+  position: relative;
+  font-size: 12px;  /* 작은 글자 크기 */
+  font-weight: 500;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  text-align: center;
+  margin-left: 15px;
+}
+
+/* 아이콘 스타일 */
+.accept-button-icon, .reject-button-icon {
+  font-size: 15px;  /* 작은 아이콘 크기 */
+}
+
+/* 텍스트 스타일 (수락/거절) */
+.accept-button-text, .reject-button-text {
+  font-size: 14px;  /* 원하는 글자 크기 */
+  font-weight: normal;
+  position: absolute;
+  top: 100%;  /* 아이콘 아래 위치 */
+  left: 50%;
+  transform: translateX(-50%);  /* 중앙 정렬 */
+  opacity: 0;  /* 처음에는 보이지 않게 */
+  visibility: hidden;  /* 보이지 않도록 설정 */
+  transition: opacity 0.3s ease, visibility 0s 0.3s; /* 서서히 보이도록 설정 */
+  white-space: nowrap; 
+}
+
+/* 호버 시 텍스트 보이게 설정 */
+.accept-button:hover .accept-button-text,
+.reject-button:hover .reject-button-text {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 아이콘 색상 변화 */
+.accept-button:hover .accept-button-icon {
+  color: #4CAF50;  /* 초록색 */
+}
+
+.reject-button:hover .reject-button-icon {
+  color: #FF5722;  /* 빨간색 */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
