@@ -23,6 +23,8 @@ export default function LoginForm() {
   const [isSubmitting, setIsSubmitting] = useState(false); // 제출 중 여부
   const [emailError, setEmailError] = useState(""); // 이메일 중복 오류 메시지
   const [nicknameError, setNicknameError] = useState(""); // 닉네임 중복 오류 메시지
+  const [cityDropdownOpen, setCityDropdownOpen] = useState(false); // 도시 드롭다운 열림 상태
+  const [gubunDropdownOpen, setGubunDropdownOpen] = useState(false);
   const navigate = useNavigate(); // 페이지 이동을 위한 hook
 // 이메일 중복 체크
 useEffect(() => {
@@ -116,6 +118,17 @@ useEffect(() => {
   };
 
   const finalProfilePicture = profilePicture || '/noimage.png';
+
+  const handleCityChange = (cityName) => {
+    setSelectedCity(cityName);
+    setSelectedGubun(''); // 도시 변경 시 구분 초기화
+    setCityDropdownOpen(false); // 선택 후 드롭다운 닫기
+  };
+
+  const handleGubunChange = (gubun) => {
+    setSelectedGubun(gubun);
+    setGubunDropdownOpen(false); // 선택 후 드롭다운 닫기
+  };
   return (
     <div className="loginform-signup-form-container" style={{ width: "100%", maxWidth: "600px", margin: "auto", padding: "20px" }}>
       
@@ -195,53 +208,60 @@ useEffect(() => {
             className="loginform-input"
           />
         </div>
-        <div className="loginform-field" style={{ marginBottom: "15px" }}>
-        
-      <label htmlFor="city" className="home-location-label">지역</label>
-    <div className="loginform-location-select-group">
       
-    <select
-              id="city"
-              value={selectedCity}
-              onChange={(e) => {
-                setSelectedCity(e.target.value);
-                setSelectedGubun(""); // 도시 변경 시 구분 초기화
-              }}
-              className="loginform-location-select"
-            >
-        <option value="">선택하세요</option>
-        {citys.map((city, index) => (
-          <option key={index} value={city.name}>
-            {city.name}
-          </option>
-        ))}
-      </select>
+        <div className="loginform-location-select-container">
+      {/* 도시 드롭다운 */}
+      <div className="custom-select">
+        <div
+          className="selected-value"
+          onClick={() => setCityDropdownOpen(!cityDropdownOpen)} // 클릭시 드롭다운 열기/닫기
+        >
+          {selectedCity || "지역를 선택하세요"}
+        </div>
+        {cityDropdownOpen && (
+          <div className="options">
+            {citys.map((city, index) => (
+              <div
+                key={index}
+                onClick={() => handleCityChange(city.name)}
+                className="option"
+              >
+                {city.name}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 구분 드롭다운 */}
+      <div className="custom-select">
+        <div
+          className="selected-value"
+          onClick={() => setGubunDropdownOpen(!gubunDropdownOpen)} // 클릭시 드롭다운 열기/닫기
+        >
+          {selectedGubun || "시/군을 선택하세요"}
+        </div>
+        {gubunDropdownOpen && (
+          <div className="options">
+            {selectedCity &&
+              citys
+                .find((city) => city.name === selectedCity)
+                ?.gubuns?.map((gubun, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleGubunChange(gubun)}
+                    className="option"
+                  >
+                    {gubun}
+                  </div>
+                ))}
+          </div>
+        )}
+      </div>
     </div>
 
-    <div className="loginform-location-select-group">
-    
-      <select
-        id="gubun"
-        value={selectedGubun}
-        onChange={(e) => setSelectedGubun(e.target.value)}
-        className="loginform-location-select"
-      >
-        <option value="">선택하세요</option>
-        {selectedCity &&
-          citys
-            .find((city) => city.name === selectedCity)
-            ?.gubuns?.map((gubun, index) => (
-              <option key={index} value={gubun}>
-                {gubun}
-              </option>
-            ))}
-      </select>
-  
-  </div>
-        </div>
-
         {/* 기술 스택 선택 */}
-        <div className="loginform-tech-stack" style={{ marginBottom: "20px" }}>
+        <div className="loginform-tech-stack" style={{ marginBottom: "10px" }}>
           <label className="loginform-label" style={{ fontWeight: "bold" }}>기술 스택 (최대 5개)</label>
           <div className="loginform-tech-stack-list" style={{ display: "flex", flexWrap: "wrap" }}>
             {techStacks.map((stack) => (
@@ -258,17 +278,16 @@ useEffect(() => {
         </div>
 
         {/* 포지션 선택 */}
-        <div className="loginform-position" style={{ marginBottom: "20px" }}>
-          <label htmlFor="position" className="loginform-label">포지션</label>
+        <div className="loginform-position" >
           <select
             id="position"
             value={position}
             onChange={(e) => setPosition(e.target.value)}
-            className="loginform-input"
+            className="loginform-position-input"
           >
             <option value="">포지션을 선택하세요</option>
             {positions.map((pos) => (
-              <option key={pos} value={pos}>
+              <option key={pos} value={pos} >
                 {pos}
               </option>
             ))}
