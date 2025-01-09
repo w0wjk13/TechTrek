@@ -27,31 +27,32 @@ export default function LoginIdFind() {
 
   return (
     <div className="login-idfind-container">
-      <div className="login-idfind-header">
-        <h2 className="login-idfind-title">아이디 찾기</h2>
-      </div>
+      
       <form onSubmit={handleSubmit} className="login-idfind-form">
         <div className="login-idfind-form-group">
+        <div className="login-idfind-header">
+        <h2 className="login-idfind-title">아이디 찾기</h2>
+      </div>
           <label className="login-idfind-label">
-            이름:
+            
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="login-idfind-input"
+              className="login-idfind-input-box" placeholder="이름"
             />
           </label>
         </div>
         <div className="login-idfind-form-group">
           <label className="login-idfind-label">
-            연락처:
+            
             <input
               type="text"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               required
-              className="login-idfind-input"
+              className="login-idfind-input-box" placeholder="연락처"
             />
           </label>
         </div>

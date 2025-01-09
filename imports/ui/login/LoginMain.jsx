@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import { useTracker } from "meteor/react-meteor-data";
 import { Link, useNavigate, useLocation } from "react-router-dom"; 
-import "../../../client/css/login/LoginMain.css";
 
 export default () => {
   const { user } = useTracker(() => {
@@ -27,10 +26,10 @@ export default () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-box">
+    <div className="loginmain-container">
+      <div className="loginmain-box">
         {user ? (
-          <div className="logout-button">
+          <div className="loginmain-logout-button">
             <button
               onClick={() => {
                 Meteor.logout();
@@ -40,16 +39,16 @@ export default () => {
             </button>
           </div>
         ) : (
-          <div className="login-form">
-            <input ref={refEmail} type="text" className="input-field" placeholder="Email" /><br />
-            <input ref={refPassword} type="password" className="input-field" placeholder="Password" /><br />
-            <button onClick={handleLogin} className="login-button">Login</button>
+          <div className="loginmain-login-form">
+            <input ref={refEmail} type="text" className="loginmain-input-field" placeholder="Email" /><br />
+            <input ref={refPassword} type="password" className="loginmain-input-field" placeholder="Password" /><br />
+            <button onClick={handleLogin} className="loginmain-login-button">Login</button>
           </div>
         )}
-        <div className="additional-links">
-          <Link to="/login/idfind">아이디 찾기</Link> |&nbsp;
-          <Link to="/login/fwfind">비밀번호 찾기</Link> |&nbsp;
-          <Link to="/login/form">회원가입</Link>
+        <div className="loginmain-additional-links">
+          <Link to="/login/idfind" className="loginmain-link">아이디 찾기</Link> |&nbsp;
+          <Link to="/login/fwfind" className="loginmain-link">비밀번호 찾기</Link> |&nbsp;
+          <Link to="/login/form" className="loginmain-link">회원가입</Link>
         </div>
       </div>
     </div>

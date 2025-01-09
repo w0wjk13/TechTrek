@@ -130,7 +130,10 @@ export default function Home() {
       <select
         id="city"
         value={selectedCity}
-        onChange={(e) => setSelectedCity(e.target.value)}
+        onChange={(e) => {
+          setSelectedCity(e.target.value);
+          setSelectedGubun(""); // 도시 변경 시 구분 초기화
+        }}
         className="home-location-select"
       >
         <option value="">선택하세요</option>

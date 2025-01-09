@@ -2,7 +2,29 @@ import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 
 Meteor.methods({
+  'users.checkEmailExists'(email) {
+    const user = Accounts.findUserByEmail(email);
+    if (user) {
+      throw new Meteor.Error('email-exists', '이미 존재하는 이메일입니다.');
+    }
+  },
+
+  'users.checkNicknameExists'(nickname) {
+    const userWithNickname = Meteor.users.findOne({ 'profile.nickname': nickname });
+    if (userWithNickname) {
+      throw new Meteor.Error('nickname-exists', '이미 존재하는 닉네임입니다.');
+    }
+  },
   'users.create'({ name, email, password, phone, techStack, position, address, profilePicture, nickname }) {
+    const existingEmail = Accounts.findUserByEmail(email);
+    if (existingEmail) {
+      throw new Meteor.Error('email-exists', '이미 존재하는 이메일입니다.');
+    }
+
+    const existingNickname = Meteor.users.findOne({ 'profile.nickname': nickname });
+    if (existingNickname) {
+      throw new Meteor.Error('nickname-exists', '이미 존재하는 닉네임입니다.');
+    }
     // 입력 값 검증
     if (typeof name !== 'string' || name.trim() === '') {
       throw new Meteor.Error('invalid-name', '이름은 필수 입력 항목입니다.');

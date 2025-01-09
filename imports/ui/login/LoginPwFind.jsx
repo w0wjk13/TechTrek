@@ -14,7 +14,7 @@ export default function LoginFwFind() {
     // 서버 메서드 호출
     Meteor.call("findUserPassword", name, email, phone, (error, result) => {
       if (error) {
-        alert(`에러가 발생했습니다: ${error.reason}`); // 에러 메시지 alert로 띄우기
+        alert(`${error.reason}`); // 에러 메시지 alert로 띄우기
       } else if (result) {
         alert(result); // 이메일 전송 완료 메시지 alert로 띄우기
         navigate("/login/main"); // 비밀번호 찾기 성공 후 로그인 페이지로 이동
@@ -23,49 +23,50 @@ export default function LoginFwFind() {
   };
 
   return (
-    <div className="login-idfind-container">
-      <div className="login-idfind-header">
-        <h2 className="login-idfind-title">비밀번호 찾기</h2>
-      </div>
-      <form onSubmit={handleFindPassword} className="login-idfind-form">
-        <div className="login-idfind-form-group">
-          <label className="login-idfind-label">
-            이름:
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="login-idfind-input"
-            />
-          </label>
-        </div>
-        <div className="login-idfind-form-group">
-          <label className="login-idfind-label">
-            연락처:
-            <input
-              type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-              className="login-idfind-input"
-            />
-          </label>
-        </div>
-        <div className="login-idfind-form-group">
-          <label className="login-idfind-label">
-            아이디(이메일):
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="login-idfind-input"
-            />
-          </label>
-        </div>
-        <button type="submit" className="login-idfind-button">비밀번호 찾기</button>
-      </form>
+    <div className="login-pwfind-container">
+
+    <form onSubmit={handleFindPassword} className="login-pwfind-form">
+      <div className="login-pwfind-form-group">
+      <div className="login-pwfind-header">
+      <h2 className="login-pwfind-title">비밀번호 찾기</h2>
     </div>
+        <label className="login-pwfind-label">
+          
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="login-pwfind-input" placeholder="이름"
+          />
+        </label>
+      </div>
+      <div className="login-pwfind-form-group">
+        <label className="login-pwfind-label">
+        
+          <input
+            type="text"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            required
+            className="login-pwfind-input" placeholder="연락처"
+          />
+        </label>
+      </div>
+      <div className="login-pwfind-form-group">
+        <label className="login-pwfind-label">
+  
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="login-pwfind-input" placeholder="이메일"
+          />
+        </label>
+      </div>
+      <button type="submit" className="login-pwfind-button">비밀번호 찾기</button>
+    </form>
+  </div>
   );
 }
