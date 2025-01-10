@@ -300,7 +300,7 @@ useEffect(() => {
           disabled={isSubmitting}
           className="loginform-submit-button"
         >
-          {isSubmitting ? "가입 중..." : "회원가입"}
+          {isSubmitting ? "가입 중" : "회원가입"}
         </button>
       </form>
     </div>

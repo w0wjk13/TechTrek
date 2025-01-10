@@ -6,8 +6,21 @@
   font-family: 'Inter', sans-serif; /* 모던한 웹용 폰트 */
 }
 
+.studyform-create-title {
+  font-size: 2.5rem;          /* 제목 크기 */
+  font-weight: bold;          /* 굵은 글씨 */
+  color: #333;                /* 어두운 텍스트 색상 */
+  text-align: center;         /* 중앙 정렬 */
+  margin-bottom: 20px;        /* 제목 아래 여백 */
+  letter-spacing: 2px;        /* 글자 간격 */
+  text-transform: uppercase;  /* 대문자 변환 */
+  font-family: 'Arial', sans-serif;  /* 산세리프체 */
+  border-bottom: 2px solid #4F92B8; /* 그린 컬러 하단 밑줄 */
+  padding-bottom: 10px;       /* 밑줄과 텍스트 사이 여백 */
+}
+
 /* 모집 마감일 필드 디자인 */
-.study-close-date-field {
+.studyform-close-date-field {
   display: flex;
   flex-direction: column;
   margin-bottom: 24px; /* 아래 여백을 좀 더 넉넉하게 */
@@ -15,7 +28,7 @@
   max-width: 500px;  /* 최대 너비를 500px로 설정 */
 }
 
-.study-close-date-label {
+.studyform-close-date-label {
   font-size: 18px;  /* 라벨 텍스트 크기 */
   font-weight: 600;
   color: #333;  /* 라벨 텍스트 색상 */
@@ -23,35 +36,35 @@
   text-align: left; /* 레이블을 왼쪽으로 정렬 */
 }
 
-.study-close-date-input {
+.studyform-close-date-input {
   width: 100%;
   padding: 12px 20px;
   font-size: 16px;
   color: #333;
-  background-color: #f7f7f7; /* 배경색 */
-  border: 2px solid #ccc; /* 기본 테두리 색상 */
-  border-radius: 10px; /* 둥근 모서리 */
+  background-color: #f7f7f7 !important; /* 배경색 */
+  border: 2px solid #ccc !important; /* 기본 테두리 색상 */
+  border-radius: 10px !important; /* 둥근 모서리 */
   box-sizing: border-box; /* padding 포함된 크기 */
   transition: border-color 0.3s ease, box-shadow 0.3s ease; /* 부드러운 전환 효과 */
 }
 
-.study-close-date-input:focus {
-  border-color: #4F92B8;  /* 데자뷰 블루에 가까운 색상으로 포커스 시 테두리 색상 */
+.studyform-close-date-input:focus {
+  border-color: #4F92B8 !important;  /* 데자뷰 블루에 가까운 색상으로 포커스 시 테두리 색상 */
   box-shadow: 0 0 10px rgba(79, 146, 184, 0.3);  /* 포커스 시 데자뷰 블루의 그림자 */
   outline: none; /* 기본 아웃라인 제거 */
 }
 
-.study-close-date-input::-webkit-calendar-picker-indicator {
+.studyform-close-date-input::-webkit-calendar-picker-indicator {
   background-color: transparent;
-  border: none;
-  color: #4F92B8; /* 달력 아이콘 색상 변경 */
+  border: none !important;
+  color: #4F92B8 !important; /* 달력 아이콘 색상 변경 */
 }
 
-.study-close-date-input::placeholder {
+.studyform-close-date-input::placeholder {
   color: #aaa; /* 플레이스홀더 텍스트 색상 */
 }
 
-.study-close-date-input:disabled {
+.studyform-close-date-input:disabled {
   background-color: #e9ecef;
   cursor: not-allowed;
 }
@@ -460,11 +473,6 @@ input[type="date"] {
   transition: transform 0.3s ease, color 0.3s ease;
 }
 
-.star-rating span:hover {
-  transform: scale(1.2);
-  color: #FFD700; /* Hover 시 금색으로 변경 */
-}
-
 .star-rating span.active {
   color: #FFD700; /* 선택된 별은 금색으로 */
 }
@@ -494,14 +502,15 @@ input[type="date"] {
   width: 100%;
   padding: 10px 15px;
   font-size: 16px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+  border: 2px solid #ccc !important;
+  border-radius: 8px !important;
+  background-color: #f9f9f9 !important;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .study-title-input:focus {
   border-color: #4F92B8; /* Focus 시 테두리 색 */
+  background-color:white !important;
   box-shadow: 0 0 8px rgba(76, 175, 80, 0.2); /* Focus 시 부드러운 그림자 */
   outline: none;
 }
@@ -550,6 +559,7 @@ input[type="date"] {
 
 .study-content-textarea:focus {
   border-color: #4F92B8; /* 포커스 시 테두리 색 */
+  background-color:white !important;
   box-shadow: 0 0 8px rgba(76, 175, 80, 0.2); /* 포커스 시 부드러운 그림자 */
   outline: none;
 }
@@ -569,7 +579,7 @@ input[type="date"] {
   padding: 12px 24px; /* 충분한 여백 */
   font-size: 16px;
   font-weight: 600;
-  background-color: #3b8ed9; /* 데자뷰 블루 */
+  background-color: #4F92B8; /* 데자뷰 블루 */
   color: white; /* 텍스트는 흰색 */
   border: none;
   border-radius: 8px; /* 둥근 모서리 */
@@ -580,12 +590,6 @@ input[type="date"] {
   width: auto;
   min-width: 150px; /* 버튼 너비 최소 설정 */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
-}
-
-/* hover 상태 */
-.submit-button:hover {
-  background-color: #6aade7; /* 호버 시 버튼 색상 밝게 */
-  transform: translateY(-2px); /* 약간 위로 떠오르는 효과 */
 }
 
 /* active 상태 */

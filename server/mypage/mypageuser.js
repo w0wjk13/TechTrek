@@ -38,40 +38,61 @@ Meteor.methods({
     if (!userId) {
       throw new Meteor.Error('not-authorized', '로그인이 필요합니다.');
     }
+    const currentUser = Meteor.user();
 
-    // 이메일 중복 체크 (이메일 변경 시 중복 확인)
-    if (email !== Meteor.user().emails[0].address) {
-      const emailExists = Accounts.findUserByEmail(email);
-      if (emailExists) {
-        throw new Meteor.Error('email-exists', '이메일이 이미 존재합니다.');
+    const existingUserWithEmail = Meteor.users.findOne({ "emails.address": email });
+    const existingUserWithNickname = Meteor.users.findOne({ 'profile.nickname': nickname });
+
+     // 이메일 변경 여부 체크
+     let emailChanged = false;
+     if (email !== currentUser.emails[0].address) {
+       emailChanged = true;
+       updateData['emails.0.address'] = email;
+     }
+
+    if (emailChanged) {
+      const existingUserWithEmail = Meteor.users.findOne({ "emails.address": email });
+      if (existingUserWithEmail && existingUserWithEmail._id !== userId) {
+        throw new Meteor.Error('email-exists', '이 이메일은 이미 사용 중입니다.');
       }
     }
 
+    // 닉네임 중복 확인
+    if (existingUserWithNickname && existingUserWithNickname._id !== userId) {
+      throw new Meteor.Error('nickname-exists', '이 닉네임은 이미 사용 중입니다.');
+    }
     // 사용자 정보 업데이트를 위한 데이터 준비
     const updateData = {
-      'profile.name': name,
-      'profile.phone': phone,
-      'profile.techStack': techStack,
-      'profile.position': position,
-      'profile.address': address,
-      'profile.nickname': nickname,
+        'profile.name': name,
+        'profile.phone': phone,
+        'profile.techStack': techStack,
+        'profile.position': position,
+        'profile.address': address,
+        'profile.profilePicture': profilePicture,
+        'profile.nickname': nickname,
     };
+
+    if (emailChanged) {
+      updateData['emails.0.address'] = email; // 이메일 주소 업데이트
+    }
+
 
     // 비밀번호가 변경되었을 때 처리
     if (password) {
       Accounts.setPassword(userId, password); // 비밀번호 변경
     }
 
-    // 이메일 주소 업데이트
-    Meteor.users.update(userId, { $set: { 'emails.0.address': email } });
-
+  
     // 프로필 사진 업데이트 (파일 URL로 처리)
     if (profilePicture) {
       updateData['profile.profilePicture'] = profilePicture;
     }
 
+   
+
     // 사용자 프로필 정보 업데이트
     Meteor.users.update(userId, { $set: updateData });
+   
 
     return 'User info updated successfully';
   }

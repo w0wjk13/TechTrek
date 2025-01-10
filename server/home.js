@@ -2,7 +2,7 @@ import { Mongo } from 'meteor/mongo';
 import { Study } from '/imports/api/collections';
 
 Meteor.methods({
-  searchStudies(filters, page = 1, limit = 5, sortBy = "recent") {
+  searchStudies(filters, page = 1, limit = 8, sortBy = "recent") {
     const query = {};
 
     // Apply filters

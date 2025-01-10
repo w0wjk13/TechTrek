@@ -363,7 +363,7 @@ const MypageProject = () => {
                   {study.progress !== '종료' &&  (
                   <button onClick={() => handleCancelApplication(study._id)}>신청 취소</button> )} 
                 </div>
-                
+              
               </li>
             ))}
           </ul>

@@ -21,7 +21,7 @@ const formatDDay = (studyClose) => {
   if (dayDiff > 0) {
     return `D - ${dayDiff}`;
   } else if (dayDiff === 0) {
-    return "오늘 마감";
+    return "D-day";
   } else {
     return "모집마감";
   }

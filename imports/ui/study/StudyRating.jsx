@@ -211,117 +211,86 @@ const StudyRating = () => {
     );
   };
   return (
-    <div>
-      <h3>스터디 평가</h3>
+    <div className="studyrating-container">
+      <div className="studyrating-title">스터디 평가</div>
 
       {/* 수락된 신청자 목록만 표시, 현재 사용자 제외 */}
       {filteredApplications.length > 0 ? (
-        <div>
+        <div className="studyrating-applications">
           {filteredApplications.map((application, index) => (
-            <div key={index}>
+            <div key={index} className="studyrating-application-item">
               {application.applicants.map((applicant) => (
-                <div key={applicant.userId}>
-                  <strong>{applicant.nickname || applicant.userId}</strong> - {applicant.state}
+                <div key={applicant.userId} className="studyrating-applicant">
+                  <strong className="studyrating-applicant-nickname">{applicant.nickname || applicant.userId}</strong>
 
                   {/* 별점 평가 */}
-                  <div>
-                    <label>요구하는 평점: </label>
+                  <div className="studyrating-rating">
                     {renderStars(applicant.userId, 'participation')}  {/* 별점 표시 */}
                   </div><br/>
                   
                   {/* 항목별 평가 클릭 */}
-                  <div>
+                  <div className="studyrating-item">
                     <label
                       onClick={() => handleItemClick(applicant.userId, 'participation')}
-                      style={{
-                        cursor: 'pointer',
-                        backgroundColor: selectedItems[applicant.userId]?.participation === 1 ? '#4CAF50' : '#f0f0f0',
-                        padding: '5px 10px',
-                        margin: '5px',
-                        borderRadius: '5px',
-                      }}
+                      className={`studyrating-item-button ${selectedItems[applicant.userId]?.participation === 1 ? 'studyrating-selected' : ''}`}
                     >
                       Participation
-                    </label>
+                    </label>참여도는 스터디나 프로젝트에 얼마나 적극적으로 참여했는지 평가합니다.
                   </div><br/>
 
-                  <div>
+                  <div className="studyrating-item">
                     <label
                       onClick={() => handleItemClick(applicant.userId, 'teamwork')}
-                      style={{
-                        cursor: 'pointer',
-                        backgroundColor: selectedItems[applicant.userId]?.teamwork === 1 ? '#4CAF50' : '#f0f0f0',
-                        padding: '5px 10px',
-                        margin: '5px',
-                        borderRadius: '5px',
-                      }}
+                      className={`studyrating-item-button ${selectedItems[applicant.userId]?.teamwork === 1 ? 'studyrating-selected' : ''}`}
                     >
                       Teamwork
-                    </label>
+                    </label>팀워크는 다른 사람들과 협력하며 목표를 달성하는 능력을 평가합니다.
                   </div><br/>
 
-                  <div>
+                  <div className="studyrating-item">
                     <label
                       onClick={() => handleItemClick(applicant.userId, 'leadership')}
-                      style={{
-                        cursor: 'pointer',
-                        backgroundColor: selectedItems[applicant.userId]?.leadership === 1 ? '#4CAF50' : '#f0f0f0',
-                        padding: '5px 10px',
-                        margin: '5px',
-                        borderRadius: '5px',
-                      }}
+                      className={`studyrating-item-button ${selectedItems[applicant.userId]?.leadership === 1 ? 'studyrating-selected' : ''}`}
                     >
                       Leadership
-                    </label>
+                    </label>리더십은 팀을 이끌며 주도적으로 문제를 해결하는 능력을 평가합니다.
                   </div><br/>
 
-                  <div>
+                  <div className="studyrating-item">
                     <label
                       onClick={() => handleItemClick(applicant.userId, 'communication')}
-                      style={{
-                        cursor: 'pointer',
-                        backgroundColor: selectedItems[applicant.userId]?.communication === 1 ? '#4CAF50' : '#f0f0f0',
-                        padding: '5px 10px',
-                        margin: '5px',
-                        borderRadius: '5px',
-                      }}
+                      className={`studyrating-item-button ${selectedItems[applicant.userId]?.communication === 1 ? 'studyrating-selected' : ''}`}
                     >
                       Communication
-                    </label>
+                    </label>소통 능력은 의사소통을 얼마나 잘하는지 평가합니다.
                   </div><br/>
 
-                  <div>
+                  <div className="studyrating-item">
                     <label
                       onClick={() => handleItemClick(applicant.userId, 'timeliness')}
-                      style={{
-                        cursor: 'pointer',
-                        backgroundColor: selectedItems[applicant.userId]?.timeliness === 1 ? '#4CAF50' : '#f0f0f0',
-                        padding: '5px 10px',
-                        margin: '5px',
-                        borderRadius: '5px',
-                      }}
+                      className={`studyrating-item-button ${selectedItems[applicant.userId]?.timeliness === 1 ? 'studyrating-selected' : ''}`}
                     >
                       Timeliness
-                    </label>
+                    </label>시간 관리는 주어진 시간과 기한을 얼마나 잘 지켰는지 평가합니다
                   </div><br/>
 
                   {/* 피드백 */}
-                  <div>
-                    <label>피드백: </label>
+                  <div className="studyrating-feedback">
                     <textarea
                       value={feedback[applicant.userId] || ''}
                       onChange={(e) => handleFeedbackChange(applicant.userId, e.target.value)}
+                      className="studyrating-feedback-textarea" placeholder='평가 작성해주세요'
                     />
                   </div><br/>
                 </div>
               ))}
             </div>
           ))}
-           <button onClick={handleSubmit} >평가 제출</button>
+           <button onClick={handleSubmit} className="studyrating-submit-button">평가 제출</button>
         </div>
         
       ) : (
-        <p>이미 평가한 사용자입니다. 평가 페이지에 접근할 수 없습니다.</p>
+        <p className="studyrating-error-message">이미 평가한 사용자입니다. 평가 페이지에 접근할 수 없습니다.</p>
       )}
 
      

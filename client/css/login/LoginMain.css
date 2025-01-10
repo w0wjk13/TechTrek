@@ -44,7 +44,7 @@
 }
 
 .loginmain-login-form input:focus {
-  border-color: #3498db; /* 파란색으로 테두리 색 변경 */
+  border-color: #4F92B8; /* 파란색으로 테두리 색 변경 */
   outline: none;
 }
 
@@ -52,7 +52,7 @@
 .loginmain-login-button {
   width: 100%;
   padding: 12px;
-  background-color: #3498db; /* 파란색 */
+  background-color: #4F92B8; /* 파란색 */
   color: white;
   border: none;
   border-radius: 4px;
@@ -60,9 +60,6 @@
   cursor: pointer;
 }
 
-.loginmain-login-button:hover {
-  background-color: #2980b9; /* 호버 시 어두운 파란색 */
-}
 
 /* 추가 링크 스타일 */
 .loginmain-additional-links {
@@ -71,11 +68,10 @@
 }
 
 .loginmain-additional-links a {
-  color: #3498db; /* 파란색 링크 */
   font-size: 14px;
   text-decoration: none;
 }
 
 .loginmain-additional-links a:hover {
-  text-decoration: underline; /* 마우스를 올리면 밑줄 추가 */
+  color: #4F92B8;
 }

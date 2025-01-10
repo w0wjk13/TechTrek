@@ -4,7 +4,7 @@ import { Meteor } from "meteor/meteor";
 import Data from "./../Data";
 import MypageNav from "./MypageNav"; // MypageNav 컴포넌트를 import
 import { useTracker } from 'meteor/react-meteor-data';
-const { techStacks } = Data;
+const { citys,techStacks } = Data;
 const positions = ["백엔드", "프론트엔드", "풀스택"];
 
 export default function MypageUser() {
@@ -15,10 +15,13 @@ export default function MypageUser() {
   const [nickname, setNickname] = useState(""); 
   const [techStack, setTechStack] = useState([]); 
   const [position, setPosition] = useState(""); 
-  const [address, setAddress] = useState({ city: "", gubun: "" }); 
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedGubun, setSelectedGubun] = useState("");
   const [profilePicture, setProfilePicture] = useState(null); 
   const [error, setError] = useState(""); 
   const [isSubmitting, setIsSubmitting] = useState(false); 
+  const [cityDropdownOpen, setCityDropdownOpen] = useState(false); // 도시 드롭다운 열림 상태
+  const [gubunDropdownOpen, setGubunDropdownOpen] = useState(false);
   const navigate = useNavigate(); 
 
   const currentUser = useTracker(() => Meteor.user(), []);
@@ -33,10 +36,8 @@ export default function MypageUser() {
       setTechStack(currentUser.profile?.techStack || []);
       setPosition(currentUser.profile?.position || "");
       const address = currentUser.profile?.address || { city: "", gubun: "" };
-    setAddress({
-      city: address.city || "",
-      gubun: address.gubun || "",
-    });
+      setSelectedCity(address.city || "");
+      setSelectedGubun(address.gubun || "");
       setProfilePicture(currentUser.profile?.profilePicture || null);
     }
 }, [currentUser]);
@@ -67,30 +68,33 @@ export default function MypageUser() {
     });
   };
 
-  // 주소 입력 핸들러
-  const handleAddressChange = (e) => {
-    const { name, value } = e.target;
-    setAddress((prevAddress) => ({
-      ...prevAddress,
-      [name]: value,
-    }));
+  const handleCityChange = (cityName) => {
+    setSelectedCity(cityName);
+    setSelectedGubun(''); // 도시 변경 시 구분 초기화
+    setCityDropdownOpen(false); // 선택 후 드롭다운 닫기
   };
+
+  const handleGubunChange = (gubun) => {
+    setSelectedGubun(gubun);
+    setGubunDropdownOpen(false); // 선택 후 드롭다운 닫기
+  };
+
 
   // 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
   
     // 입력 값 검증
-    if (!name || !email || !phone || techStack.length === 0 || !position || !address.city || !address.gubun || !nickname) {
+    if (!name || !email || !phone || techStack.length === 0 || !position || !selectedCity || !selectedGubun || !nickname) {
       setError("모든 필드를 입력해주세요.");
       return;
     }
   
     setError(""); // 에러 메시지 초기화
     setIsSubmitting(true); // 제출 중 상태로 설정
-  
-    // address를 문자열 형태로 변환 (city와 gubun을 하나의 문자열로 합쳐서 보내기)
-    const addressString = `${address.city} ${address.gubun}`;
+ 
+     // 주소를 city와 gubun을 합쳐서 저장
+     const addressString = `${selectedCity} ${selectedGubun}`;
   
     // 서버에 사용자 정보 수정 요청
     Meteor.call('users.update', { 
@@ -117,31 +121,23 @@ export default function MypageUser() {
   
   return (
     <div>
-      <div className="mypage-nav">
+      <div className="mypageuser-nav">
         <MypageNav />
       </div>
-      <div className="mypage-form-container" style={{ width: "100%", maxWidth: "600px", margin: "auto", padding: "20px" }}>
-        {error && <div className="error" style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
-        <form onSubmit={handleSubmit} className="mypage-form">
+      <div className="mypageuser-form-container" style={{ width: "100%", maxWidth: "600px", margin: "auto", padding: "20px" }}>
+        
+        <form onSubmit={handleSubmit} className="mypageuser-form">
           {/* 이미지 업로드 영역 */}
-          <div className="image-upload-container" style={{ textAlign: "center", marginBottom: "20px" }}>
+          <div className="mypageuser-image-upload-container" style={{ textAlign: "center", marginBottom: "20px" }}>
             <button
               type="button"
               onClick={() => document.getElementById('profile-picture').click()}
-              style={{
-                padding: "10px 20px",
-                fontSize: "16px",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer"
-              }}
+              className="mypageuser-upload-button"
             >
               {profilePicture ? (
-                <img src={profilePicture} alt="Profile" style={{ width: "100px", height: "100px", borderRadius: "50%" }} />
+                <img src={profilePicture} alt="Profile" className="mypageuser-profile-image"  />
               ) : (
-                <span>이미지 업로드</span>
+                <span className="mypageuser-upload-text">이미지 업로드</span>
               )}
             </button>
             <input
@@ -149,12 +145,12 @@ export default function MypageUser() {
               id="profile-picture"
               accept="image/*"
               onChange={handleImageChange}
-              style={{ display: "none" }}
+              className="mypageuser-file-input"
             />
           </div>
 
           {/* 이메일, 비밀번호, 이름, 전화번호, 주소 필드 */}
-          <div style={{ marginBottom: "15px" }}>
+          <div className="mypageuser-input-field" style={{ marginBottom: "15px" }}>
             <label htmlFor="email" style={{ display: "block", fontWeight: "bold" }}>이메일</label>
             <input
               id="email"
@@ -162,10 +158,10 @@ export default function MypageUser() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="이메일을 입력하세요"
-              style={{ width: "100%", padding: "10px", fontSize: "16px", borderRadius: "5px", border: "1px solid #ddd" }}
+              className="mypageuser-input"
             />
           </div>
-          <div style={{ marginBottom: "15px" }}>
+          <div className="mypageuser-input-field" style={{ marginBottom: "15px" }}>
             <label htmlFor="password" style={{ display: "block", fontWeight: "bold" }}>비밀번호</label>
             <input
               id="password"
@@ -173,10 +169,10 @@ export default function MypageUser() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호를 입력하세요"
-              style={{ width: "100%", padding: "10px", fontSize: "16px", borderRadius: "5px", border: "1px solid #ddd" }}
+              className="mypageuser-input"
             />
           </div>
-          <div style={{ marginBottom: "15px" }}>
+          <div className="mypageuser-input-field" style={{ marginBottom: "15px" }}>
             <label htmlFor="name" style={{ display: "block", fontWeight: "bold" }}>이름</label>
             <input
               id="name"
@@ -184,10 +180,10 @@ export default function MypageUser() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="이름을 입력하세요"
-              style={{ width: "100%", padding: "10px", fontSize: "16px", borderRadius: "5px", border: "1px solid #ddd" }}
+              className="mypageuser-input"
             />
           </div>
-          <div style={{ marginBottom: "15px" }}>
+          <div className="mypageuser-input-field" style={{ marginBottom: "15px" }}>
             <label htmlFor="nickname" style={{ display: "block", fontWeight: "bold" }}>닉네임</label>
             <input
               id="nickname"
@@ -195,10 +191,10 @@ export default function MypageUser() {
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               placeholder="닉네임을 입력하세요"
-              style={{ width: "100%", padding: "10px", fontSize: "16px", borderRadius: "5px", border: "1px solid #ddd" }}
+              className="mypageuser-input"
             />
           </div>
-          <div style={{ marginBottom: "15px" }}>
+          <div className="mypageuser-input-field" style={{ marginBottom: "15px" }}>
             <label htmlFor="phone" style={{ display: "block", fontWeight: "bold" }}>전화번호</label>
             <input
               id="phone"
@@ -206,42 +202,70 @@ export default function MypageUser() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="전화번호를 입력하세요"
-              style={{ width: "100%", padding: "10px", fontSize: "16px", borderRadius: "5px", border: "1px solid #ddd" }}
+              className="mypageuser-input"
             />
           </div>
-          <div style={{ marginBottom: "20px" }}>
-            <label htmlFor="address" style={{ display: "block", fontWeight: "bold" }}>주소</label>
-            <input
-              id="address"
-              type="text"
-              value={`${address.city} ${address.gubun}`}
-              onChange={(e) => {
-                const [city, gubun] = e.target.value.split(' ');
-                setAddress({ city, gubun });
-                
-              }}
-              placeholder="도시와 구분을 입력하세요"
-              style={{ width: "100%", padding: "10px", fontSize: "16px", borderRadius: "5px", border: "1px solid #ddd" }}
-            />
+          <div className="loginform-location-select-container">
+      {/* 도시 드롭다운 */}
+      <div className="custom-select">
+        <div
+          className="selected-value"
+          onClick={() => setCityDropdownOpen(!cityDropdownOpen)} // 클릭시 드롭다운 열기/닫기
+        >
+          {selectedCity || "지역를 선택하세요"}
+        </div>
+        {cityDropdownOpen && (
+          <div className="options">
+            {citys.map((city, index) => (
+              <div
+                key={index}
+                onClick={() => handleCityChange(city.name)}
+                className="option"
+              >
+                {city.name}
+              </div>
+            ))}
           </div>
+        )}
+      </div>
+
+      {/* 구분 드롭다운 */}
+      <div className="custom-select">
+        <div
+          className="selected-value"
+          onClick={() => setGubunDropdownOpen(!gubunDropdownOpen)} // 클릭시 드롭다운 열기/닫기
+        >
+          {selectedGubun || "시/군을 선택하세요"}
+        </div>
+        {gubunDropdownOpen && (
+          <div className="options">
+            {selectedCity &&
+              citys
+                .find((city) => city.name === selectedCity)
+                ?.gubuns?.map((gubun, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleGubunChange(gubun)}
+                    className="option"
+                  >
+                    {gubun}
+                  </div>
+                ))}
+          </div>
+        )}
+      </div>
+    </div>
+
           {/* 기술 스택 선택 */}
-          <div style={{ marginBottom: "20px" }}>
+          <div className="mypageuser-tech-stack" style={{ marginBottom: "20px" }}>
             <label style={{ fontWeight: "bold" }}>기술 스택 (최대 5개)</label>
-            <div className="tech-stack-list" style={{ display: "flex", flexWrap: "wrap" }}>
+            <div className="mypageuser-tech-stack-list" style={{ display: "flex", flexWrap: "wrap" }}>
               {techStacks.map((stack) => (
                 <button
                   key={stack}
                   type="button"
                   onClick={() => handleTechStackClick(stack)}
-                  style={{
-                    margin: "5px",
-                    padding: "8px 12px",
-                    borderRadius: "5px",
-                    backgroundColor: techStack.includes(stack) ? "#007bff" : "#f0f0f0",
-                    color: techStack.includes(stack) ? "white" : "#333",
-                    border: "1px solid #ddd",
-                    cursor: "pointer"
-                  }}
+                  className={`mypageuser-tech-stack-button ${techStack.includes(stack) ? 'selected' : ''}`}
                 >
                   {stack}
                 </button>
@@ -250,13 +274,12 @@ export default function MypageUser() {
           </div>
 
           {/* 포지션 선택 */}
-          <div style={{ marginBottom: "20px" }}>
-            <label htmlFor="position" style={{ fontWeight: "bold" }}>포지션</label>
+          <div className="mypageuser-position" style={{ marginBottom: "20px" }}>
             <select
               id="position"
               value={position}
               onChange={(e) => setPosition(e.target.value)}
-              style={{ width: "100%", padding: "10px", fontSize: "16px", borderRadius: "5px", border: "1px solid #ddd" }}
+              className="mypageuser-position-select"
             >
               <option value="">포지션을 선택하세요</option>
               {positions.map((pos) => (
@@ -266,23 +289,14 @@ export default function MypageUser() {
               ))}
             </select>
           </div>
-
+          {error && <div className="mypageuser-error" style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
           {/* 제출 버튼 */}
           <button
             type="submit"
             disabled={isSubmitting}
-            style={{
-              width: "100%",
-              padding: "12px",
-              backgroundColor: "#007bff",
-              color: "white",
-              fontSize: "16px",
-              borderRadius: "5px",
-              cursor: isSubmitting ? "not-allowed" : "pointer",
-              border: "none"
-            }}
+            className="mypageuser-submit-button"
           >
-            {isSubmitting ? "수정 중..." : "회원정보 수정"}
+            {isSubmitting ? "수정 중" : "회원정보 수정"}
           </button>
         </form>
       </div>

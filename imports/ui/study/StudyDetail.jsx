@@ -28,6 +28,19 @@ const StudyDetail = () => {
       }
       setStudyData(study);
 
+      // 모집 마감일 체크
+    const studyCloseDate = new Date(study.studyClose);
+    const currentDate = new Date();
+
+    // 마감일이 지나면 상태를 자동으로 '모집마감'으로 변경
+    if (studyCloseDate && currentDate > studyCloseDate && study.status !== '모집마감') {
+      Meteor.call('study.updateStatus', id, '모집마감', null, (error) => {
+        if (error) {
+          console.error('상태 변경 실패:', error);
+        }
+      });
+    }
+
       // 해당 스터디의 댓글 정보 가져오기
       const studyComments = Comment.find({ studyId: id }).fetch();
       const commentsWithProfilePicture = studyComments.map(comment => {
@@ -53,7 +66,7 @@ const StudyDetail = () => {
             startDate: app.startDate,
             endDate: app.endDate,
             nickname: user?.profile?.nickname || '알 수 없음',
-            rating: user?.profile?.rating || '평점 없음',  // 평점이 없으면 '평점 없음' 출력
+            rating: user?.profile?.rating || '0',  // 평점이 없으면 '평점 없음' 출력
           };
         })
       );
@@ -438,7 +451,7 @@ const handleCancelEditComment = () => {
     <div className="studydetail-right-section">
     {/* 신청하기 버튼 */}
     {!isUserOwner && !isAlreadyApplied && !isRecruitingClosed && (
-      <button className="apply-button" onClick={handleApply}>
+      <button className="studydetail-apply-button" onClick={handleApply}>
         신청하기
       </button>
     )}

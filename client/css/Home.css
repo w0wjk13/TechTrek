@@ -182,7 +182,6 @@
 /* 마우스 오버 시 배경색 변경 */
 .home-role-checkbox-group .home-role-checkbox-item label:hover {
   background-color: #e0e0e0;
-  transform: scale(1.05); /* 마우스 오버 시 항목 크기 약간 커짐 */
 }
 
 /* 선택된 항목이 비활성화된 상태에서 마우스 오버 시 배경색 변경 */
@@ -250,13 +249,13 @@
 /* 마우스 오버 시 배경색 변경 */
 .home-method-checkbox-group .home-method-checkbox-item label:hover {
   background-color: #e0e0e0;
-  transform: scale(1.05); /* 마우스 오버 시 항목 크기 약간 커짐 */
+
 }
 
 /* 선택된 항목이 비활성화된 상태에서 마우스 오버 시 배경색 변경 */
 .home-method-checkbox-group .home-method-checkbox-item input:checked + label:hover {
   background-color: #4F92B8;
-  transform: scale(1.05);
+
 }
 
 /* 검색 바 컨테이너 */
@@ -283,8 +282,8 @@
   width: 90%; /* 입력 필드의 너비 */
   padding: 12px 20px;
   font-size: 1rem;
-  border: 2px solid #ddd;
-  border-radius: 25px; /* 부드러운 둥근 모서리 */
+  border: 2px solid #ddd !important;
+  border-radius: 25px !important; /* 부드러운 둥근 모서리 */
   outline: none;
   transition: all 0.3s ease;
 }
@@ -314,13 +313,6 @@
 
 }
 
-/* 마우스 오버 시 스타일 */
-.home-search-action-button:hover {
-  background-color: #4F92B8; /* 마우스 오버 시 배경색 */
-  transform: scale(1.05); /* 버튼 크기 확대 */
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
-}
-
 /* 클릭 시 스타일 */
 .home-search-action-button:active {
   background-color: #4F92B8; /* 클릭 시 더 어두운 배경색 */
@@ -348,13 +340,13 @@
 
 /* Hover effect for each label */
 .home-toggle-label:hover {
-  color: #3b82f6;
+  color: #4F92B8;
   font-weight: 600;
 }
 
 /* Style for the active (selected) label */
 .home-toggle-label[style*="textDecoration: underline"] {
-  color: #3b82f6;
+  color: #4F92B8;
   font-weight: 600;
   text-decoration: underline;
 }

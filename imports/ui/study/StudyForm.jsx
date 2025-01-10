@@ -146,18 +146,18 @@ const StudyForm = () => {
 
   return (
     <div className="study-create-form">
-      <h1 className="study-create-title">스터디 생성</h1>
+      <h1 className="studyform-create-title">스터디 생성</h1>
 
       {/* Fields for Study Creation */}
-      <div className="study-close-date-field">
-        <label className="study-close-date-label">모집 마감일</label>
+      <div className="studyform-close-date-field">
+        <label className="studyform-close-date-label">모집 마감일</label>
         <input
           type="date"
           value={studyClose}
           onChange={(e) => setStudyClose(e.target.value)}
           min={getMinDate()}
           max={getMaxDate()}
-          className="study-close-date-input"
+          className="studyform-close-date-input"
         />
       </div>
 

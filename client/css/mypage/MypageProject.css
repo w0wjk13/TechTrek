@@ -331,9 +331,11 @@
 
 
 /* 평가하기 버튼 */
-.myproject-study-review-button {
-  margin-top: 20px;                 /* 위쪽 여백 */
-  text-align: center;               /* 텍스트 가운데 정렬 */
+.myproject-study-review-button {    
+  margin-left: auto;                   /* 왼쪽 여백 자동 */
+  margin-right: auto;                  /* 오른쪽 여백 자동 */
+  max-width: 180px;                    /* 최대 너비 설정 */
+  text-align: center;             /* 텍스트 가운데 정렬 */
 }
 
 /* 평가하기 버튼 */
@@ -354,8 +356,6 @@
 .myproject-study-review-button button:hover {
   background-color: #34495e;       /* 배경을 빨간색으로 */
   color: white;                    /* 텍스트 색상을 흰색으로 */
-  transform: scale(1.05);           /* 살짝 커짐 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);      /* 호버 시 버튼 약간 올려짐 */
 }
 
 /* 버튼 비활성화 상태 */
@@ -389,14 +389,8 @@
 .myproject-study-buttons button:hover {
   background-color: #e74c3c;       /* 배경을 빨간색으로 */
   color: white;                    /* 텍스트 색상을 흰색으로 */
-  transform: scale(1.05);           /* 살짝 커짐 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 효과 */
 }
 
-/* 버튼 클릭 시 반응 */
-.myproject-study-buttons button:active {
-  transform: scale(0.98); /* 클릭 시 버튼이 살짝 눌리는 효과 */
-}
 
 /* 버튼 비활성화 상태 */
 .myproject-study-buttons button:disabled {

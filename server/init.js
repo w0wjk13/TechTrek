@@ -41,7 +41,7 @@ if (!Meteor.users.findOne({ username: { $ne: "admin" } })) {
   for (let i = 1; i <= 50; i++) {
     Accounts.createUser({
       password: "1234",
-      email: `user${i}@example.com`,
+      email: `user${i}@techtrek.com`,
       profile: {
         name: "user" + i,
         nickname: `nickname${i}`,
@@ -84,13 +84,45 @@ if (Study.find().count() === 0) {
       techStack: techStacks.sort(() => Math.random() - 0.5).slice(0, Math.floor(Math.random() * 5) + 1),
       studyClose: studyClose,
       rating: (Math.random() * 4 + 1).toFixed(1),
-      title: "제목" + (i + 1),
-      content: "내용" + (i + 1),
+      title: getRandomTitle(i),
+      content: getRandomContent(i),
       createdAt: new Date(),
       views: i,
       status: "모집중",
    
     });
+
+    // 제목 생성 함수
+function getRandomTitle(index) {
+  const titles = [
+    "풀스택 개발자와 함께하는 웹 애플리케이션 개발",
+    "프론트엔드 최신 기술로 실전 프로젝트 진행하기",
+    "백엔드 개발과 클라우드 인프라를 배우는 스터디",
+    "React와 Node.js로 풀스택 프로젝트 만들기",
+    "Vue.js로 SPA 개발부터 배포까지",
+    "팀 프로젝트로 배우는 머신러닝의 기초",
+    "프론트엔드 UI/UX 디자인 스터디",
+    "JavaScript 심화 학습과 알고리즘 문제 풀이",
+    "DevOps와 CI/CD 파이프라인 구축하기"
+  ];
+  return titles[index % titles.length];  // index를 기준으로 제목을 순차적으로 선택
+}
+
+// 내용 생성 함수
+function getRandomContent(index) {
+  const contents = [
+    "풀스택 개발을 위한 웹 애플리케이션을 개발하면서 실력을 키워나갑니다. 프론트엔드와 백엔드 모두 다루며, 실전 프로젝트를 통해 기술을 익힐 수 있습니다.",
+    "최신 프론트엔드 기술을 활용해 실제 프로젝트를 진행하는 스터디입니다. React, Vue 등 최신 라이브러리와 프레임워크를 다룰 예정입니다.",
+    "백엔드와 클라우드 인프라를 배우고, 대규모 시스템을 설계하고 운영할 수 있는 능력을 키울 수 있는 스터디입니다.",
+    "React와 Node.js를 이용해 풀스택 웹 애플리케이션을 만드는 과정을 통해 양방향 통신과 서버 클라이언트 아키텍처를 이해할 수 있습니다.",
+    "Vue.js를 이용해 단일 페이지 애플리케이션(SPA)을 개발하고, 배포하는 방법까지 배울 수 있는 스터디입니다.",
+    "팀 프로젝트를 통해 머신러닝 기초부터 모델 학습까지 실전 경험을 쌓는 스터디입니다. 데이터 분석 및 모델링을 다룹니다.",
+    "UI/UX 디자인 원리를 배우고, 프론트엔드 개발과 디자인을 결합하여 더 나은 사용자 경험을 제공하는 방법을 배울 수 있습니다.",
+    "JavaScript 심화 학습과 알고리즘 문제 풀이를 통해 코딩 실력을 향상시키고, 인터뷰 준비에 필요한 알고리즘 능력을 키울 수 있습니다.",
+    "DevOps와 CI/CD를 배우고, 이를 통해 자동화된 배포 파이프라인을 구축하고 효율적인 시스템 관리 방법을 익히는 스터디입니다."
+  ];
+  return contents[index % contents.length];  // index를 기준으로 내용도 순차적으로 선택
+}
 
     // 스터디 모집글 작성자가 자동으로 해당 스터디에 신청
     const existingApplication = Application.findOne({ studyId, userIds: { $in: [user.profile.nickname] } });
