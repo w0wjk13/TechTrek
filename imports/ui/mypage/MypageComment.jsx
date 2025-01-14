@@ -154,7 +154,7 @@ const MypageComment = () => {
                   style={{ color: 'blue', cursor: 'pointer' }} 
                   onClick={() => handleStudyClick(comment.studyId)} // 스터디 제목 클릭 시 이동
                 >
-                  {comment.studyName || '알 수 없음'}
+                 <div className='mycmt-study-name'> {comment.studyName || '알 수 없음'}</div>
                 </span>
               </td>  {/* 스터디 제목 */}
               <td>{comment.content}</td>  {/* 댓글 내용 */}

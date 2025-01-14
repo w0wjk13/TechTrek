@@ -358,79 +358,172 @@
   margin: 0 10px; /* Spacing around the separator */
 }
 
-/* 버튼 기본 스타일 */
-.home-view-mode-toggle {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+.home-results-display {
+min-height: 700px;
 }
-
-.home-view-mode-button {
-  padding: 10px 20px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.home-view-mode-button.active {
-  background-color: #4F92B8;
-  color: #fff;
-}
-
-/* 리스트와 카드 뷰 스타일 */
-.home-search-results-list.card {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
-}
-
-.home-search-results-list.list {
+.home-search-results-list {
   list-style-type: none;
   padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 300px)); /* Flexible grid with responsive columns */
+  gap: 16px; /* Spacing between cards */
+  
 }
 
+/* Individual Card Style */
 .home-search-result-item {
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-}
-
-.home-card .home-result-title {
-  font-size: 1.25rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.home-list-item .home-result-title {
-  font-size: 1.25rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.home-result-due-date,
-.home-result-status,
-.home-result-location,
-.home-result-mode {
-  font-size: 1rem;
-  margin-bottom: 5px;
-}
-
-.home-result-detail-button {
-  padding: 8px 16px;
-  background-color: #4F92B8;
-  color: white;
-  border: none;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid #ddd; /* Added border */
+  overflow: hidden;
+  flex-shrink: 0;
   cursor: pointer;
-  border-radius: 4px;
+}
+
+.home-result-due-date {
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Arial', sans-serif;
+  background-color: #FF4D4D; /* 자주색 배경 */
+  color: white; /* 텍스트 색상은 흰색 */
+  padding: 8px 12px;
+  border-radius: 5px;
+  text-align: center;
+  width: auto; /* 너비 자동 설정 */
+  max-width: 150px; /* 최대 너비를 설정 */
+  display: inline-block; /* 인라인 블록으로 설정하여 텍스트 옆에 배치되도록 함 */
+}
+
+.home-result-title {
+  font-size: 1.1rem; /* 기본적인 제목 크기 */
+  font-weight: 600; /* 두꺼운 글씨 */
+  font-family: 'Arial', sans-serif; /* 기본적인 글꼴 */
+  margin: 10px 0; /* 위아래 여백 */
+  padding: 0; /* 패딩 제거 */
+  text-align: left; /* 왼쪽 정렬 */
+  border-bottom: 2px solid #4F92B8;
+  line-height: 1.5; /* 줄 간격을 일정하게 설정 */
+  height: 40px; /* 고정된 높이 설정 (원하는 값으로 조정 가능) */
+  overflow: hidden; 
+  white-space: nowrap; /* 텍스트가 한 줄로 표시되도록 설정 */
+  text-overflow: ellipsis;
+}
+
+.home-result-location {
+  font-size: 16px; /* 더 작은 폰트 크기 */
+  font-weight: 600; /* 더 두꺼운 글씨 */
+  color: #333; /* 진한 회색 텍스트 */
+  background-color: transparent; /* 배경색 없앰 */
+  text-align: left; /* 텍스트 왼쪽 정렬 */
+  width: auto; /* 너비를 자동으로 설정 */
+  max-width: 250px; /* 최대 너비 제한 */
+}
+
+.home-result-location span {
+  padding-right: 8px; /* '지역' 텍스트와 구분선 사이에 간격 추가 */
+}
+
+.home-result-location .separator {
+  padding: 0 8px; /* 구분선 양옆에 여백 추가 */
+  color: #555; /* 구분선 색상 */
+  font-weight: bold; /* 구분선 강조 */
+}
+
+.home-result-mode {
+  font-size: 16px; /* 텍스트 크기 */
+  font-weight: 600; /* 텍스트 두께 */
+  color: #333; /* 텍스트 색상 */
+  background-color: transparent; /* 배경색 투명 */
+  text-align: left; /* 텍스트 왼쪽 정렬 */
+}
+
+.home-result-mode .separator {
+  padding: 0 8px; /* 구분선 양옆에 여백 추가 */
+  color: #555; /* 구분선 색상 */
+  font-weight: bold; /* 구분선 강조 */
+}
+
+.home-result-roles {
+  font-size: 16px; /* 텍스트 크기 */
+  font-weight: 600; /* 텍스트 두께 */
+  color: #333; /* 텍스트 색상 */
+  background-color: transparent; /* 배경색 투명 */
+  text-align: left; /* 텍스트 왼쪽 정렬 */
+}
+
+.home-result-roles .separator {
+  padding: 0 8px; /* 구분선 양옆에 여백 추가 */
+  color: #555; /* 구분선 색상 */
+  font-weight: bold; /* 구분선 강조 */
+}
+
+.home-search-item-overview {
+  min-height: 70px;
+}
+
+.home-result-technology {
+min-height: 90px;
+}
+
+.home-result-tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   margin-top: 10px;
+  
+
 }
 
-.home-result-detail-button:hover {
-  background-color: #3b82f6;
+.tech-tag {
+  padding: 6px 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  border: 1px solid #4F92B8; /* 연한 회색 테두리 */
+  transition: background-color 0.3s, transform 0.3s;
 }
 
+.home-right-content {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.home-result-author {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.home-result-author .right-content {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #666;
+}
+
+.home-result-author .separator {
+  margin: 0 8px; /* 구분선과 텍스트 사이 여백 */
+  color: #aaa; /* 구분선 색상 */
+}
+
+.home-result-author .home-rating-tooltip {
+  display: none; /* 기본적으로 숨김 */
+  font-size: 14px;
+  margin-left: 8px; /* userId와 구분선 사이 여백 */
+}
+
+.home-result-author:hover .home-rating-tooltip {
+  display: block; /* userId에 호버하면 rating-tooltip이 보임 */
+}
+
+.home-rating-tooltip {
+  color: #4F92B8; 
+  font-weight: 700;
+}
 /* 페이지네이션 컨테이너 */
 .home-pagination {
   display: flex;
@@ -440,6 +533,7 @@
   margin-top: 20px;
   font-size: 16px;
   color: #333;
+  
 }
 
 /* 각 페이지 번호 텍스트 스타일 */

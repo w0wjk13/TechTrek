@@ -81,35 +81,18 @@
     display: inline-block;
     position: relative;
   }
-  
-  .myrating-study-id::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 6px;
-    background-color: #4F92B8;
-    border-radius: 10px;  /* 둥근 끝 */
-    transition: width 0.3s ease;
-  }
-  
-  .myrating-study-id:hover::after {
-    width: 100%;  /* 둥근 밑줄이 텍스트 아래로 확장 */
-  }
-  
+
 .myrating-user {
     font-size: 1.2rem; /* 글씨 크기 */
     font-weight: bold; /* 굵은 글씨 */
     color: #333; /* 어두운 텍스트 색상 */
     margin: 12px 0; /* 위아래 여백 */
     padding: 10px 15px; /* 내부 여백 */
-    background-color: #f7f7f7; /* 밝은 배경색 */
     border-left: 5px solid #4F92B8; /* 왼쪽에 색상 강조 선 */
     border-radius: 5px; /* 둥근 모서리 */
     transition: all 0.3s ease; /* 애니메이션 효과 */
   }
-  
+
 /* 물음표 아이콘 디자인 */
 .myrating-tooltip-icon {
   font-size: 18px;  /* 아이콘 크기 증가 */

@@ -39,7 +39,6 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1); // Track current page
   const [totalResults, setTotalResults] = useState(0); // Track total results
   const [sortOption, setSortOption] = useState("recent");
-  const [viewMode, setViewMode] = useState('card'); // 초기값은 card view
   const navigate = useNavigate();
 
   // 페이지 로딩 시 모든 스터디 데이터를 가져오기
@@ -58,7 +57,7 @@ export default function Home() {
       status: "모집중",
     };
 
-    Meteor.call("searchStudies", filters, page, 5, sortBy, (error, results) => {
+    Meteor.call("searchStudies", filters, page, 8, sortBy, (error, results) => {
       if (error) {
         console.error("검색 실패:", error);
       } else {
@@ -108,13 +107,6 @@ export default function Home() {
       return onOffline.join(", ");
     }
     return onOffline || "정보 없음";
-  };
-
-  
-
-  // 뷰 모드 변경 함수
-  const toggleViewMode = (mode) => {
-    setViewMode(mode);
   };
 
   return (
@@ -197,7 +189,7 @@ export default function Home() {
 </div>
 
 <div className="home-role-checkbox-group">
-  <label>역할</label>
+  <label>포지션</label>
   {roles.map((role, index) => (
     <div key={index} className="home-role-checkbox-item">
       <input
@@ -308,49 +300,49 @@ export default function Home() {
   </label>
 </div>
 
-<div className="home-view-mode-toggle">
-        <button onClick={() => toggleViewMode('card')} className={viewMode === 'card' ? 'active' : ''}>
-          카드 뷰
-        </button>
-        <button onClick={() => toggleViewMode('list')} className={viewMode === 'list' ? 'active' : ''}>
-          리스트 뷰
-        </button>
-      </div>
-
         {searchResults.length > 0 ? (
           <>
-             <ul className={`home-search-results-list ${viewMode}`}>
+            <div className="home-results-display"> <ul className="home-search-results-list">
           {searchResults.map((result) => {
             const user = Meteor.users.findOne(result.userId);
             const username = user?.profile?.nickname || user?.username || "알 수 없음";
             return (
-              <li key={result._id} className="home-search-result-item">
-                <p className="home-result-due-date">마감일: {formatDDay(result.studyClose)}</p>
-                <div className="home-result-status">모집상태: {result.status}</div>
-
+              <li key={result._id} className="home-search-result-item" onClick={() => handleViewDetail(result._id)}>
+                <p className="home-result-due-date">{formatDDay(result.studyClose)}</p>
+                <div className="home-result-title">{result.title}</div>
+                <div className="home-search-item-overview">
                 {Array.isArray(result.onOffline) ?
                   !result.onOffline.includes("온라인") && (
-                    <div className="home-result-location">지역: {formatAddress(result.address)}</div>
+                    <div className="home-result-location">지역<span className="separator">|</span>{formatAddress(result.address)}</div>
                   ) : 
                   result.onOffline !== "온라인" && (
-                    <div className="home-result-location">지역: {formatAddress(result.address)}</div>
+                    <div className="home-result-location">지역<span className="separator">|</span>{formatAddress(result.address)}</div>
                   )
                 }
 
-                <div className="home-result-mode">진행방식: {formatOnOffline(result.onOffline)}</div>
-                <strong className="home-result-title">{result.title}</strong><br /><br />
+                <div className="home-result-mode">진행방식 <span className="separator">|</span> {formatOnOffline(result.onOffline)}</div>
+   
 
-                <div className="home-result-roles">역할: {result.roles}</div>
-                <div className="home-result-tech-stack">기술 스택: {result.techStack && Array.isArray(result.techStack) ? result.techStack.join(", ") : "기술 스택 없음"}</div>
-                <div className="home-result-author">작성자: {result.userId}</div>
-                <div className="home-result-views">조회수: {result.views}</div>
-                <div className="home-result-rating">평점: {result.rating}</div>
-                <button onClick={() => handleViewDetail(result._id)} className="home-result-detail-button">상세 보기</button>
+                <div className="home-result-roles">포지션 <span className="separator">|</span>{result.roles}</div>
+                </div> <div className="home-result-technology"><div className="home-result-tech-stack">
+  {result.techStack.map((tech, index) => (
+    <span key={index} className="tech-tag">{tech}</span>
+  ))}
+</div></div>
+<div className="home-right-content">
+<div className="home-result-author">
+  {result.userId} 
+  <span className="home-rating-tooltip">평점 {result.rating}</span>
+  <span className="separator">|</span>
+  <div className="home-result-views"> 👀{result.views}</div>
+</div></div>
+
+             
               </li>
             );
           })}
-        </ul>
-
+        </ul></div>
+        
             {/* Pagination Controls */}
             <div className="home-pagination">
   {/* Previous Link */}

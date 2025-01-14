@@ -94,7 +94,7 @@ export default function MypageUser() {
     setIsSubmitting(true); // 제출 중 상태로 설정
  
      // 주소를 city와 gubun을 합쳐서 저장
-     const addressString = `${selectedCity} ${selectedGubun}`;
+     const addressObject = { city: selectedCity, gubun: selectedGubun };
   
     // 서버에 사용자 정보 수정 요청
     Meteor.call('users.update', { 
@@ -104,7 +104,7 @@ export default function MypageUser() {
       phone, 
       techStack, 
       position, 
-      address: addressString, // address를 문자열로 보내기
+      address: addressObject, // address를 문자열로 보내기
       profilePicture, 
       nickname 
     }, (err, res) => {

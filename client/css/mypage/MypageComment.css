@@ -39,14 +39,14 @@
   box-shadow: none;  /* 그림자 제거 */
   transition: all 0.3s ease-in-out;  /* 부드러운 트랜지션 효과 */
   margin-top: 30px;
-  margin-left: -750px;  /* 왼쪽 끝으로 이동 */
+  margin-left: -850px;  /* 왼쪽 끝으로 이동 */
   position: relative; /* 테이블 상단에 배치되도록 */
 }
 
  /* 테이블 스타일 */
 .mycmt-comments-table {
   width: 100%;
-  max-width: 900px; /* 최대 너비 제한 */
+  max-width: 1000px; /* 최대 너비 제한 */
   margin-top: 5px;
   background-color: #fff; /* 배경색 */
   border-radius: 12px; /* 둥근 테두리 */
@@ -93,17 +93,18 @@
 
 /* 스터디 제목 스타일 */
 .mycmt-study-title {
-  color: #4F92B8;
-  font-weight: 600;
   text-decoration: none;
   cursor: pointer;
 }
 
-.mycmt-study-title:hover {
-  text-decoration: underline; /* 마우스 오버 시 밑줄 */
-  color: #357EA8; /* 마우스 오버시 색상 변경 */
+.mycmt-study-name{
+  color: black;
 }
 
+.mycmt-study-name:hover{
+  color: #4F92B8;
+  font-weight: bold;
+}
 /* 전체 선택 체크박스 스타일 */
 .mycmt-select-all-checkbox {
   width: 20px;
