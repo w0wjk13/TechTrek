@@ -4,12 +4,4 @@
 개발자들이 평가 기반으로 스터디에 참여하여 기술적인 성장뿐만 아니라 협업, 의사소통, 문제 해결 능력 등 다양한 소프트 스킬도 동시에 발전시킬 수 있는 환경을 만드는 것입니다.
 
 # 개발환경
-기술	분류
-Node.js	백엔드
-React	프론트엔드
-Meteor	풀스택(백엔드+프론트엔드)
-MongoDB	백엔드
-GitHub	툴
-Notion	툴
-HTML	프론트엔드
-CSS	프론트엔드
+![개발환경표](https://github.com/user-attachments/assets/bb2cc0da-6175-4d97-9762-42e328ef08be)
