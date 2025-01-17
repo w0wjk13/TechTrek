@@ -56,14 +56,15 @@ if (Meteor.isServer) {
 
   // Get the nickname (either from profile or default to username) and profile image
   const nickname = userProfile?.profile?.nickname || userProfile?.username || '알 수 없음';
-  const profilePicture = userProfile?.profile?.profilePicture || '';
+
 
       const newComment = {
         userId: this.userId,
         nickname: nickname,
-        content: profilePicture,
+        content: commentContent,
         createdAt: new Date(),
         studyId: studyId,
+
       };
 
       Comment.insert(newComment);

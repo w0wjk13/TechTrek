@@ -99,7 +99,7 @@ export default function MypageUser() {
     // 서버에 사용자 정보 수정 요청
     Meteor.call('users.update', { 
       name, 
-      email, 
+      email,
       password, 
       phone, 
       techStack, 
@@ -114,7 +114,7 @@ export default function MypageUser() {
       } else {
         // 수정 성공 시 알림 팝업과 함께 마이 페이지로 이동
         alert("회원정보가 수정되었습니다.");
-        navigate("/mypage"); // 마이 페이지로 이동
+        navigate("/mypage/main"); // 마이 페이지로 이동
       }
     });
   };
@@ -158,7 +158,7 @@ export default function MypageUser() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="이메일을 입력하세요"
-              className="mypageuser-input"
+              className="mypageuser-email-input"
             />
           </div>
           <div className="mypageuser-input-field" style={{ marginBottom: "15px" }}>

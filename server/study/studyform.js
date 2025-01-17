@@ -42,9 +42,7 @@ Meteor.methods({
     if (!Array.isArray(studyData.techStack) || studyData.techStack.length === 0) {
       throw new Meteor.Error('invalid-techstack', '기술 스택을 하나 이상 선택해주세요.');
     }
-    if (typeof studyData.studyCount !== 'number' || studyData.studyCount < 2 || studyData.studyCount > 10) {
-      throw new Meteor.Error('invalid-studyCount', '모집 인원은 2명에서 10명 사이여야 합니다.');
-    }
+  
     if (!(studyData.studyClose instanceof Date) || isNaN(studyData.studyClose.getTime())) {
       throw new Meteor.Error('invalid-studyClose', '모집 마감일을 정확히 입력해주세요.');
     }

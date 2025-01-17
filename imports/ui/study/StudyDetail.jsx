@@ -47,7 +47,7 @@ const StudyDetail = () => {
         const userProfile = Meteor.users.findOne(comment.userId); // 해당 사용자의 프로필 정보 가져오기
         return {
           ...comment,
-          profilePicture: userProfile?.profile?.profilePicture || null // 프로필 이미지가 없다면 null
+          profilePicture: userProfile?.profile?.profilePicture || '/noimage.png' // 프로필 이미지가 없다면 null
         };
       });
       
@@ -228,6 +228,7 @@ const StudyDetail = () => {
         // 댓글 목록에 새 댓글을 추가
         setComments((prevComments) => [newComment, ...prevComments]);
         setCommentContent('');  // 댓글 내용 초기화
+        window.location.reload();
       }
     });
   };
@@ -411,7 +412,7 @@ const handleCancelEditComment = () => {
   {comments.map((comment) => (
     <li key={comment._id} className="comment-item">
       <div className="comment-header">
-      <img src={comment.profilePicture} alt={comment.nickname} className="comment-profile-image" />
+      <img src={comment.profilePicture} alt={`${comment.nickname}'s profile`} className="comment-profile-image" />
         <span className="comment-nickname">{comment.nickname}</span>
         <span className="comment-created-at">({new Date(comment.createdAt).toLocaleString()})</span>
       </div>
@@ -448,6 +449,7 @@ const handleCancelEditComment = () => {
 </ul>
 
     </div>
+ 
     <div className="studydetail-right-section">
     {/* 신청하기 버튼 */}
     {!isUserOwner && !isAlreadyApplied && !isRecruitingClosed && (
@@ -455,9 +457,10 @@ const handleCancelEditComment = () => {
         신청하기
       </button>
     )}
-
+    
     {/* 신청자 목록 */}
-    {filteredApplications.length > 0 && (
+    {filteredApplications.length > 0 ? (
+      
       <div className="applicant-list">
         <h3 className="applicant-list-title">신청자 목록</h3>
         <div className="study-action-buttons">
@@ -503,6 +506,11 @@ const handleCancelEditComment = () => {
             </div>
           ))}
       </div>
+      ) : (
+        // 신청자가 없을 경우
+        <div className="no-applicants-message">
+          <p>신청자가 없습니다.</p>
+        </div>
     )}
   </div>
     </div>
