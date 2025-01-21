@@ -45,6 +45,9 @@
 
 ![제목 없는 동영상 - Clipchamp로 제작](https://github.com/user-attachments/assets/d4db0d46-2828-45b8-9dc7-6bcdb230f4d7)
 
+## 시연영상
+https://github.com/user-attachments/assets/c90c057f-d70c-4730-a1ad-dc382bfdb71f
+
 
 
 
